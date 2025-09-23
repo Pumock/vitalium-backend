@@ -1,0 +1,5 @@
+export enum AdminRole {
+  SUPER_ADMIN = 'SUPER_ADMIN',
+  HOSPITAL_ADMIN = 'HOSPITAL_ADMIN',
+  CLINIC_ADMIN = 'CLINIC_ADMIN',
+}

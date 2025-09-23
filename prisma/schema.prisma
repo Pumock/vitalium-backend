@@ -1,0 +1,470 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Authentication & Users
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  phone       String?
+  avatar      String?
+  isActive    Boolean  @default(true)
+  role        UserRole
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  patient     Patient?
+  caregiver   Caregiver?
+  doctor      Doctor?
+  nurse       Nurse?
+  admin       Admin?
+
+  @@map("users")
+}
+
+enum UserRole {
+  PATIENT
+  CAREGIVER
+  DOCTOR
+  NURSE
+  ADMIN
+}
+
+// Healthcare Facilities
+model Hospital {
+  id          String @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  phone       String
+  email       String
+  cnpj        String @unique
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  clinics     Clinic[]
+  wards       Ward[]
+  doctors     Doctor[]
+  nurses      Nurse[]
+
+  @@map("hospitals")
+}
+
+model Clinic {
+  id          String @id @default(cuid())
+  name        String
+  address     String
+  city        String
+  state       String
+  zipCode     String
+  phone       String
+  email       String
+  cnpj        String @unique
+  hospitalId  String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  hospital    Hospital? @relation(fields: [hospitalId], references: [id])
+  doctors     Doctor[]
+  appointments Appointment[]
+
+  @@map("clinics")
+}
+
+// Medical Specializations
+model Specialization {
+  id          String @id @default(cuid())
+  name        String @unique
+  description String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  doctors     DoctorSpecialization[]
+
+  @@map("specializations")
+}
+
+// Healthcare Professionals
+model Doctor {
+  id            String  @id @default(cuid())
+  userId        String  @unique
+  crm           String  @unique
+  crmState      String
+  hospitalId    String?
+  clinicId      String?
+  consultationPrice Decimal?
+  isActive      Boolean @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospital      Hospital? @relation(fields: [hospitalId], references: [id])
+  clinic        Clinic? @relation(fields: [clinicId], references: [id])
+  specializations DoctorSpecialization[]
+  medicalRecords MedicalRecord[]
+  appointments  Appointment[]
+  prescriptions Prescription[]
+  patientDoctors PatientDoctor[]
+
+  @@map("doctors")
+}
+
+model DoctorSpecialization {
+  id              String @id @default(cuid())
+  doctorId        String
+  specializationId String
+  createdAt       DateTime @default(now())
+
+  // Relations
+  doctor          Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  specialization  Specialization @relation(fields: [specializationId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, specializationId])
+  @@map("doctor_specializations")
+}
+
+model Nurse {
+  id          String @id @default(cuid())
+  userId      String @unique
+  coren       String @unique
+  corenState  String
+  hospitalId  String?
+  wardId      String?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hospital    Hospital? @relation(fields: [hospitalId], references: [id])
+  ward        Ward? @relation(fields: [wardId], references: [id])
+
+  @@map("nurses")
+}
+
+model Admin {
+  id          String @id @default(cuid())
+  userId      String @unique
+  role        AdminRole
+  permissions Json?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("admins")
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  HOSPITAL_ADMIN
+  CLINIC_ADMIN
+}
+
+// Patients & Caregivers
+model Patient {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  cpf           String    @unique
+  rg            String?
+  birthDate     DateTime
+  gender        Gender
+  bloodType     BloodType?
+  allergies     String?
+  emergencyContact String?
+  emergencyPhone String?
+  address       String?
+  city          String?
+  state         String?
+  zipCode       String?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relations
+  user          User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  caregivers    PatientCaregiver[]
+  medicalRecords MedicalRecord[]
+  appointments  Appointment[]
+  prescriptions Prescription[]
+  patientDoctors PatientDoctor[]
+  wardAdmissions WardAdmission[]
+
+  @@map("patients")
+}
+
+model Caregiver {
+  id          String @id @default(cuid())
+  userId      String @unique
+  cpf         String @unique
+  relationship CaregiverRelationship
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  user        User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  patients    PatientCaregiver[]
+
+  @@map("caregivers")
+}
+
+model PatientCaregiver {
+  id          String @id @default(cuid())
+  patientId   String
+  caregiverId String
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  caregiver   Caregiver @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, caregiverId])
+  @@map("patient_caregivers")
+}
+
+model PatientDoctor {
+  id          String @id @default(cuid())
+  patientId   String
+  doctorId    String
+  isActive    Boolean @default(true)
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor      Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, doctorId])
+  @@map("patient_doctors")
+}
+
+// Medical Records & Healthcare Data
+model MedicalRecord {
+  id          String @id @default(cuid())
+  patientId   String
+  doctorId    String
+  title       String
+  description String
+  diagnosis   String?
+  symptoms    String[]
+  treatment   String?
+  observations String?
+  recordDate  DateTime @default(now())
+  recordType  RecordType
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id])
+  doctor      Doctor @relation(fields: [doctorId], references: [id])
+  attachments MedicalAttachment[]
+
+  @@map("medical_records")
+}
+
+model MedicalAttachment {
+  id              String @id @default(cuid())
+  medicalRecordId String
+  fileName        String
+  fileUrl         String
+  fileType        String
+  fileSize        Int
+  uploadedAt      DateTime @default(now())
+
+  // Relations
+  medicalRecord   MedicalRecord @relation(fields: [medicalRecordId], references: [id], onDelete: Cascade)
+
+  @@map("medical_attachments")
+}
+
+// Appointments
+model Appointment {
+  id          String @id @default(cuid())
+  patientId   String
+  doctorId    String
+  clinicId    String?
+  title       String
+  description String?
+  scheduledAt DateTime
+  duration    Int // minutes
+  status      AppointmentStatus @default(SCHEDULED)
+  type        AppointmentType
+  price       Decimal?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id])
+  doctor      Doctor @relation(fields: [doctorId], references: [id])
+  clinic      Clinic? @relation(fields: [clinicId], references: [id])
+
+  @@map("appointments")
+}
+
+// Prescriptions
+model Prescription {
+  id          String @id @default(cuid())
+  patientId   String
+  doctorId    String
+  medications Json // Array of medications with dosage, frequency, etc.
+  instructions String?
+  validUntil  DateTime?
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id])
+  doctor      Doctor @relation(fields: [doctorId], references: [id])
+
+  @@map("prescriptions")
+}
+
+// Hospital Wards & Admissions
+model Ward {
+  id          String @id @default(cuid())
+  hospitalId  String
+  name        String
+  wardType    WardType
+  capacity    Int
+  currentOccupancy Int @default(0)
+  isActive    Boolean @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  hospital    Hospital @relation(fields: [hospitalId], references: [id])
+  nurses      Nurse[]
+  admissions  WardAdmission[]
+
+  @@map("wards")
+}
+
+model WardAdmission {
+  id          String @id @default(cuid())
+  patientId   String
+  wardId      String
+  admissionDate DateTime @default(now())
+  dischargeDate DateTime?
+  reason      String
+  status      AdmissionStatus @default(ACTIVE)
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  patient     Patient @relation(fields: [patientId], references: [id])
+  ward        Ward @relation(fields: [wardId], references: [id])
+
+  @@map("ward_admissions")
+}
+
+// Enums
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum CaregiverRelationship {
+  PARENT
+  SPOUSE
+  CHILD
+  SIBLING
+  GUARDIAN
+  FRIEND
+  OTHER
+}
+
+enum RecordType {
+  CONSULTATION
+  EXAMINATION
+  SURGERY
+  EMERGENCY
+  ROUTINE_CHECKUP
+  FOLLOW_UP
+  DIAGNOSTIC
+  OTHER
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+enum AppointmentType {
+  CONSULTATION
+  FOLLOW_UP
+  ROUTINE_CHECKUP
+  EMERGENCY
+  SURGERY
+  EXAMINATION
+  VACCINATION
+  OTHER
+}
+
+enum WardType {
+  GENERAL
+  ICU
+  PEDIATRIC
+  MATERNITY
+  SURGERY
+  EMERGENCY
+  CARDIOLOGY
+  ONCOLOGY
+  OTHER
+}
+
+enum AdmissionStatus {
+  ACTIVE
+  DISCHARGED
+  TRANSFERRED
+}
