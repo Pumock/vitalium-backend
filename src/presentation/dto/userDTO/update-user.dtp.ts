@@ -1,4 +1,11 @@
-import { IsBoolean, IsEmail, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsEnum,
+  IsString,
+  IsOptional,
+} from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Admin } from 'src/infrastructure/database/models/admin.models';
 import { Caregiver } from 'src/infrastructure/database/models/caregiver.models';
 import { Doctor } from 'src/infrastructure/database/models/doctor.models';
@@ -7,30 +14,79 @@ import { Patient } from 'src/infrastructure/database/models/patient.models';
 import { Role } from 'src/shared/enums';
 
 export class UpdateUserDTO {
+  @ApiPropertyOptional({
+    description: 'Email único do usuário',
+    example: 'joao.silva@exemplo.com',
+    format: 'email',
+  })
+  @IsOptional()
   @IsEmail()
   email?: string;
 
+  @ApiPropertyOptional({
+    description: 'Primeiro nome do usuário',
+    example: 'João',
+  })
+  @IsOptional()
   @IsString()
   firstName?: string;
 
+  @ApiPropertyOptional({
+    description: 'Sobrenome do usuário',
+    example: 'Silva Santos',
+  })
+  @IsOptional()
   @IsString()
   lastName?: string;
 
+  @ApiPropertyOptional({
+    description: 'Telefone do usuário',
+    example: '+55 11 98765-4321',
+  })
+  @IsOptional()
   @IsString()
   phone?: string;
 
+  @ApiPropertyOptional({
+    description: 'URL do avatar do usuário',
+    example: 'https://exemplo.com/novo-avatar.jpg',
+  })
+  @IsOptional()
   @IsString()
   avatar?: string;
 
+  @ApiPropertyOptional({
+    description: 'Status ativo/inativo do usuário',
+    example: false,
+  })
+  @IsOptional()
   @IsBoolean()
   isActive?: boolean;
 
-  @IsString()
+  @ApiPropertyOptional({
+    description: 'Função do usuário no sistema',
+    enum: Role,
+    example: Role.DOCTOR,
+  })
+  @IsOptional()
+  @IsEnum(Role)
   role?: Role;
 
+  @ApiPropertyOptional({
+    description: 'Data de criação (não recomendado alterar)',
+    example: '2024-01-01T00:00:00.000Z',
+    deprecated: true,
+  })
+  @IsOptional()
   @IsString()
   createdAt?: string;
 
+  @ApiPropertyOptional({
+    description: 'Data da última atualização (atualizada automaticamente)',
+    example: '2024-01-15T10:30:00.000Z',
+    readOnly: true,
+  })
+  @IsOptional()
   @IsString()
   updatedAt?: string;
 

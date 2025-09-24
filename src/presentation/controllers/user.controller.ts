@@ -13,16 +13,24 @@ import { plainToInstance } from 'class-transformer';
 import { CreateUserDTO } from '../dto/userDTO/create-user.dto';
 import { UserResponseDTO } from '../dto/userDTO/response/user-response.dto';
 import { UpdateUserDTO } from '../dto/userDTO/update-user.dtp';
+import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
+import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
+import { SearchUserUseCase } from 'src/application/use-cases/user/search-user.use-case';
+import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
+import { ApiUserOperations } from 'src/shared/swagger/decorators';
 
-@Controller('animes')
-export class AnimesController {
-  constructor(private readonly createUserUseCase: CreateUserUseCase) {}
-  constructor(private readonly searchUserUseCase: SearchUserUseCase) {}
-  constructor(private readonly updateUserUseCase: UpdateUserUseCase) {}
-  constructor(private readonly deleteUserUseCase: DeleteUserUseCase) {}
+@Controller('users')
+export class UserController {
+  constructor(
+    private readonly createUserUseCase: CreateUserUseCase,
+    private readonly searchUserUseCase: SearchUserUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
+    private readonly deleteUserUseCase: DeleteUserUseCase,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiUserOperations.createUser()
   async create(@Body() createUserDTO: CreateUserDTO): Promise<UserResponseDTO> {
     const user = await this.createUserUseCase.execute(createUserDTO);
 
@@ -33,7 +41,8 @@ export class AnimesController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAll(): Promise<UserResponseDTO> {
+  @ApiUserOperations.findAllUsers()
+  async findAll(): Promise<UserResponseDTO[]> {
     const users = await this.searchUserUseCase.findAll();
 
     return plainToInstance(UserResponseDTO, users, {
@@ -43,8 +52,9 @@ export class AnimesController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiUserOperations.findUserById()
   async findOne(@Param('id') id: string): Promise<UserResponseDTO> {
-    const user = await this.searchUserUseCase.findOne(id);
+    const user = await this.searchUserUseCase.findById(id);
 
     return plainToInstance(UserResponseDTO, user, {
       excludeExtraneousValues: true,
@@ -53,6 +63,7 @@ export class AnimesController {
 
   @Get('email/:email')
   @HttpCode(HttpStatus.OK)
+  @ApiUserOperations.findUserByEmail()
   async findByEmail(@Param('email') email: string): Promise<UserResponseDTO> {
     const user = await this.searchUserUseCase.findByEmail(email);
 
@@ -63,6 +74,7 @@ export class AnimesController {
 
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
+  @ApiUserOperations.updateUser()
   async update(
     @Param('id') id: string,
     @Body() updateUserDTO: UpdateUserDTO,
@@ -76,6 +88,7 @@ export class AnimesController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiUserOperations.deleteUser()
   async delete(@Param('id') id: string): Promise<void> {
     return this.deleteUserUseCase.execute(id);
   }
