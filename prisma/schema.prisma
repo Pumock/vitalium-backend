@@ -15,11 +15,11 @@ datasource db {
 
 // Authentication & Users
 model User {
-  id          String   @id @default(cuid())
-  email       String   @unique
-  password    String
-  firstName   String
-  lastName    String
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
   phone       String?
   avatar      String?
   isActive    Boolean  @default(true)
@@ -555,22 +555,6 @@ model SecurityLog {
   @@index([userId])
 }
 
-// Performance Metrics
-model PerformanceMetric {
-  id            String    @id @default(cuid())
-  operation     String
-  duration      Float     // in milliseconds
-  metadata      Json?
-  timestamp     DateTime  @default(now())
-  service       String    @default("vitalium-backend")
-  environment   String    @default("development")
-  
-  @@map("performance_metrics")
-  @@index([operation])
-  @@index([timestamp])
-  @@index([duration])
-}
-
 // Database Operation Logs
 model DatabaseLog {
   id          String    @id @default(cuid())
@@ -612,22 +596,6 @@ model BusinessEventLog {
   @@index([entityId])
   @@index([timestamp])
   @@index([userId])
-}
-
-// System Health Metrics
-model SystemHealthMetric {
-  id                String    @id @default(cuid())
-  cpuUsage          Float?
-  memoryUsage       Float?
-  diskUsage         Float?
-  responseTime      Float?
-  activeConnections Int?
-  errorRate         Float?
-  metadata          Json?
-  timestamp         DateTime  @default(now())
-  
-  @@map("system_health_metrics")
-  @@index([timestamp])
 }
 
 // API Usage Statistics

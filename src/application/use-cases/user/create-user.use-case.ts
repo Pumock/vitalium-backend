@@ -6,6 +6,7 @@ import {
   FieldError,
 } from 'src/shared/execeptions/system/validation.exception';
 import { DatabaseException } from 'src/shared/execeptions/system/database.exception';
+import { ConflictException } from 'src/shared/execeptions/system/conflict.exception';
 import { IUserRepository } from 'src/domain/interfaces/repositories/user.repository.interface';
 import { Role } from 'src/shared/enums/role.enum';
 
@@ -101,13 +102,11 @@ export class CreateUserUseCase {
     );
 
     if (existingUser) {
-      throw new ValidationException([
-        {
-          field: 'email',
-          value: createUserDTO.email,
-          constraints: ['Email já está em uso'],
-        },
-      ]);
+      throw new ConflictException(
+        'Email já está em uso',
+        'email',
+        createUserDTO.email,
+      );
     }
 
     try {

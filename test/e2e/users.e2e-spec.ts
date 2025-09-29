@@ -62,6 +62,7 @@ describe('Users API (e2e)', () => {
     it('should create a new user', async () => {
       const createUserDto = {
         email: 'test-e2e-create@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         phone: '+1234567890',
@@ -120,6 +121,7 @@ describe('Users API (e2e)', () => {
     it('should return 409 for duplicate email', async () => {
       const createUserDto = {
         email: 'test-e2e-duplicate@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
@@ -146,6 +148,7 @@ describe('Users API (e2e)', () => {
       const testUsers = [
         {
           email: 'test-e2e-list1@example.com',
+          password: 'TestPassword123!',
           firstName: 'John',
           lastName: 'Doe',
           isActive: true,
@@ -153,6 +156,7 @@ describe('Users API (e2e)', () => {
         },
         {
           email: 'test-e2e-list2@example.com',
+          password: 'TestPassword123!',
           firstName: 'Jane',
           lastName: 'Smith',
           isActive: true,
@@ -194,6 +198,7 @@ describe('Users API (e2e)', () => {
       // Create test user
       const createUserDto = {
         email: 'test-e2e-get-by-id@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
@@ -235,6 +240,7 @@ describe('Users API (e2e)', () => {
       // Create test user
       const createUserDto = {
         email: 'test-e2e-get-by-email@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
@@ -273,6 +279,7 @@ describe('Users API (e2e)', () => {
       // Create test user
       const createUserDto = {
         email: 'test-e2e-update@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
@@ -326,6 +333,7 @@ describe('Users API (e2e)', () => {
       // Create test user
       const createUserDto = {
         email: 'test-e2e-delete@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,

@@ -22,14 +22,13 @@ export class CreateUserDTO {
   @IsEmail()
   email: string;
 
-  @ApiPropertyOptional({
+  @ApiProperty({
     description: 'Senha do usuário (será hasheada)',
     example: 'MinhaSenh@123',
     minLength: 8,
   })
-  @IsOptional()
   @IsString()
-  password?: string;
+  password: string;
 
   @ApiProperty({
     description: 'Primeiro nome do usuário',
@@ -80,12 +79,6 @@ export class CreateUserDTO {
   })
   @IsEnum(Role)
   role: Role;
-
-  @IsString()
-  createdAt: string;
-
-  @IsString()
-  updatedAt: string;
 
   patient?: Patient;
   doctor?: Doctor;

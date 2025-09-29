@@ -110,56 +110,6 @@ export class MetricsCollectorService {
     }
   }
 
-  // Log performance metrics
-  async logPerformanceMetric(data: {
-    operation: string;
-    duration: number;
-    metadata?: any;
-  }) {
-    try {
-      await this.prisma.performanceMetric.create({
-        data: {
-          operation: data.operation,
-          duration: data.duration,
-          metadata: data.metadata,
-        },
-      });
-      console.log(
-        `Performance metric logged: ${data.operation} - ${data.duration}ms`,
-      );
-    } catch (error) {
-      console.error('Failed to log performance metric:', error);
-    }
-  }
-
-  // Log system health metrics
-  async logSystemHealth(data: {
-    cpuUsage?: number;
-    memoryUsage?: number;
-    diskUsage?: number;
-    responseTime?: number;
-    activeConnections?: number;
-    errorRate?: number;
-    metadata?: any;
-  }) {
-    try {
-      await this.prisma.systemHealthMetric.create({
-        data: {
-          cpuUsage: data.cpuUsage,
-          memoryUsage: data.memoryUsage,
-          diskUsage: data.diskUsage,
-          responseTime: data.responseTime,
-          activeConnections: data.activeConnections,
-          errorRate: data.errorRate,
-          metadata: data.metadata,
-        },
-      });
-      console.log('System health metric logged');
-    } catch (error) {
-      console.error('Failed to log system health:', error);
-    }
-  }
-
   // Log business events
   async logBusinessEvent(data: {
     event: string;

@@ -1,260 +1,199 @@
-import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { MetricsCollectorService } from './metrics-collector.service';
-import * as os from 'os';
 import * as process from 'process';
 
 @Injectable()
-export class SystemHealthService implements OnModuleInit, OnModuleDestroy {
-  private healthCheckInterval: NodeJS.Timeout;
-  private readonly HEALTH_CHECK_INTERVAL = 30 * 1000; // 30 seconds
-
+export class SystemHealthService {
   constructor(private readonly metricsCollector: MetricsCollectorService) {}
 
-  onModuleInit() {
-    this.startHealthChecks();
-  }
-
-  onModuleDestroy() {
-    this.stopHealthChecks();
-  }
-
-  // Start periodic health checks
-  private startHealthChecks() {
-    this.healthCheckInterval = setInterval(async () => {
-      await this.collectSystemMetrics();
-    }, this.HEALTH_CHECK_INTERVAL);
-  }
-
-  // Stop periodic health checks
-  private stopHealthChecks() {
-    if (this.healthCheckInterval) {
-      clearInterval(this.healthCheckInterval);
-    }
-  }
-
-  // Collect and log system metrics
-  async collectSystemMetrics() {
+  // Log critical application error
+  async logCriticalError(error: {
+    type: string;
+    message: string;
+    stackTrace?: string;
+    context?: string;
+    userId?: string;
+  }) {
     try {
-      const metrics = await this.getSystemMetrics();
-
-      await this.metricsCollector.logSystemHealth(metrics);
-
-      // Check for critical conditions
-      await this.checkCriticalConditions(metrics);
-    } catch (error) {
-      console.error('Failed to collect system metrics:', error);
-    }
-  }
-
-  // Get current system metrics
-  async getSystemMetrics() {
-    const cpuUsage = await this.getCpuUsage();
-    const memoryUsage = this.getMemoryUsage();
-    const diskUsage = await this.getDiskUsage();
-
-    return {
-      cpuUsage,
-      memoryUsage: memoryUsage.percentage,
-      diskUsage,
-      responseTime: await this.measureResponseTime(),
-      activeConnections: this.getActiveConnections(),
-      errorRate: await this.calculateErrorRate(),
-      metadata: {
-        totalMemory: memoryUsage.total,
-        freeMemory: memoryUsage.free,
-        usedMemory: memoryUsage.used,
-        uptime: process.uptime(),
-        nodeVersion: process.version,
-        platform: os.platform(),
-        arch: os.arch(),
-        loadAverage: os.loadavg(),
-      },
-    };
-  }
-
-  // Get CPU usage percentage
-  private async getCpuUsage(): Promise<number> {
-    return new Promise((resolve) => {
-      const startMeasure = this.cpuAverage();
-
-      setTimeout(() => {
-        const endMeasure = this.cpuAverage();
-        const idleDifference = endMeasure.idle - startMeasure.idle;
-        const totalDifference = endMeasure.total - startMeasure.total;
-        const cpuPercentage =
-          100 - ~~((100 * idleDifference) / totalDifference);
-
-        resolve(cpuPercentage);
-      }, 100);
-    });
-  }
-
-  // Helper function to calculate CPU average
-  private cpuAverage() {
-    const cpus = os.cpus();
-    let user = 0;
-    let nice = 0;
-    let sys = 0;
-    let idle = 0;
-    let irq = 0;
-
-    for (const cpu of cpus) {
-      user += cpu.times.user;
-      nice += cpu.times.nice;
-      sys += cpu.times.sys;
-      idle += cpu.times.idle;
-      irq += cpu.times.irq;
-    }
-
-    const total = user + nice + sys + idle + irq;
-
-    return {
-      idle,
-      total,
-    };
-  }
-
-  // Get memory usage information
-  private getMemoryUsage() {
-    const totalMemory = os.totalmem();
-    const freeMemory = os.freemem();
-    const usedMemory = totalMemory - freeMemory;
-    const percentage = (usedMemory / totalMemory) * 100;
-
-    return {
-      total: totalMemory,
-      free: freeMemory,
-      used: usedMemory,
-      percentage: Math.round(percentage * 100) / 100,
-    };
-  }
-
-  // Get disk usage (simplified - would need additional libraries for full disk stats)
-  private async getDiskUsage(): Promise<number> {
-    try {
-      // This is a simplified implementation
-      // In production, you might want to use libraries like 'node-disk-usage'
-      return 0; // Placeholder
-    } catch (error) {
-      console.warn('Could not retrieve disk usage:', error.message);
-      return 0;
-    }
-  }
-
-  // Measure application response time
-  private async measureResponseTime(): Promise<number> {
-    const start = process.hrtime();
-
-    // Simulate a small operation to measure responsiveness
-    await new Promise((resolve) => setTimeout(resolve, 1));
-
-    const [seconds, nanoseconds] = process.hrtime(start);
-    return seconds * 1000 + nanoseconds / 1000000; // Convert to milliseconds
-  }
-
-  // Get active connections count (simplified)
-  private getActiveConnections(): number {
-    // This would typically involve checking actual connection pools
-    // For now, return a placeholder value
-    return 0;
-  }
-
-  // Calculate error rate from recent logs
-  private async calculateErrorRate(): Promise<number> {
-    try {
-      // This would need to be implemented based on your error tracking
-      // For now, return a placeholder value
-      return 0;
-    } catch (error) {
-      console.warn('Could not calculate error rate:', error.message);
-      return 0;
-    }
-  }
-
-  // Check for critical system conditions
-  private async checkCriticalConditions(metrics: any) {
-    const alerts = [];
-
-    // CPU usage alerts
-    if (metrics.cpuUsage > 90) {
-      alerts.push({
-        type: 'CPU_CRITICAL',
-        message: `CPU usage is critically high: ${metrics.cpuUsage}%`,
-        severity: 'CRITICAL',
+      await this.metricsCollector.logError({
+        errorType: error.type || 'CRITICAL_ERROR',
+        errorMessage: error.message,
+        stackTrace: error.stackTrace,
+        context: error.context,
+        userId: error.userId,
       });
-    } else if (metrics.cpuUsage > 75) {
-      alerts.push({
-        type: 'CPU_HIGH',
-        message: `CPU usage is high: ${metrics.cpuUsage}%`,
-        severity: 'HIGH',
-      });
-    }
 
-    // Memory usage alerts
-    if (metrics.memoryUsage > 90) {
-      alerts.push({
-        type: 'MEMORY_CRITICAL',
-        message: `Memory usage is critically high: ${metrics.memoryUsage}%`,
-        severity: 'CRITICAL',
-      });
-    } else if (metrics.memoryUsage > 80) {
-      alerts.push({
-        type: 'MEMORY_HIGH',
-        message: `Memory usage is high: ${metrics.memoryUsage}%`,
-        severity: 'HIGH',
-      });
-    }
-
-    // Response time alerts
-    if (metrics.responseTime > 1000) {
-      alerts.push({
-        type: 'RESPONSE_TIME_SLOW',
-        message: `Response time is slow: ${metrics.responseTime}ms`,
-        severity: 'HIGH',
-      });
-    }
-
-    // Log alerts
-    for (const alert of alerts) {
+      // Also log as security event if it's critical
       await this.metricsCollector.logSecurityEvent({
-        event: alert.type,
-        severity: alert.severity as any,
-        description: alert.message,
-        metadata: metrics,
+        event: 'CRITICAL_APPLICATION_ERROR',
+        severity: 'CRITICAL',
+        description: `Critical error: ${error.message}`,
+        userId: error.userId,
+        metadata: {
+          type: error.type,
+          context: error.context,
+          stackTrace: error.stackTrace,
+        },
       });
 
-      console.warn('Health Alert:', alert.message);
+      console.error(`🚨 CRITICAL ERROR: ${error.type} - ${error.message}`);
+    } catch (logError) {
+      console.error('Failed to log critical error:', logError);
     }
   }
 
-  // Get health status summary
+  // Log application failure
+  async logApplicationFailure(failure: {
+    operation: string;
+    error: string;
+    userId?: string;
+    metadata?: any;
+  }) {
+    try {
+      await this.metricsCollector.logSecurityEvent({
+        event: 'APPLICATION_FAILURE',
+        severity: 'HIGH',
+        description: `Application failure in ${failure.operation}: ${failure.error}`,
+        userId: failure.userId,
+        metadata: failure.metadata,
+      });
+
+      console.error(
+        `❌ APPLICATION FAILURE: ${failure.operation} - ${failure.error}`,
+      );
+    } catch (error) {
+      console.error('Failed to log application failure:', error);
+    }
+  }
+
+  // Log database connection failure
+  async logDatabaseFailure(error: {
+    operation: string;
+    error: string;
+    metadata?: any;
+  }) {
+    try {
+      await this.metricsCollector.logError({
+        errorType: 'DATABASE_FAILURE',
+        errorMessage: `Database operation failed: ${error.operation} - ${error.error}`,
+        context: 'DATABASE',
+        metadata: error.metadata,
+      });
+
+      await this.metricsCollector.logSecurityEvent({
+        event: 'DATABASE_CONNECTION_FAILURE',
+        severity: 'CRITICAL',
+        description: `Database failure: ${error.operation}`,
+        metadata: error.metadata,
+      });
+
+      console.error(`🗄️ DATABASE FAILURE: ${error.operation} - ${error.error}`);
+    } catch (logError) {
+      console.error('Failed to log database failure:', logError);
+    }
+  }
+
+  // Log authentication failure
+  async logAuthFailure(failure: {
+    type: string;
+    userId?: string;
+    ip?: string;
+    userAgent?: string;
+    metadata?: any;
+  }) {
+    try {
+      await this.metricsCollector.logSecurityEvent({
+        event: 'AUTHENTICATION_FAILURE',
+        severity: 'HIGH',
+        description: `Authentication failure: ${failure.type}`,
+        userId: failure.userId,
+        ip: failure.ip,
+        userAgent: failure.userAgent,
+        metadata: failure.metadata,
+      });
+
+      console.error(
+        `🔐 AUTH FAILURE: ${failure.type} - User: ${failure.userId || 'Unknown'}`,
+      );
+    } catch (error) {
+      console.error('Failed to log auth failure:', error);
+    }
+  }
+
+  // Log API critical failure
+  async logApiFailure(failure: {
+    method: string;
+    url: string;
+    statusCode: number;
+    error: string;
+    userId?: string;
+    ip?: string;
+  }) {
+    try {
+      // Only log if it's a server error (5xx) or critical client error
+      if (
+        failure.statusCode >= 500 ||
+        failure.statusCode === 401 ||
+        failure.statusCode === 403
+      ) {
+        await this.metricsCollector.logError({
+          errorType: 'API_FAILURE',
+          errorMessage: `API failure: ${failure.method} ${failure.url} - ${failure.error}`,
+          context: 'API',
+          userId: failure.userId,
+          metadata: {
+            method: failure.method,
+            url: failure.url,
+            statusCode: failure.statusCode,
+            ip: failure.ip,
+          },
+        });
+
+        if (failure.statusCode >= 500) {
+          await this.metricsCollector.logSecurityEvent({
+            event: 'API_SERVER_ERROR',
+            severity: 'HIGH',
+            description: `Server error: ${failure.method} ${failure.url}`,
+            userId: failure.userId,
+            ip: failure.ip,
+            metadata: {
+              statusCode: failure.statusCode,
+              error: failure.error,
+            },
+          });
+        }
+
+        console.error(
+          `🌐 API FAILURE: ${failure.method} ${failure.url} - ${failure.statusCode}`,
+        );
+      }
+    } catch (error) {
+      console.error('Failed to log API failure:', error);
+    }
+  }
+
+  // Get basic health status (without resource monitoring)
   async getHealthStatus() {
     try {
-      const metrics = await this.getSystemMetrics();
-
-      // Determine overall health status
-      let status = 'healthy';
-      const warnings = [];
-
-      if (metrics.cpuUsage > 90 || metrics.memoryUsage > 90) {
-        status = 'critical';
-      } else if (metrics.cpuUsage > 75 || metrics.memoryUsage > 80) {
-        status = 'warning';
-        if (metrics.cpuUsage > 75) warnings.push('High CPU usage');
-        if (metrics.memoryUsage > 80) warnings.push('High memory usage');
-      }
-
       return {
-        status,
+        status: 'healthy',
         timestamp: new Date(),
-        metrics,
-        warnings,
         version: process.env.npm_package_version || '1.0.0',
         environment: process.env.NODE_ENV || 'development',
         uptime: process.uptime(),
+        nodeVersion: process.version,
+        message: 'Application is running normally',
       };
     } catch (error) {
       console.error('Failed to get health status:', error);
+
+      // Log the health check failure as critical
+      await this.logCriticalError({
+        type: 'HEALTH_CHECK_FAILURE',
+        message: 'Health check endpoint failed',
+        stackTrace: error.stack,
+        context: 'HEALTH_CHECK',
+      });
 
       return {
         status: 'error',
@@ -264,9 +203,33 @@ export class SystemHealthService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
-  // Force a health check
-  async performHealthCheck() {
-    await this.collectSystemMetrics();
-    return this.getHealthStatus();
+  // Log startup failure
+  async logStartupFailure(error: {
+    service: string;
+    error: string;
+    stackTrace?: string;
+  }) {
+    try {
+      await this.metricsCollector.logError({
+        errorType: 'STARTUP_FAILURE',
+        errorMessage: `Failed to start service: ${error.service} - ${error.error}`,
+        stackTrace: error.stackTrace,
+        context: 'STARTUP',
+      });
+
+      await this.metricsCollector.logSecurityEvent({
+        event: 'SERVICE_STARTUP_FAILURE',
+        severity: 'CRITICAL',
+        description: `Service startup failure: ${error.service}`,
+        metadata: {
+          service: error.service,
+          error: error.error,
+        },
+      });
+
+      console.error(`🚀 STARTUP FAILURE: ${error.service} - ${error.error}`);
+    } catch (logError) {
+      console.error('Failed to log startup failure:', logError);
+    }
   }
 }

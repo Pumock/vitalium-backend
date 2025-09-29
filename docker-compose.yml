@@ -13,9 +13,10 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - JWT_SECRET=${JWT_SECRET}
+      - DATABASE_URL=postgresql://vitalium:vitalium123@postgres:5432/vitalium?schema=public
+      - JWT_SECRET=${JWT_SECRET:-your-super-secret-jwt-key-for-vitalium-backend}
       - LOG_LEVEL=info
+      - PORT=3000
     depends_on:
       postgres:
         condition: service_healthy

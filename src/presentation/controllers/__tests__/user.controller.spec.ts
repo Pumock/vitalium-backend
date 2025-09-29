@@ -81,14 +81,13 @@ describe('UserController', () => {
       // Arrange
       const createUserDto: CreateUserDTO = {
         email: 'test@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         phone: '+1234567890',
         avatar: 'https://example.com/avatar.jpg',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       createUserUseCase.execute.mockResolvedValue(mockUser);

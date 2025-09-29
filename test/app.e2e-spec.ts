@@ -15,10 +15,18 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/health (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
+      .get('/health')
       .expect(200)
-      .expect('Hello World!');
+      .expect((res) => {
+        expect(['healthy', 'error']).toContain(res.body.status);
+        expect(res.body.timestamp).toBeDefined();
+        expect(res.body.version).toBeDefined();
+        expect(res.body.environment).toBeDefined();
+        expect(res.body.uptime).toBeDefined();
+        expect(res.body.nodeVersion).toBeDefined();
+        expect(res.body.message).toBeDefined();
+      });
   });
 });
