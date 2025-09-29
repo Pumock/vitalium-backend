@@ -8,58 +8,22 @@ export class HealthController {
   constructor(private readonly systemHealthService: SystemHealthService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Get system health status' })
+  @ApiOperation({ summary: 'Get application health status' })
   @ApiResponse({
     status: 200,
-    description: 'System health status retrieved successfully',
+    description: 'Application health status retrieved successfully',
     schema: {
       type: 'object',
       properties: {
         status: {
           type: 'string',
-          enum: ['healthy', 'warning', 'critical', 'error'],
-          description: 'Overall system health status',
+          enum: ['healthy', 'error'],
+          description: 'Application health status',
         },
         timestamp: {
           type: 'string',
           format: 'date-time',
           description: 'Timestamp of the health check',
-        },
-        metrics: {
-          type: 'object',
-          properties: {
-            cpuUsage: {
-              type: 'number',
-              description: 'CPU usage percentage',
-            },
-            memoryUsage: {
-              type: 'number',
-              description: 'Memory usage percentage',
-            },
-            diskUsage: {
-              type: 'number',
-              description: 'Disk usage percentage',
-            },
-            responseTime: {
-              type: 'number',
-              description: 'Response time in milliseconds',
-            },
-            activeConnections: {
-              type: 'number',
-              description: 'Number of active connections',
-            },
-            errorRate: {
-              type: 'number',
-              description: 'Error rate percentage',
-            },
-          },
-        },
-        warnings: {
-          type: 'array',
-          items: {
-            type: 'string',
-          },
-          description: 'List of current warnings',
         },
         version: {
           type: 'string',
@@ -73,20 +37,18 @@ export class HealthController {
           type: 'number',
           description: 'Application uptime in seconds',
         },
+        nodeVersion: {
+          type: 'string',
+          description: 'Node.js version',
+        },
+        message: {
+          type: 'string',
+          description: 'Health status message',
+        },
       },
     },
   })
   async getHealth() {
     return this.systemHealthService.getHealthStatus();
-  }
-
-  @Get('check')
-  @ApiOperation({ summary: 'Perform immediate health check' })
-  @ApiResponse({
-    status: 200,
-    description: 'Health check performed successfully',
-  })
-  async performHealthCheck() {
-    return this.systemHealthService.performHealthCheck();
   }
 }

@@ -4,6 +4,7 @@ import { IUserRepository } from 'src/domain/interfaces/repositories/user.reposit
 import { CreateUserDTO } from 'src/presentation/dto/userDTO/create-user.dto';
 import { Role } from 'src/shared/enums/role.enum';
 import { ValidationException } from 'src/shared/execeptions/system/validation.exception';
+import { ConflictException } from 'src/shared/execeptions/system/conflict.exception';
 
 describe('CreateUserUseCase', () => {
   let useCase: CreateUserUseCase;
@@ -37,14 +38,14 @@ describe('CreateUserUseCase', () => {
       providers: [
         CreateUserUseCase,
         {
-          provide: 'UserRepository',
+          provide: 'IUserRepository',
           useValue: mockUserRepository,
         },
       ],
     }).compile();
 
     useCase = module.get<CreateUserUseCase>(CreateUserUseCase);
-    userRepository = module.get('UserRepository');
+    userRepository = module.get('IUserRepository');
   });
 
   describe('execute', () => {
@@ -52,14 +53,13 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const createUserDto: CreateUserDTO = {
         email: 'test@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         phone: '+1234567890',
         avatar: 'https://example.com/avatar.jpg',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       userRepository.findByEmail.mockResolvedValue(null);
@@ -80,19 +80,18 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const createUserDto: CreateUserDTO = {
         email: 'existing@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       userRepository.findByEmail.mockResolvedValue(mockUser);
 
       // Act & Assert
       await expect(useCase.execute(createUserDto)).rejects.toThrow(
-        ValidationException,
+        ConflictException,
       );
       expect(userRepository.findByEmail).toHaveBeenCalledWith(
         createUserDto.email,
@@ -104,12 +103,11 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const invalidCreateUserDto = {
         email: '', // Empty email
+        password: 'TestPassword123!',
         firstName: '',
         lastName: '',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       } as CreateUserDTO;
 
       // Act & Assert
@@ -123,12 +121,11 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const invalidEmailDto: CreateUserDTO = {
         email: 'invalid-email-format',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       // Act & Assert
@@ -142,12 +139,11 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const shortNameDto: CreateUserDTO = {
         email: 'test@example.com',
+        password: 'TestPassword123!',
         firstName: 'A', // Too short
         lastName: 'B', // Too short
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       // Act & Assert
@@ -161,12 +157,11 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const invalidRoleDto: CreateUserDTO = {
         email: 'test@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
         role: 'INVALID_ROLE' as Role,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       // Act & Assert
@@ -180,12 +175,11 @@ describe('CreateUserUseCase', () => {
       // Arrange
       const createUserDto: CreateUserDTO = {
         email: 'test@example.com',
+        password: 'TestPassword123!',
         firstName: 'John',
         lastName: 'Doe',
         isActive: true,
         role: Role.PATIENT,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        updatedAt: '2024-01-01T00:00:00.000Z',
       };
 
       userRepository.findByEmail.mockResolvedValue(null);

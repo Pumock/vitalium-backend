@@ -10,8 +10,8 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies
-RUN npm ci --only=production && npm cache clean --force
+# Install all dependencies (including dev dependencies for build)
+RUN npm install --legacy-peer-deps
 
 # Copy source code
 COPY . .
@@ -25,8 +25,8 @@ RUN npm run build
 # Stage 2: Production
 FROM node:18-alpine AS production
 
-# Install dumb-init for proper signal handling
-RUN apk add --no-cache dumb-init
+# Install dumb-init for proper signal handling and curl for healthchecks
+RUN apk add --no-cache dumb-init curl
 
 # Create app user
 RUN addgroup -g 1001 -S nodejs
@@ -39,15 +39,18 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install only production dependencies
-RUN npm ci --only=production && rm -rf ~/.npm
+RUN npm ci --only=production --legacy-peer-deps && rm -rf ~/.npm
 
 # Copy built application from builder stage
 COPY --from=builder --chown=nestjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nestjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nestjs:nodejs /app/prisma ./prisma
 
-# Create logs directory
-RUN mkdir -p logs && chown nestjs:nodejs logs
+# Copy healthcheck script
+COPY --chown=nestjs:nodejs healthcheck.js ./
+
+# Create logs and uploads directories
+RUN mkdir -p logs uploads && chown -R nestjs:nodejs logs uploads
 
 # Switch to non-root user
 USER nestjs
@@ -59,7 +62,7 @@ EXPOSE 3000
 ENV NODE_ENV=production
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
   CMD node healthcheck.js || exit 1
 
 # Start the application
