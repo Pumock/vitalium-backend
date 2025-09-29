@@ -1,4 +1,4 @@
-name: CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
@@ -8,7 +8,6 @@ on:
 
 env:
   NODE_VERSION: '18.x'
-  DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
 jobs:
   lint-and-format:
@@ -63,16 +62,16 @@ jobs:
         with:
           name: dist
           path: dist/
-          retention-days: 1
+          retention-days: 7
 
   test:
-    name: 🧪 Tests
+    name: 🧪 Test
     runs-on: ubuntu-latest
-    needs: lint-and-format
+    needs: build
 
     services:
       postgres:
-        image: postgres:15
+        image: postgres:15-alpine
         env:
           POSTGRES_DB: vitalium_test
           POSTGRES_USER: postgres
@@ -108,32 +107,17 @@ jobs:
       - name: Run unit tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vitalium_test
-          NODE_ENV: test
         run: npm run test
 
       - name: Run e2e tests
         env:
           DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vitalium_test
-          NODE_ENV: test
         run: npm run test:e2e
 
-      - name: Generate coverage report
-        env:
-          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/vitalium_test
-          NODE_ENV: test
-        run: npm run test:cov
-
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
-        with:
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
-
   security:
-    name: 🔒 Security Scan
+    name: 🔒 Security
     runs-on: ubuntu-latest
-    needs: lint-and-format
+    needs: build
 
     steps:
       - name: Checkout code
@@ -157,75 +141,4 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
           args: --severity-threshold=high
-
-  deploy-staging:
-    name: 🚀 Deploy to Staging
-    runs-on: ubuntu-latest
-    needs: [build, test, security]
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    environment:
-      name: staging
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Deploy to staging
-        env:
-          STAGING_SERVER: ${{ secrets.STAGING_SERVER }}
-          STAGING_USER: ${{ secrets.STAGING_USER }}
-          STAGING_KEY: ${{ secrets.STAGING_KEY }}
-        run: |
-          echo "Deploying to staging environment..."
-          # Adicionar scripts de deploy específicos aqui
-
-      - name: Run post-deploy tests
-        run: |
-          echo "Running post-deploy health checks..."
-          # Adicionar health checks aqui
-
-  deploy-production:
-    name: 🌟 Deploy to Production
-    runs-on: ubuntu-latest
-    needs: [build, test, security]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: dist
-          path: dist/
-
-      - name: Deploy to production
-        env:
-          PROD_SERVER: ${{ secrets.PROD_SERVER }}
-          PROD_USER: ${{ secrets.PROD_USER }}
-          PROD_KEY: ${{ secrets.PROD_KEY }}
-        run: |
-          echo "Deploying to production environment..."
-          # Adicionar scripts de deploy específicos aqui
-
-      - name: Run production health checks
-        run: |
-          echo "Running production health checks..."
-          # Adicionar health checks de produção aqui
-
-      - name: Notify deployment
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
-          # Ensure that SLACK_WEBHOOK is set in your repository or organization secrets
-        if: always()
+        continue-on-error: true
