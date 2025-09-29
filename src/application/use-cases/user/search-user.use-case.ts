@@ -7,7 +7,7 @@ import { UserNotFoundException } from 'src/shared/execeptions/user/user-not-foun
 @Injectable()
 export class SearchUserUseCase {
   constructor(
-    @Inject('UserRepository') private readonly userRepository: IUserRepository,
+    @Inject('IUserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
   // Buscar usuário por ID

@@ -22,7 +22,7 @@ export class UserDataRepository implements IUserRepository {
       },
     });
 
-    return createdUser;
+    return createdUser as any;
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -34,7 +34,7 @@ export class UserDataRepository implements IUserRepository {
       return null;
     }
 
-    return user;
+    return user as any;
   }
 
   async findById(id: string): Promise<User | null> {
@@ -46,7 +46,7 @@ export class UserDataRepository implements IUserRepository {
       return null;
     }
 
-    return user;
+    return user as any;
   }
 
   async findAll(): Promise<User[]> {
@@ -54,7 +54,7 @@ export class UserDataRepository implements IUserRepository {
       orderBy: { createdAt: 'desc' },
     });
 
-    return users;
+    return users as any;
   }
 
   async update(id: string, updateData: Partial<User>): Promise<User> {
@@ -72,7 +72,7 @@ export class UserDataRepository implements IUserRepository {
       },
     });
 
-    return updatedUser;
+    return updatedUser as any;
   }
 
   async delete(id: string): Promise<void> {

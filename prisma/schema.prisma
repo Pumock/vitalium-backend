@@ -33,6 +33,14 @@ model User {
   doctor      Doctor?
   nurse       Nurse?
   admin       Admin?
+  
+  // Logging Relations
+  applicationLogs     ApplicationLog[]
+  requestLogs         RequestLog[]
+  securityLogs        SecurityLog[]
+  databaseLogs        DatabaseLog[]
+  businessEventLogs   BusinessEventLog[]
+  errorLogs           ErrorLog[]
 
   @@map("users")
 }
@@ -467,4 +475,220 @@ enum AdmissionStatus {
   ACTIVE
   DISCHARGED
   TRANSFERRED
+}
+
+// ================================
+// MONITORING & LOGGING TABLES
+// ================================
+
+// Application Logs
+model ApplicationLog {
+  id          String    @id @default(cuid())
+  level       LogLevel
+  message     String
+  context     String?
+  trace       String?
+  meta        Json?
+  timestamp   DateTime  @default(now())
+  service     String    @default("vitalium-backend")
+  environment String    @default("development")
+  userId      String?
+  sessionId   String?
+  requestId   String?
+  
+  // Foreign keys
+  user        User?     @relation(fields: [userId], references: [id])
+  
+  @@map("application_logs")
+  @@index([level])
+  @@index([timestamp])
+  @@index([userId])
+  @@index([context])
+}
+
+// HTTP Request Logs
+model RequestLog {
+  id            String    @id @default(cuid())
+  method        String
+  url           String
+  statusCode    Int
+  duration      Int       // in milliseconds
+  ip            String?
+  userAgent     String?
+  userId        String?
+  requestId     String    @unique
+  requestBody   Json?
+  responseBody  Json?
+  headers       Json?
+  timestamp     DateTime  @default(now())
+  
+  // Foreign keys
+  user          User?     @relation(fields: [userId], references: [id])
+  
+  @@map("request_logs")
+  @@index([method])
+  @@index([statusCode])
+  @@index([timestamp])
+  @@index([userId])
+  @@index([duration])
+}
+
+// Security Audit Logs
+model SecurityLog {
+  id          String          @id @default(cuid())
+  event       String
+  severity    SecurityLevel
+  description String?
+  userId      String?
+  ip          String?
+  userAgent   String?
+  metadata    Json?
+  timestamp   DateTime        @default(now())
+  
+  // Foreign keys
+  user        User?           @relation(fields: [userId], references: [id])
+  
+  @@map("security_logs")
+  @@index([event])
+  @@index([severity])
+  @@index([timestamp])
+  @@index([userId])
+}
+
+// Performance Metrics
+model PerformanceMetric {
+  id            String    @id @default(cuid())
+  operation     String
+  duration      Float     // in milliseconds
+  metadata      Json?
+  timestamp     DateTime  @default(now())
+  service       String    @default("vitalium-backend")
+  environment   String    @default("development")
+  
+  @@map("performance_metrics")
+  @@index([operation])
+  @@index([timestamp])
+  @@index([duration])
+}
+
+// Database Operation Logs
+model DatabaseLog {
+  id          String    @id @default(cuid())
+  operation   String    // SELECT, INSERT, UPDATE, DELETE
+  table       String
+  duration    Float     // in milliseconds
+  queryType   String?   // CRUD operation type
+  userId      String?
+  metadata    Json?
+  timestamp   DateTime  @default(now())
+  
+  // Foreign keys
+  user        User?     @relation(fields: [userId], references: [id])
+  
+  @@map("database_logs")
+  @@index([operation])
+  @@index([table])
+  @@index([timestamp])
+  @@index([userId])
+  @@index([duration])
+}
+
+// Business Event Logs
+model BusinessEventLog {
+  id          String    @id @default(cuid())
+  event       String
+  entity      String
+  entityId    String
+  userId      String?
+  metadata    Json?
+  timestamp   DateTime  @default(now())
+  
+  // Foreign keys
+  user        User?     @relation(fields: [userId], references: [id])
+  
+  @@map("business_event_logs")
+  @@index([event])
+  @@index([entity])
+  @@index([entityId])
+  @@index([timestamp])
+  @@index([userId])
+}
+
+// System Health Metrics
+model SystemHealthMetric {
+  id                String    @id @default(cuid())
+  cpuUsage          Float?
+  memoryUsage       Float?
+  diskUsage         Float?
+  responseTime      Float?
+  activeConnections Int?
+  errorRate         Float?
+  metadata          Json?
+  timestamp         DateTime  @default(now())
+  
+  @@map("system_health_metrics")
+  @@index([timestamp])
+}
+
+// API Usage Statistics
+model ApiUsageStatistic {
+  id            String    @id @default(cuid())
+  endpoint      String
+  method        String
+  count         Int       @default(1)
+  avgDuration   Float?
+  minDuration   Float?
+  maxDuration   Float?
+  errorCount    Int       @default(0)
+  date          DateTime  @db.Date
+  hour          Int?      // 0-23 for hourly stats
+  
+  @@map("api_usage_statistics")
+  @@unique([endpoint, method, date, hour])
+  @@index([endpoint])
+  @@index([date])
+}
+
+// Error Tracking
+model ErrorLog {
+  id            String    @id @default(cuid())
+  errorType     String
+  errorMessage  String
+  stackTrace    String?
+  userId        String?
+  requestId     String?
+  context       String?
+  metadata      Json?
+  timestamp     DateTime  @default(now())
+  resolved      Boolean   @default(false)
+  resolvedAt    DateTime?
+  resolvedBy    String?
+  
+  // Foreign keys
+  user          User?     @relation(fields: [userId], references: [id])
+  
+  @@map("error_logs")
+  @@index([errorType])
+  @@index([timestamp])
+  @@index([userId])
+  @@index([resolved])
+}
+
+// ================================
+// ENUMS FOR LOGGING
+// ================================
+
+enum LogLevel {
+  ERROR
+  WARN
+  INFO
+  DEBUG
+  VERBOSE
+}
+
+enum SecurityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
 }

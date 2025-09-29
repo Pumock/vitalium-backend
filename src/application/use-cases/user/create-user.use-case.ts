@@ -7,11 +7,12 @@ import {
 } from 'src/shared/execeptions/system/validation.exception';
 import { DatabaseException } from 'src/shared/execeptions/system/database.exception';
 import { IUserRepository } from 'src/domain/interfaces/repositories/user.repository.interface';
+import { Role } from 'src/shared/enums/role.enum';
 
 @Injectable()
 export class CreateUserUseCase {
   constructor(
-    @Inject('UserRepository') private readonly userRepository: IUserRepository,
+    @Inject('IUserRepository') private readonly userRepository: IUserRepository,
   ) {}
 
   async execute(createUserDTO: CreateUserDTO): Promise<User> {
@@ -22,6 +23,12 @@ export class CreateUserUseCase {
         field: 'email',
         value: createUserDTO.email,
         constraints: ['Email é obrigatório'],
+      });
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(createUserDTO.email)) {
+      errors.push({
+        field: 'email',
+        value: createUserDTO.email,
+        constraints: ['Formato de email inválido'],
       });
     }
 
@@ -49,6 +56,12 @@ export class CreateUserUseCase {
         field: 'role',
         value: createUserDTO.role,
         constraints: ['Role é obrigatório'],
+      });
+    } else if (!Object.values(Role).includes(createUserDTO.role as Role)) {
+      errors.push({
+        field: 'role',
+        value: createUserDTO.role,
+        constraints: ['Role inválido'],
       });
     }
 

@@ -1,0 +1,84 @@
+name: Dependencies Monitor
+
+on:
+  schedule:
+    # Roda todos os dias às 9:00 UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  dependency-check:
+    name: 🔍 Dependency Security Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for outdated packages
+        run: npm outdated || true
+
+      - name: Security audit
+        run: npm audit --audit-level moderate || true
+
+      - name: Generate dependency report
+        run: |
+          echo "# Dependency Report - $(date)" > dependency-report.md
+          echo "" >> dependency-report.md
+          echo "## Outdated Packages" >> dependency-report.md
+          npm outdated --json | jq -r '. | to_entries[] | "- \(.key): current \(.value.current), wanted \(.value.wanted), latest \(.value.latest)"' >> dependency-report.md || echo "No outdated packages" >> dependency-report.md
+          echo "" >> dependency-report.md
+          echo "## Security Audit" >> dependency-report.md
+          npm audit --json | jq -r '.advisories | to_entries[] | "- \(.value.title): \(.value.severity) severity"' >> dependency-report.md || echo "No security issues found" >> dependency-report.md
+
+      - name: Upload dependency report
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report
+          path: dependency-report.md
+
+  update-dependencies:
+    name: 🔄 Auto Update Dependencies
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+          cache: 'npm'
+
+      - name: Update patch and minor versions
+        run: |
+          npm update
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: 'chore: update dependencies'
+          title: 'chore: automated dependency updates'
+          body: |
+            Automated dependency updates
+
+            - Updated patch and minor versions
+            - Security vulnerabilities addressed
+
+            Please review the changes before merging.
+          branch: automated/dependency-updates
+          delete-branch: true
