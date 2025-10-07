@@ -151,7 +151,7 @@ export class MetricsCollectorService {
           errorType: data.errorType,
           errorMessage: data.errorMessage,
           stackTrace: data.stackTrace,
-          userId: data.userId,
+          userId: data.userId || null, // Permitir null para evitar constraint error
           context: data.context,
           metadata: data.metadata,
         },
