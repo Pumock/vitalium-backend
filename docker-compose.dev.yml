@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Vitalium Backend Application - Development Mode
   vitalium-backend-dev:
