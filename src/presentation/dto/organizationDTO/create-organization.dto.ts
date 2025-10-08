@@ -1,4 +1,3 @@
-// src/presentation/dto/hospitalDTO/create-hospital-with-clinic.dto.ts
 import { IsString, IsEmail, ValidateNested } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';

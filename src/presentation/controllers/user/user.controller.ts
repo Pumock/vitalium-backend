@@ -13,11 +13,11 @@ import { plainToInstance } from 'class-transformer';
 import { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
 import { UserResponseDTO } from '../../dto/userDTO/response/user-response.dto';
 import { UpdateUserDTO } from '../../dto/userDTO/update-user.dtp';
-import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
-import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
-import { SearchUserUseCase } from 'src/application/use-cases/user/search-user.use-case';
-import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
-import { ApiUserOperations } from 'src/shared/swagger/decorators';
+import { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
+import { SearchUserUseCase } from '../../../application/use-cases/user/search-user.use-case';
+import { UpdateUserUseCase } from '../../../application/use-cases/user/update-user.use-case';
+import { DeleteUserUseCase } from '../../../application/use-cases/user/delete-user.use-case';
+import { ApiUserOperations } from '../../../shared/swagger/decorators';
 
 @Controller('users')
 export class UserController {

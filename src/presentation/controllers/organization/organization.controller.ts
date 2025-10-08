@@ -22,15 +22,15 @@ import {
   ResponseHospitalDTO,
   ResponseOrganizationDTO,
 } from '../../dto/organizationDTO/response/organization-response.dto';
-import { CreateHospitalUseCase } from 'src/application/use-cases/organization/create-hospital.use-case';
-import { CreateClinicUseCase } from 'src/application/use-cases/organization/create-clinic.use-case';
-import { DeleteHospitalUseCase } from 'src/application/use-cases/organization/delete-hospital.use-case';
-import { DeleteClinicUseCase } from 'src/application/use-cases/organization/delete-clinic.use-case';
-import { CreateOrganizationUseCase } from 'src/application/use-cases/organization/create-organization.use-case';
-import { SearchHospitalUseCase } from 'src/application/use-cases/organization/search-hospital.use-case';
-import { UpdateHospitalUseCase } from 'src/application/use-cases/organization/update-hospital.use-case';
-import { SearchClinicUseCase } from 'src/application/use-cases/organization/search-clinic.use-case';
-import { UpdateClinicUseCase } from 'src/application/use-cases/organization/update-clinic.use-case';
+import { CreateHospitalUseCase } from '../../../application/use-cases/organization/create-hospital.use-case';
+import { CreateClinicUseCase } from '../../../application/use-cases/organization/create-clinic.use-case';
+import { DeleteHospitalUseCase } from '../../../application/use-cases/organization/delete-hospital.use-case';
+import { DeleteClinicUseCase } from '../../../application/use-cases/organization/delete-clinic.use-case';
+import { CreateOrganizationUseCase } from '../../../application/use-cases/organization/create-organization.use-case';
+import { SearchHospitalUseCase } from '../../../application/use-cases/organization/search-hospital.use-case';
+import { UpdateHospitalUseCase } from '../../../application/use-cases/organization/update-hospital.use-case';
+import { SearchClinicUseCase } from '../../../application/use-cases/organization/search-clinic.use-case';
+import { UpdateClinicUseCase } from '../../../application/use-cases/organization/update-clinic.use-case';
 
 @Controller('organizations')
 export class OrganizationController {
