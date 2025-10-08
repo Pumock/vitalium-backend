@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from '../user.controller';
+import { UserController } from '../user/user.controller';
 import { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
 import { SearchUserUseCase } from '../../../application/use-cases/user/search-user.use-case';
 import { UpdateUserUseCase } from '../../../application/use-cases/user/update-user.use-case';
