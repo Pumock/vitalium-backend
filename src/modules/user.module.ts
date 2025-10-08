@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
-import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
-import { SearchUserUseCase } from 'src/application/use-cases/user/search-user.use-case';
-import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
-import { PrismaModule } from 'src/infrastructure/database/prisma.module';
-import { UserDataRepository } from 'src/infrastructure/repositories/user-data.repository';
-import { UserController } from 'src/presentation/controllers/user.controller';
+import { CreateUserUseCase } from '../application/use-cases/user/create-user.use-case';
+import { SearchUserUseCase } from '../application/use-cases/user/search-user.use-case';
+import { UpdateUserUseCase } from '../application/use-cases/user/update-user.use-case';
+import { DeleteUserUseCase } from '../application/use-cases/user/delete-user.use-case';
+import { UserDataRepository } from '../infrastructure/repositories/user/user-data.repository';
+import { UserController } from '../presentation/controllers/user/user.controller';
+import { PrismaModule } from '../infrastructure/database/prisma.module';
 
 @Module({
   imports: [PrismaModule],

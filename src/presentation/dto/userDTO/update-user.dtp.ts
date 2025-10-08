@@ -6,13 +6,12 @@ import {
   IsOptional,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { Admin } from 'src/infrastructure/database/models/admin.models';
-import { Caregiver } from 'src/infrastructure/database/models/caregiver.models';
-import { Doctor } from 'src/infrastructure/database/models/doctor.models';
-import { Nurse } from 'src/infrastructure/database/models/nurse.models';
-import { Patient } from 'src/infrastructure/database/models/patient.models';
-import { Role } from 'src/shared/enums';
-
+import { Role } from '../../../shared/enums';
+import { Admin } from '../../../infrastructure/database/models/admin.models';
+import { Patient } from '../../../infrastructure/database/models/patient.models';
+import { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import { Nurse } from '../../../infrastructure/database/models/nurse.models';
+import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
 export class UpdateUserDTO {
   @ApiPropertyOptional({
     description: 'Email único do usuário',

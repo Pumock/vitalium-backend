@@ -1,14 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { User } from 'src/infrastructure/database/models/user.models';
-import { CreateUserDTO } from 'src/presentation/dto/userDTO/create-user.dto';
+import { ConflictException, Inject, Injectable } from '@nestjs/common';
+import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
+import { User } from '../../../infrastructure/database/models/user.models';
+import { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import {
-  ValidationException,
   FieldError,
-} from 'src/shared/execeptions/system/validation.exception';
-import { DatabaseException } from 'src/shared/execeptions/system/database.exception';
-import { ConflictException } from 'src/shared/execeptions/system/conflict.exception';
-import { IUserRepository } from 'src/domain/interfaces/repositories/user.repository.interface';
-import { Role } from 'src/shared/enums/role.enum';
+  ValidationException,
+} from '../../../shared/execeptions/system/validation.exception';
+import { Role } from '../../../shared/enums';
+import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -102,11 +101,7 @@ export class CreateUserUseCase {
     );
 
     if (existingUser) {
-      throw new ConflictException(
-        'Email já está em uso',
-        'email',
-        createUserDTO.email,
-      );
+      throw new ConflictException('Email já está em uso', createUserDTO.email);
     }
 
     try {
