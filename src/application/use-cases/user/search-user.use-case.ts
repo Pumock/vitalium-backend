@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from 'src/infrastructure/database/models/user.models';
-import { IUserRepository } from 'src/domain/interfaces/repositories/user.repository.interface';
-import { ValidationException } from 'src/shared/execeptions/system/validation.exception';
-import { UserNotFoundException } from 'src/shared/execeptions/user/user-not-found.exception';
+import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
+import { User } from '../../../infrastructure/database/models/user.models';
+import { ValidationException } from '../../../shared/execeptions/system/validation.exception';
+import { UserNotFoundException } from '../../../shared/execeptions/user/user-not-found.exception';
 
 @Injectable()
 export class SearchUserUseCase {

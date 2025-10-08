@@ -10,9 +10,9 @@ import {
   Post,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { CreateUserDTO } from '../dto/userDTO/create-user.dto';
-import { UserResponseDTO } from '../dto/userDTO/response/user-response.dto';
-import { UpdateUserDTO } from '../dto/userDTO/update-user.dtp';
+import { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
+import { UserResponseDTO } from '../../dto/userDTO/response/user-response.dto';
+import { UpdateUserDTO } from '../../dto/userDTO/update-user.dtp';
 import { CreateUserUseCase } from 'src/application/use-cases/user/create-user.use-case';
 import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.use-case';
 import { SearchUserUseCase } from 'src/application/use-cases/user/search-user.use-case';

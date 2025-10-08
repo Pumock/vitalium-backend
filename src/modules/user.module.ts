@@ -4,8 +4,8 @@ import { DeleteUserUseCase } from 'src/application/use-cases/user/delete-user.us
 import { SearchUserUseCase } from 'src/application/use-cases/user/search-user.use-case';
 import { UpdateUserUseCase } from 'src/application/use-cases/user/update-user.use-case';
 import { PrismaModule } from 'src/infrastructure/database/prisma.module';
-import { UserDataRepository } from 'src/infrastructure/repositories/user-data.repository';
-import { UserController } from 'src/presentation/controllers/user.controller';
+import { UserDataRepository } from 'src/infrastructure/repositories/user/user-data.repository';
+import { UserController } from 'src/presentation/controllers/user/user.controller';
 
 @Module({
   imports: [PrismaModule],

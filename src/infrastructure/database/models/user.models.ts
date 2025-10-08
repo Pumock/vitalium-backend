@@ -1,4 +1,4 @@
-import { Role } from 'src/shared/enums/role.enum';
+import { Role } from '../../../shared/enums/role.enum';
 import { Caregiver } from './caregiver.models';
 import { Nurse } from './nurse.models';
 import { Doctor } from './doctor.models';

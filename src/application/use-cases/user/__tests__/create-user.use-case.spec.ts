@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateUserUseCase } from '../create-user.use-case';
-import { IUserRepository } from 'src/domain/interfaces/repositories/user.repository.interface';
+import { IUserRepository } from 'src/domain/interfaces/repositories/user/user.repository.interface';
 import { CreateUserDTO } from 'src/presentation/dto/userDTO/create-user.dto';
 import { Role } from 'src/shared/enums/role.enum';
 import { ValidationException } from 'src/shared/execeptions/system/validation.exception';
