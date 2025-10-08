@@ -2,16 +2,17 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   ValidationException,
   FieldError,
-} from 'src/shared/execeptions/system/validation.exception';
-import { DatabaseException } from 'src/shared/execeptions/system/database.exception';
-import { Doctor } from 'src/infrastructure/database/models/doctor.models';
-import { CreateDoctorDTO } from 'src/presentation/dto/doctorDTO/create-doctor.dto';
-import { IDoctorRepository } from 'src/domain/interfaces/repositories/doctor/doctor.repository.interface';
+} from '../../../shared/execeptions/system/validation.exception';
+import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
+import { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 
 @Injectable()
 export class CreateDoctorUseCase {
   constructor(
-    @Inject('IDoctorRepository') private readonly doctorRepository: IDoctorRepository,
+    @Inject('IDoctorRepository')
+    private readonly doctorRepository: IDoctorRepository,
   ) {}
 
   async execute(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {

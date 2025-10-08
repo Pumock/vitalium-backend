@@ -1,12 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ValidationException } from 'src/shared/execeptions/system/validation.exception';
-import { Doctor } from 'src/infrastructure/database/models/doctor.models';
-import { IDoctorRepository } from 'src/domain/interfaces/repositories/doctor/doctor.repository.interface';
+import { ValidationException } from '../../../shared/execeptions/system/validation.exception';
+import { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
 @Injectable()
 export class SearchDoctorUseCase {
   constructor(
-    @Inject('IDoctorRepository') private readonly DoctorRepository: IDoctorRepository,
+    @Inject('IDoctorRepository')
+    private readonly DoctorRepository: IDoctorRepository,
   ) {}
 
   // Buscar usuário por ID

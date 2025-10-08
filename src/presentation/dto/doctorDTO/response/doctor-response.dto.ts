@@ -1,6 +1,8 @@
-import { Clinic } from "src/infrastructure/database/models/clinic.models";
-import { Hospital } from "src/infrastructure/database/models/hospital.models";
-import { User } from "src/infrastructure/database/models/user.models";
+import { Exclude, Expose } from 'class-transformer';
+import { Clinic } from '../../../../infrastructure/database/models/clinic.models';
+import { Hospital } from '../../../../infrastructure/database/models/hospital.models';
+import { User } from '../../../../infrastructure/database/models/user.models';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class DoctorResponseDTO {
   @ApiProperty({
@@ -16,7 +18,7 @@ export class DoctorResponseDTO {
     default: true,
   })
   @Expose()
-  crmState: Boolean;
+  crmState: boolean;
 
   @ApiProperty({
     description: 'Preço da consulta medica',

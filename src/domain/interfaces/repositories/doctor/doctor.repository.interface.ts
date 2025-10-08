@@ -1,6 +1,7 @@
-import { Doctor } from 'src/infrastructure/database/models/doctor.models';
-import { CreateDoctorDTO } from 'src/presentation/dto/doctorDTO/create-doctor.dto';
-import { UpdateDoctorDTO } from 'src/presentation/dto/doctorDTO/update-doctor.dto';
+import { Doctor } from '@prisma/client';
+import { CreateDoctorDTO } from '../../../../presentation/dto/doctorDTO/create-doctor.dto';
+import { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-doctor.dto';
+
 export interface IDoctorRepository {
   // Métodos básicos
   create(createDoctorDTO: CreateDoctorDTO): Promise<Doctor>;

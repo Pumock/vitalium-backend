@@ -1,6 +1,8 @@
-import { Clinic } from "src/infrastructure/database/models/clinic.models";
-import { Hospital } from "src/infrastructure/database/models/hospital.models";
-import { User } from "src/infrastructure/database/models/user.models";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import { User } from '../../../infrastructure/database/models/user.models';
+import { Hospital } from '../../../infrastructure/database/models/hospital.models';
+import { Clinic } from '../../../infrastructure/database/models/clinic.models';
 
 export class CreateDoctorDTO {
   @ApiProperty({
@@ -16,7 +18,7 @@ export class CreateDoctorDTO {
     default: true,
   })
   @IsBoolean()
-  crmState: Boolean;
+  crmState: boolean;
 
   @ApiProperty({
     description: 'Preço da consulta medica',

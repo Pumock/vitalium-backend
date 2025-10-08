@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { DatabaseException } from 'src/shared/execeptions/system/database.exception';
-import { IDoctorRepository } from 'src/domain/interfaces/repositories/doctor/doctor.repository.interface';
+import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
+import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
 @Injectable()
 export class DeleteDoctorUseCase {
   constructor(
-    @Inject('IDoctorRepository') private readonly doctorRepository: IDoctorRepository,
+    @Inject('IDoctorRepository')
+    private readonly doctorRepository: IDoctorRepository,
   ) {}
 
   async execute(id: string): Promise<void> {
