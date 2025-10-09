@@ -1,10 +1,17 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import { Clinic } from '../../../../infrastructure/database/models/clinic.models';
 import { Hospital } from '../../../../infrastructure/database/models/hospital.models';
 import { User } from '../../../../infrastructure/database/models/user.models';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DoctorResponseDTO {
+  @ApiProperty({
+    description: 'ID único do médico',
+    example: 'doctor-uuid-123',
+  })
+  @Expose()
+  id: string;
+
   @ApiProperty({
     description: 'Crm único do usuário',
     example: '9898989898',
@@ -32,7 +39,7 @@ export class DoctorResponseDTO {
     example: true,
     default: true,
   })
-  @Exclude()
+  @Expose()
   isActive: boolean;
 
   @ApiProperty({
@@ -50,8 +57,15 @@ export class DoctorResponseDTO {
   updatedAt: string;
 
   // Relacionamentos
-
+  @ApiProperty({
+    description: 'Usuário associado ao médico',
+  })
+  @Expose()
   user?: User;
+
+  @Expose()
   hospital?: Hospital;
+
+  @Expose()
   clinic?: Clinic;
 }

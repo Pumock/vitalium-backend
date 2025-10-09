@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
   Patch,
   Post,
@@ -96,6 +97,7 @@ export class OrganizationController {
   }
 
   @Delete('hospitals/:id')
+  @HttpCode(204)
   async deleteHospital(@Param('id') id: string): Promise<void> {
     return this.deleteHospitalUseCase.execute(id);
   }
@@ -133,6 +135,7 @@ export class OrganizationController {
   }
 
   @Delete('clinics/:id')
+  @HttpCode(204)
   async deleteClinic(@Param('id') id: string): Promise<void> {
     return this.deleteClinicUseCase.execute(id);
   }

@@ -7,6 +7,7 @@ import {
   FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
+import { ClinicNotFoundException } from '../../../shared/execeptions/organizations/clinic-not-found.exception';
 
 @Injectable()
 export class UpdateClinicUseCase {
@@ -31,8 +32,28 @@ export class UpdateClinicUseCase {
         constraints: ['Dados para atualização são obrigatórios'],
       });
     }
+
+    // Validação customizada para nome com apenas espaços
+    if (
+      updateClinicDTO.name !== undefined &&
+      updateClinicDTO.name.trim() === ''
+    ) {
+      errors.push({
+        field: 'name',
+        value: updateClinicDTO.name,
+        constraints: ['Nome é obrigatório'],
+      });
+    }
+
     if (errors.length > 0) {
       throw new ValidationException(errors);
+    }
+
+    const clinic = await this.clinicRepository.findById(id);
+    if (!clinic) {
+      throw new ClinicNotFoundException(
+        `Nenhuma clínica foi encontrada com os critérios: ID: ${id}`,
+      );
     }
 
     try {

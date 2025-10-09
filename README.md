@@ -17,7 +17,53 @@
 <a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
   <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
     <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+    <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+</p>
+
+## 🚀 Desenvolvimento Rápido
+
+### Comandos Simplificados:
+
+```bash
+# ⚡ PRIMEIRA VEZ (faz o build inicial)
+npm run dev:setup
+
+# 🚀 Desenvolvimento diário (RÁPIDO - sem rebuild)
+npm run dev
+
+# 🔨 Rebuild apenas quando necessário (mudanças no Dockerfile/deps)
+npm run dev:build
+
+# 📱 Outros comandos úteis
+npm run dev:detached  # Em background
+npm run dev:logs      # Ver logs em tempo real
+npm run dev:restart   # Reiniciar apenas o backend
+npm run dev:stop      # Parar tudo
+npm run dev:clean     # Limpar volumes e containers
+```
+
+### 💡 Fluxo Recomendado:
+
+1. **Primeira vez**: `npm run dev:setup`
+2. **Desenvolvimento**: `npm run dev` (super rápido!)
+3. **Só rebuild se**: mudou package.json, Dockerfile, etc.
+
+### URLs Disponíveis:
+
+- **API**: http://localhost:3000
+- **Health Check**: http://localhost:3000/health
+- **Prisma Studio**: http://localhost:5555
+- **Swagger**: http://localhost:3000/api
+
+### Features:
+
+- ✅ Hot Reload automático
+- ✅ PostgreSQL no Docker
+- ✅ Prisma Studio
+- ✅ Logs em tempo real
+- ✅ Migrações automáticas
+
+<!--body-->
 </p>
   <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
   [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
@@ -33,6 +79,7 @@ $ npm install
 ```
 
 ## Running the app
+
 # 🚀 Vitalium Backend - Guia de Desenvolvimento
 
 ## ⚡ **INÍCIO RÁPIDO - UM COMANDO SÓ**

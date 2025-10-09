@@ -6,7 +6,6 @@ services:
       dockerfile: Dockerfile.dev
       target: development
     container_name: vitalium-backend-dev
-    restart: unless-stopped
     ports:
       - '3000:3000'
       - '9229:9229' # Debug port
@@ -21,21 +20,20 @@ services:
       postgres:
         condition: service_healthy
     volumes:
-      - ./src:/app/src
-      - ./prisma:/app/prisma
-      - ./test:/app/test
+      - ./src:/app/src:cached
+      - ./prisma:/app/prisma:cached
+      - ./test:/app/test:cached
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-      - /app/node_modules # Prevent overwriting node_modules
+      - ./package.json:/app/package.json:ro
+      - ./tsconfig.json:/app/tsconfig.json:ro
+      - ./nest-cli.json:/app/nest-cli.json:ro
+      - node_modules_cache:/app/node_modules
     networks:
       - vitalium-network
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    command: npm run start:dev
+    tty: true
+    stdin_open: true
+    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
 
   # PostgreSQL Database
   postgres:
@@ -81,6 +79,8 @@ services:
 
 volumes:
   postgres_dev_data:
+    driver: local
+  node_modules_cache:
     driver: local
 
 networks:

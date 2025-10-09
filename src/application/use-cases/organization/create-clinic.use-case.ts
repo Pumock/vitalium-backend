@@ -17,7 +17,7 @@ export class CreateClinicUseCase {
   async execute(createClinicDTO: CreateClinicDTO): Promise<Clinic> {
     const errors: FieldError[] = [];
 
-    if (!createClinicDTO.name) {
+    if (!createClinicDTO.name || createClinicDTO.name.trim() === '') {
       errors.push({
         field: 'name',
         value: createClinicDTO.name,

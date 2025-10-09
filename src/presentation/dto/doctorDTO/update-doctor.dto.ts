@@ -39,8 +39,7 @@ export class UpdateDoctorDTO {
   @IsBoolean()
   isActive?: boolean;
 
-  // Relacionamentos
-
+  // Relacionamentos - podem ser atualizados
   user?: User;
   hospital?: Hospital;
   clinic?: Clinic;

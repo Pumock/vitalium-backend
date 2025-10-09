@@ -23,13 +23,16 @@ export class DeleteClinicUseCase {
         constraints: ['ID é obrigatório'],
       });
     }
-    const clinic = await this.clinicRepository.findById(id);
-    if (!clinic) {
-      throw new ClinicNotFoundException(`ID: ${id}`);
-    }
 
     if (errors.length > 0) {
       throw new ValidationException(errors);
+    }
+
+    const clinic = await this.clinicRepository.findById(id);
+    if (!clinic) {
+      throw new ClinicNotFoundException(
+        `Nenhuma clínica foi encontrada com os critérios: ID: ${id}`,
+      );
     }
 
     try {
@@ -37,6 +40,5 @@ export class DeleteClinicUseCase {
     } catch (error) {
       throw new DatabaseException('Erro ao deletar a clínica', error);
     }
-    return await this.clinicRepository.delete(id);
   }
 }

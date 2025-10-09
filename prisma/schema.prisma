@@ -118,9 +118,9 @@ model Specialization {
 // Healthcare Professionals
 model Doctor {
   id            String  @id @default(cuid())
-  userId        String  @unique
+  userId        String @unique
   crm           String  @unique
-  crmState      String
+  crmState      Boolean
   hospitalId    String?
   clinicId      String?
   consultationPrice Decimal?

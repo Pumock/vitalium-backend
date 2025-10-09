@@ -1,4 +1,4 @@
-import { Doctor } from '@prisma/client';
+import { Doctor } from '../../../../infrastructure/database/models/doctor.models';
 import { CreateDoctorDTO } from '../../../../presentation/dto/doctorDTO/create-doctor.dto';
 import { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-doctor.dto';
 

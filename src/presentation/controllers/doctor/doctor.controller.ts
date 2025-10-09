@@ -18,7 +18,7 @@ import { SearchDoctorUseCase } from '../../../application/use-cases/doctor/searc
 import { UpdateDoctorUseCase } from '../../../application/use-cases/doctor/update-doctor.use-case';
 import { DeleteDoctorUseCase } from '../../../application/use-cases/doctor/delete-doctor.use-case';
 
-@Controller('users')
+@Controller('doctors')
 export class DoctorController {
   constructor(
     private readonly createDoctorUseCase: CreateDoctorUseCase,

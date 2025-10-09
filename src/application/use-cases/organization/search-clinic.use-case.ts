@@ -6,6 +6,7 @@ import {
   FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
+import { ClinicNotFoundException } from '../../../shared/execeptions/organizations/clinic-not-found.exception';
 
 @Injectable()
 export class SearchClinicUseCase {
@@ -30,8 +31,18 @@ export class SearchClinicUseCase {
 
     try {
       const clinic = await this.clinicRepository.findById(id);
+
+      if (!clinic) {
+        throw new ClinicNotFoundException(
+          `Nenhuma clínica foi encontrada com os critérios: ID: ${id}`,
+        );
+      }
+
       return clinic;
     } catch (error) {
+      if (error instanceof ClinicNotFoundException) {
+        throw error;
+      }
       throw new DatabaseException('Erro ao buscar a clínica', error);
     }
   }

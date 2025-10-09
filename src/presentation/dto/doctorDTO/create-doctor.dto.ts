@@ -36,8 +36,14 @@ export class CreateDoctorDTO {
   @IsBoolean()
   isActive: boolean;
 
-  // Relacionamentos
+  @ApiProperty({
+    description: 'ID do usuário a ser associado ao médico',
+    example: 'user-uuid-123',
+  })
+  @IsString()
+  userId: string;
 
+  // Relacionamentos - devem ser fornecidos para criar o médico
   user?: User;
   hospital?: Hospital;
   clinic?: Clinic;

@@ -35,15 +35,28 @@ export class UpdateHospitalUseCase {
         constraints: ['Dados para atualização são obrigatórios'],
       });
     }
+
+    // Validação customizada para nome com apenas espaços
+    if (
+      updateHospitalDTO.name !== undefined &&
+      updateHospitalDTO.name.trim() === ''
+    ) {
+      errors.push({
+        field: 'name',
+        value: updateHospitalDTO.name,
+        constraints: ['Nome é obrigatório'],
+      });
+    }
+
     if (errors.length > 0) {
       throw new ValidationException(errors);
     }
 
     const hospital = await this.hospitalRepository.findById(id);
     if (!hospital) {
-      if (errors.length > 0) {
-        throw new HospitalNotFoundException(`ID: ${id}`);
-      }
+      throw new HospitalNotFoundException(
+        `Nenhum hospital foi encontrado com os critérios: ID: ${id}`,
+      );
     }
 
     try {

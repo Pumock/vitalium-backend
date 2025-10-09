@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
+import { DoctorNotFoundException } from '../../../shared/execeptions/doctor/doctor-not-found.exception';
 import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
 @Injectable()
@@ -10,16 +11,18 @@ export class DeleteDoctorUseCase {
   ) {}
 
   async execute(id: string): Promise<void> {
-    const doctor = await this.doctorRepository.findById(id);
-    if (!doctor) {
-      throw new DoctorNotFoundException(`ID: ${id}`);
-    }
-
     try {
-      const doctor = await this.doctorRepository.delete(id);
-      return doctor;
+      const doctor = await this.doctorRepository.findById(id);
+      if (!doctor) {
+        throw new DoctorNotFoundException(`ID: ${id}`);
+      }
+
+      await this.doctorRepository.delete(id);
     } catch (error) {
-      throw new DatabaseException('Erro ao deletar usuário', error);
+      if (error instanceof DoctorNotFoundException) {
+        throw error;
+      }
+      throw new DatabaseException('Erro ao deletar médico', error);
     }
   }
 }

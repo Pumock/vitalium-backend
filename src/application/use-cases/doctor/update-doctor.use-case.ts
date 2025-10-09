@@ -4,6 +4,7 @@ import {
   FieldError,
 } from '../../../shared/execeptions/system/validation.exception';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
+import { DoctorNotFoundException } from '../../../shared/execeptions/doctor/doctor-not-found.exception';
 import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 import { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
@@ -37,7 +38,10 @@ export class UpdateDoctorUseCase {
       );
       return updatedDoctor;
     } catch (error) {
-      throw new DatabaseException('criar usuário', error);
+      if (error.message && error.message.includes('not found')) {
+        throw new DoctorNotFoundException(`ID: ${id}`);
+      }
+      throw new DatabaseException('atualizar médico', error);
     }
   }
 }
