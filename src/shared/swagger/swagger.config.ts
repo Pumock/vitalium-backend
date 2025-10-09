@@ -8,10 +8,9 @@ export class SwaggerConfig {
       .setDescription('API para sistema de gestão médica Vitalium')
       .setVersion('1.0.0')
       .addTag('users', 'Operações relacionadas aos usuários')
-      .addTag('patients', 'Operações relacionadas aos pacientes')
       .addTag('doctors', 'Operações relacionadas aos médicos')
-      .addTag('hospitals', 'Operações relacionadas aos hospitais')
-      .addTag('appointments', 'Operações relacionadas aos agendamentos')
+      .addTag('organizations', 'Operações relacionadas aos médicos')
+      .addTag('Health', 'Status da aplicação')
       .addBearerAuth(
         {
           type: 'http',

@@ -17,6 +17,7 @@ import { CreateDoctorUseCase } from '../../../application/use-cases/doctor/creat
 import { SearchDoctorUseCase } from '../../../application/use-cases/doctor/search-doctor.use-case';
 import { UpdateDoctorUseCase } from '../../../application/use-cases/doctor/update-doctor.use-case';
 import { DeleteDoctorUseCase } from '../../../application/use-cases/doctor/delete-doctor.use-case';
+import { ApiDoctorOperations } from '../../../shared/swagger/decorators';
 
 @Controller('doctors')
 export class DoctorController {
@@ -29,6 +30,7 @@ export class DoctorController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @ApiDoctorOperations.createDoctor()
   async create(
     @Body() createDoctorDTO: CreateDoctorDTO,
   ): Promise<DoctorResponseDTO> {
@@ -41,6 +43,7 @@ export class DoctorController {
 
   @Get()
   @HttpCode(HttpStatus.OK)
+  @ApiDoctorOperations.findAllDoctors()
   async findAll(): Promise<DoctorResponseDTO[]> {
     const doctors = await this.searchDoctorUseCase.findAll();
 
@@ -51,6 +54,7 @@ export class DoctorController {
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
+  @ApiDoctorOperations.findDoctorById()
   async findOne(@Param('id') id: string): Promise<DoctorResponseDTO> {
     const doctor = await this.searchDoctorUseCase.findById(id);
 
@@ -61,6 +65,7 @@ export class DoctorController {
 
   @Patch('/:id')
   @HttpCode(HttpStatus.OK)
+  @ApiDoctorOperations.updateDoctor()
   async update(
     @Param('id') id: string,
     @Body() updateDoctorDTO: UpdateDoctorDTO,
@@ -74,6 +79,7 @@ export class DoctorController {
 
   @Delete('/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiDoctorOperations.deleteDoctor()
   async delete(@Param('id') id: string): Promise<void> {
     return this.deleteDoctorUseCase.execute(id);
   }

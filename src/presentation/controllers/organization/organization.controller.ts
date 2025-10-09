@@ -32,6 +32,7 @@ import { SearchHospitalUseCase } from '../../../application/use-cases/organizati
 import { UpdateHospitalUseCase } from '../../../application/use-cases/organization/update-hospital.use-case';
 import { SearchClinicUseCase } from '../../../application/use-cases/organization/search-clinic.use-case';
 import { UpdateClinicUseCase } from '../../../application/use-cases/organization/update-clinic.use-case';
+import { ApiOrganizationOperations } from '../../../shared/swagger/decorators';
 
 @Controller('organizations')
 export class OrganizationController {
@@ -48,6 +49,7 @@ export class OrganizationController {
   ) {}
 
   @Post('organizations')
+  @ApiOrganizationOperations.createOrganization()
   async createOrganization(
     @Body() createHospitalWithClinicDTO: CreateHospitalWithClinicDTO,
   ): Promise<ResponseOrganizationDTO> {
@@ -61,6 +63,7 @@ export class OrganizationController {
   }
 
   @Post('hospitals')
+  @ApiOrganizationOperations.createHospital()
   async createHospital(
     @Body() createHospitalDTO: CreateHospitalDTO,
   ): Promise<ResponseHospitalDTO> {
@@ -73,6 +76,7 @@ export class OrganizationController {
   }
 
   @Get('hospitals/:id')
+  @ApiOrganizationOperations.findHospitalById()
   async searchHospital(@Param('id') id: string): Promise<ResponseHospitalDTO> {
     const hospital = await this.searchHospitalUseCase.execute(id);
 
@@ -82,6 +86,7 @@ export class OrganizationController {
   }
 
   @Patch('hospitals/:id')
+  @ApiOrganizationOperations.updateHospital()
   async updateHospital(
     @Param('id') id: string,
     @Body() updateHospitalDTO: UpdateHospitalDTO,
@@ -98,11 +103,13 @@ export class OrganizationController {
 
   @Delete('hospitals/:id')
   @HttpCode(204)
+  @ApiOrganizationOperations.deleteHospital()
   async deleteHospital(@Param('id') id: string): Promise<void> {
     return this.deleteHospitalUseCase.execute(id);
   }
 
   @Post('clinics')
+  @ApiOrganizationOperations.createClinic()
   async createClinic(
     @Body() createClinicDTO: CreateClinicDTO,
   ): Promise<ResponseClinicDTO> {
@@ -114,6 +121,7 @@ export class OrganizationController {
   }
 
   @Get('clinics/:id')
+  @ApiOrganizationOperations.findClinicById()
   async searchClinic(@Param('id') id: string): Promise<ResponseClinicDTO> {
     const clinic = await this.searchClinicUseCase.execute(id);
 
@@ -123,6 +131,7 @@ export class OrganizationController {
   }
 
   @Patch('clinics/:id')
+  @ApiOrganizationOperations.updateClinic()
   async updateClinic(
     @Param('id') id: string,
     @Body() updateClinicDTO: UpdateClinicDTO,
@@ -136,6 +145,7 @@ export class OrganizationController {
 
   @Delete('clinics/:id')
   @HttpCode(204)
+  @ApiOrganizationOperations.deleteClinic()
   async deleteClinic(@Param('id') id: string): Promise<void> {
     return this.deleteClinicUseCase.execute(id);
   }
