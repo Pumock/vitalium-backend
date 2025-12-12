@@ -14,39 +14,39 @@ export const ApiDoctorOperations = {
       ApiOperation({
         summary: 'Criar novo médico',
         description:
-          'Cria um novo médico no sistema com as informações fornecidas',
+          'Cria um novo médico no sistema com as informações fornecidas. O usuário associado deve ter role DOCTOR.',
       }),
       ApiBody({
         description: 'Dados para criação do médico',
         schema: {
           type: 'object',
-          required: ['userId', 'specialty', 'crm', 'consultationPrice'],
+          required: ['userId', 'crm', 'crmState', 'isActive'],
           properties: {
             userId: {
               type: 'string',
-              example: 'clxyz123456789',
-              description: 'ID do usuário associado ao médico',
-            },
-            specialty: {
-              type: 'string',
-              example: 'Cardiologia',
-              description: 'Especialidade médica',
+              example: 'clxyz123456789abcdef',
+              description:
+                'ID do usuário (com role DOCTOR) a ser associado ao médico',
             },
             crm: {
               type: 'string',
-              example: '123456',
-              description: 'Número do CRM do médico',
+              example: '123456-SP',
+              description: 'Número do CRM do médico (único no sistema)',
+            },
+            crmState: {
+              type: 'boolean',
+              example: true,
+              description: 'Indica se o CRM do médico está ativo',
             },
             consultationPrice: {
               type: 'number',
               example: 150.0,
-              description: 'Preço da consulta',
+              description: 'Preço da consulta médica em reais (opcional)',
             },
-            bio: {
-              type: 'string',
-              example:
-                'Médico especialista em cardiologia com 10 anos de experiência',
-              description: 'Biografia do médico (opcional)',
+            isActive: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do perfil do médico (ativo/inativo)',
             },
           },
         },
@@ -59,33 +59,28 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789',
+              example: 'clxyz123456789abcdef',
               description: 'ID único do médico',
-            },
-            userId: {
-              type: 'string',
-              example: 'clxyz123456789',
-              description: 'ID do usuário associado',
-            },
-            specialty: {
-              type: 'string',
-              example: 'Cardiologia',
-              description: 'Especialidade médica',
             },
             crm: {
               type: 'string',
-              example: '123456',
+              example: '123456-SP',
               description: 'Número do CRM',
+            },
+            crmState: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do CRM',
             },
             consultationPrice: {
               type: 'number',
               example: 150.0,
               description: 'Preço da consulta',
             },
-            bio: {
-              type: 'string',
-              example: 'Médico especialista em cardiologia',
-              description: 'Biografia do médico',
+            isActive: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do perfil',
             },
             createdAt: {
               type: 'string',
@@ -109,7 +104,7 @@ export const ApiDoctorOperations = {
             statusCode: { type: 'number', example: 400 },
             message: {
               type: 'string',
-              example: 'Erro de validação nos campos: userId, specialty',
+              example: 'Erro de validação nos campos: userId, crm',
             },
             errorCode: { type: 'string', example: 'VALIDATION_ERROR' },
           },
@@ -117,7 +112,7 @@ export const ApiDoctorOperations = {
       }),
       ApiResponse({
         status: 404,
-        description: 'Usuário não encontrado',
+        description: 'Usuário não encontrado ou não possui role DOCTOR',
         schema: {
           type: 'object',
           properties: {
@@ -147,33 +142,28 @@ export const ApiDoctorOperations = {
             properties: {
               id: {
                 type: 'string',
-                example: 'clxyz123456789',
+                example: 'clxyz123456789abcdef',
                 description: 'ID único do médico',
-              },
-              userId: {
-                type: 'string',
-                example: 'clxyz123456789',
-                description: 'ID do usuário associado',
-              },
-              specialty: {
-                type: 'string',
-                example: 'Cardiologia',
-                description: 'Especialidade médica',
               },
               crm: {
                 type: 'string',
-                example: '123456',
+                example: '123456-SP',
                 description: 'Número do CRM',
+              },
+              crmState: {
+                type: 'boolean',
+                example: true,
+                description: 'Status do CRM',
               },
               consultationPrice: {
                 type: 'number',
                 example: 150.0,
                 description: 'Preço da consulta',
               },
-              bio: {
-                type: 'string',
-                example: 'Médico especialista em cardiologia',
-                description: 'Biografia do médico',
+              isActive: {
+                type: 'boolean',
+                example: true,
+                description: 'Status do perfil',
               },
               createdAt: {
                 type: 'string',
@@ -201,7 +191,7 @@ export const ApiDoctorOperations = {
       ApiParam({
         name: 'id',
         description: 'ID único do médico',
-        example: 'clxyz123456789',
+        example: 'clxyz123456789abcdef',
         type: 'string',
       }),
       ApiResponse({
@@ -212,33 +202,28 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789',
+              example: 'clxyz123456789abcdef',
               description: 'ID único do médico',
-            },
-            userId: {
-              type: 'string',
-              example: 'clxyz123456789',
-              description: 'ID do usuário associado',
-            },
-            specialty: {
-              type: 'string',
-              example: 'Cardiologia',
-              description: 'Especialidade médica',
             },
             crm: {
               type: 'string',
-              example: '123456',
+              example: '123456-SP',
               description: 'Número do CRM',
+            },
+            crmState: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do CRM',
             },
             consultationPrice: {
               type: 'number',
               example: 150.0,
               description: 'Preço da consulta',
             },
-            bio: {
-              type: 'string',
-              example: 'Médico especialista em cardiologia',
-              description: 'Biografia do médico',
+            isActive: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do perfil',
             },
             createdAt: {
               type: 'string',
@@ -263,7 +248,7 @@ export const ApiDoctorOperations = {
             message: {
               type: 'string',
               example:
-                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789',
+                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789abcdef',
             },
             errorCode: { type: 'string', example: 'DOCTOR_NOT_FOUND' },
           },
@@ -281,34 +266,33 @@ export const ApiDoctorOperations = {
       ApiParam({
         name: 'id',
         description: 'ID único do médico',
-        example: 'clxyz123456789',
+        example: 'clxyz123456789abcdef',
         type: 'string',
       }),
       ApiBody({
-        description: 'Dados para atualização do médico',
+        description: 'Dados para atualização do médico (todos opcionais)',
         schema: {
           type: 'object',
           properties: {
-            specialty: {
-              type: 'string',
-              example: 'Cardiologia',
-              description: 'Especialidade médica (opcional)',
-            },
             crm: {
               type: 'string',
-              example: '123456',
-              description: 'Número do CRM (opcional)',
+              example: '654321-RJ',
+              description: 'Número do CRM do médico (opcional)',
+            },
+            crmState: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do CRM (opcional)',
             },
             consultationPrice: {
               type: 'number',
               example: 200.0,
-              description: 'Preço da consulta (opcional)',
+              description: 'Preço da consulta médica em reais (opcional)',
             },
-            bio: {
-              type: 'string',
-              example:
-                'Médico especialista em cardiologia com 15 anos de experiência',
-              description: 'Biografia do médico (opcional)',
+            isActive: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do perfil do médico (opcional)',
             },
           },
         },
@@ -321,34 +305,28 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789',
+              example: 'clxyz123456789abcdef',
               description: 'ID único do médico',
-            },
-            userId: {
-              type: 'string',
-              example: 'clxyz123456789',
-              description: 'ID do usuário associado',
-            },
-            specialty: {
-              type: 'string',
-              example: 'Cardiologia',
-              description: 'Especialidade médica',
             },
             crm: {
               type: 'string',
-              example: '123456',
+              example: '654321-RJ',
               description: 'Número do CRM',
+            },
+            crmState: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do CRM',
             },
             consultationPrice: {
               type: 'number',
               example: 200.0,
               description: 'Preço da consulta',
             },
-            bio: {
-              type: 'string',
-              example:
-                'Médico especialista em cardiologia com 15 anos de experiência',
-              description: 'Biografia do médico',
+            isActive: {
+              type: 'boolean',
+              example: true,
+              description: 'Status do perfil',
             },
             createdAt: {
               type: 'string',
@@ -388,7 +366,7 @@ export const ApiDoctorOperations = {
             message: {
               type: 'string',
               example:
-                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789',
+                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789abcdef',
             },
             errorCode: { type: 'string', example: 'DOCTOR_NOT_FOUND' },
           },
@@ -401,12 +379,12 @@ export const ApiDoctorOperations = {
       ApiTags('doctors'),
       ApiOperation({
         summary: 'Excluir médico',
-        description: 'Remove um médico do sistema',
+        description: 'Remove um médico do sistema (soft delete)',
       }),
       ApiParam({
         name: 'id',
         description: 'ID único do médico',
-        example: 'clxyz123456789',
+        example: 'clxyz123456789abcdef',
         type: 'string',
       }),
       ApiResponse({
@@ -423,7 +401,7 @@ export const ApiDoctorOperations = {
             message: {
               type: 'string',
               example:
-                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789',
+                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789abcdef',
             },
             errorCode: { type: 'string', example: 'DOCTOR_NOT_FOUND' },
           },

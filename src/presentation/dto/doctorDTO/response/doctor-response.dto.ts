@@ -7,20 +7,20 @@ import { ApiProperty } from '@nestjs/swagger';
 export class DoctorResponseDTO {
   @ApiProperty({
     description: 'ID único do médico',
-    example: 'doctor-uuid-123',
+    example: 'clxyz123456789abcdef',
   })
   @Expose()
   id: string;
 
   @ApiProperty({
-    description: 'Crm único do usuário',
-    example: '9898989898',
+    description: 'Número do CRM do médico (único no sistema)',
+    example: '123456-SP',
   })
   @Expose()
   crm: string;
 
   @ApiProperty({
-    description: 'Crm ativo/inativo do usuário',
+    description: 'Indica se o CRM do médico está ativo',
     example: true,
     default: true,
   })
@@ -28,14 +28,15 @@ export class DoctorResponseDTO {
   crmState: boolean;
 
   @ApiProperty({
-    description: 'Preço da consulta medica',
-    example: 'R$150,00',
+    description: 'Preço da consulta médica em reais',
+    example: 150.0,
+    type: Number,
   })
   @Expose()
   consultationPrice?: number;
 
   @ApiProperty({
-    description: 'Status do perfil do usuário',
+    description: 'Status do perfil do médico (ativo/inativo)',
     example: true,
     default: true,
   })
@@ -43,15 +44,15 @@ export class DoctorResponseDTO {
   isActive: boolean;
 
   @ApiProperty({
-    description: 'Data de criação do usuário',
-    example: '2024-01-01T00:00:00.000Z',
+    description: 'Data de criação do registro',
+    example: '2025-01-01T00:00:00.000Z',
   })
   @Expose()
   createdAt: string;
 
   @ApiProperty({
-    description: 'Data da última atualização do usuário',
-    example: '2024-01-01T00:00:00.000Z',
+    description: 'Data da última atualização do registro',
+    example: '2025-01-01T00:00:00.000Z',
   })
   @Expose()
   updatedAt: string;
