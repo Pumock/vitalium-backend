@@ -6,7 +6,128 @@ datasource db {
   provider = "postgresql"
 }
 
-// Authentication & Users
+//////////////////////////////////////
+// ENUMS
+//////////////////////////////////////
+enum UserRole {
+  PATIENT
+  CAREGIVER
+  DOCTOR
+  NURSE
+  ADMIN
+}
+
+enum AdminRole {
+  SUPER_ADMIN
+  HOSPITAL_ADMIN
+  CLINIC_ADMIN
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+  PREFER_NOT_TO_SAY
+}
+
+enum BloodType {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+enum CaregiverRelationship {
+  PARENT
+  SPOUSE
+  CHILD
+  SIBLING
+  GUARDIAN
+  FRIEND
+  OTHER
+}
+
+enum RecordType {
+  CONSULTATION
+  EXAMINATION
+  SURGERY
+  EMERGENCY
+  ROUTINE_CHECKUP
+  FOLLOW_UP
+  DIAGNOSTIC
+  OTHER
+}
+
+enum AppointmentStatus {
+  SCHEDULED
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+  RESCHEDULED
+}
+
+enum AppointmentType {
+  CONSULTATION
+  FOLLOW_UP
+  ROUTINE_CHECKUP
+  EMERGENCY
+  SURGERY
+  EXAMINATION
+  VACCINATION
+  OTHER
+}
+
+enum WardType {
+  GENERAL
+  ICU
+  PEDIATRIC
+  MATERNITY
+  SURGERY
+  EMERGENCY
+  CARDIOLOGY
+  ONCOLOGY
+  OTHER
+}
+
+enum AdmissionStatus {
+  ACTIVE
+  DISCHARGED
+  TRANSFERRED
+}
+
+enum LogLevel {
+  ERROR
+  WARN
+  INFO
+  DEBUG
+  VERBOSE
+}
+
+enum SecurityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum UnitType {
+  HOSPITAL
+  CLINIC
+  CONSULTING_ROOM
+  LAB
+  OTHER
+}
+
+//////////////////////////////////////
+// MODELS
+//////////////////////////////////////
+
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
@@ -38,62 +159,30 @@ model User {
   @@map("users")
 }
 
-enum UserRole {
-  PATIENT
-  CAREGIVER
-  DOCTOR
-  NURSE
-  ADMIN
-}
-
-// Healthcare Facilities
-model Hospital {
+model Unit {
   id        String   @id @default(cuid())
   name      String
-  address   String
-  city      String
-  state     String
-  zipCode   String
-  phone     String
-  email     String
-  cnpj      String   @unique
+  type      UnitType
+  cnpj      String?  @unique
+  phone     String?
+  email     String?
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  clinics Clinic[]
-  wards   Ward[]
-  doctors Doctor[]
-  nurses  Nurse[]
-
-  @@map("hospitals")
-}
-
-model Clinic {
-  id         String   @id @default(cuid())
-  name       String
-  address    String
-  city       String
-  state      String
-  zipCode    String
-  phone      String
-  email      String
-  cnpj       String   @unique
-  hospitalId String?
-  isActive   Boolean  @default(true)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-
-  // Relations
-  hospital     Hospital?     @relation(fields: [hospitalId], references: [id])
   doctors      Doctor[]
   appointments Appointment[]
+  nurses       Nurse[]
+  wards        Ward[]
 
-  @@map("clinics")
+  @@map("units")
 }
 
-// Medical Specializations
 model Specialization {
   id          String   @id @default(cuid())
   name        String   @unique
@@ -108,14 +197,12 @@ model Specialization {
   @@map("specializations")
 }
 
-// Healthcare Professionals
 model Doctor {
   id                String   @id @default(cuid())
   userId            String   @unique
   crm               String   @unique
   crmState          Boolean
-  hospitalId        String?
-  clinicId          String?
+  unitId            String?
   consultationPrice Decimal?
   isActive          Boolean  @default(true)
   createdAt         DateTime @default(now())
@@ -123,8 +210,7 @@ model Doctor {
 
   // Relations
   user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hospital        Hospital?              @relation(fields: [hospitalId], references: [id])
-  clinic          Clinic?                @relation(fields: [clinicId], references: [id])
+  unit            Unit?                  @relation(fields: [unitId], references: [id])
   specializations DoctorSpecialization[]
   medicalRecords  MedicalRecord[]
   appointments    Appointment[]
@@ -153,16 +239,16 @@ model Nurse {
   userId     String   @unique
   coren      String   @unique
   corenState String
-  hospitalId String?
+  unitId     String?
   wardId     String?
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
   // Relations
-  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hospital Hospital? @relation(fields: [hospitalId], references: [id])
-  ward     Ward?     @relation(fields: [wardId], references: [id])
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  unit Unit? @relation(fields: [unitId], references: [id])
+  ward Ward? @relation(fields: [wardId], references: [id])
 
   @@map("nurses")
 }
@@ -180,12 +266,6 @@ model Admin {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admins")
-}
-
-enum AdminRole {
-  SUPER_ADMIN
-  HOSPITAL_ADMIN
-  CLINIC_ADMIN
 }
 
 // Patients & Caregivers
@@ -313,7 +393,7 @@ model Appointment {
   id          String            @id @default(cuid())
   patientId   String
   doctorId    String
-  clinicId    String?
+  unitId      String
   title       String
   description String?
   scheduledAt DateTime
@@ -328,7 +408,7 @@ model Appointment {
   // Relations
   patient Patient @relation(fields: [patientId], references: [id])
   doctor  Doctor  @relation(fields: [doctorId], references: [id])
-  clinic  Clinic? @relation(fields: [clinicId], references: [id])
+  unit    Unit?   @relation(fields: [unitId], references: [id])
 
   @@map("appointments")
 }
@@ -355,7 +435,7 @@ model Prescription {
 // Hospital Wards & Admissions
 model Ward {
   id               String   @id @default(cuid())
-  hospitalId       String
+  unitId           String
   name             String
   wardType         WardType
   capacity         Int
@@ -365,7 +445,7 @@ model Ward {
   updatedAt        DateTime @updatedAt
 
   // Relations
-  hospital   Hospital        @relation(fields: [hospitalId], references: [id])
+  unit       Unit            @relation(fields: [unitId], references: [id])
   nurses     Nurse[]
   admissions WardAdmission[]
 
@@ -389,85 +469,6 @@ model WardAdmission {
   ward    Ward    @relation(fields: [wardId], references: [id])
 
   @@map("ward_admissions")
-}
-
-// Enums
-enum Gender {
-  MALE
-  FEMALE
-  OTHER
-  PREFER_NOT_TO_SAY
-}
-
-enum BloodType {
-  A_POSITIVE
-  A_NEGATIVE
-  B_POSITIVE
-  B_NEGATIVE
-  AB_POSITIVE
-  AB_NEGATIVE
-  O_POSITIVE
-  O_NEGATIVE
-}
-
-enum CaregiverRelationship {
-  PARENT
-  SPOUSE
-  CHILD
-  SIBLING
-  GUARDIAN
-  FRIEND
-  OTHER
-}
-
-enum RecordType {
-  CONSULTATION
-  EXAMINATION
-  SURGERY
-  EMERGENCY
-  ROUTINE_CHECKUP
-  FOLLOW_UP
-  DIAGNOSTIC
-  OTHER
-}
-
-enum AppointmentStatus {
-  SCHEDULED
-  CONFIRMED
-  IN_PROGRESS
-  COMPLETED
-  CANCELLED
-  NO_SHOW
-  RESCHEDULED
-}
-
-enum AppointmentType {
-  CONSULTATION
-  FOLLOW_UP
-  ROUTINE_CHECKUP
-  EMERGENCY
-  SURGERY
-  EXAMINATION
-  VACCINATION
-  OTHER
-}
-
-enum WardType {
-  GENERAL
-  ICU
-  PEDIATRIC
-  MATERNITY
-  SURGERY
-  EMERGENCY
-  CARDIOLOGY
-  ONCOLOGY
-  OTHER
-}
-
-enum AdmissionStatus {
-  ACTIVE
-  DISCHARGED
-  TRANSFERRED
 }
 
 // ================================
@@ -633,23 +634,4 @@ model ErrorLog {
   @@index([userId])
   @@index([resolved])
   @@map("error_logs")
-}
-
-// ================================
-// ENUMS FOR LOGGING
-// ================================
-
-enum LogLevel {
-  ERROR
-  WARN
-  INFO
-  DEBUG
-  VERBOSE
-}
-
-enum SecurityLevel {
-  LOW
-  MEDIUM
-  HIGH
-  CRITICAL
 }
