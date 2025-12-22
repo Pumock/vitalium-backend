@@ -5,6 +5,7 @@ import { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-d
 export interface IDoctorRepository {
   create(data: CreateDoctorDTO): Promise<Doctor>;
   findById(id: string): Promise<Doctor | null>;
+  findByCrm(crm: string): Promise<Doctor | null>;
   findAll(): Promise<Doctor[]>;
   update(id: string, data: UpdateDoctorDTO): Promise<Doctor>;
   delete(id: string): Promise<void>;

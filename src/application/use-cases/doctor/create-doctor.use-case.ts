@@ -1,14 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import {
-  ValidationException,
-  FieldError,
-} from '../../../shared/execeptions/system/validation.exception';
+import { ValidationException, FieldError } from '../../../shared/execeptions/system/validation.exception';
 import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
 import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
 import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { Role } from '../../../shared/enums/role.enum';
+import { DoctorAlreadyExistsException } from '../../../shared/execeptions/doctor/doctor-already-exists.exception';
 
 @Injectable()
 export class CreateDoctorUseCase {
@@ -22,7 +20,6 @@ export class CreateDoctorUseCase {
   async execute(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {
     const errors: FieldError[] = [];
 
-    // Validação básica
     if (!createDoctorDTO.crm) {
       errors.push({
         field: 'crm',
@@ -36,7 +33,6 @@ export class CreateDoctorUseCase {
     }
 
     try {
-      // Verificar se o usuário existe
       let user = null;
       if (createDoctorDTO.userId) {
         user = await this.userRepository.findById(createDoctorDTO.userId);
@@ -51,7 +47,6 @@ export class CreateDoctorUseCase {
         }
       }
 
-      // Verificar se o usuário tem o role correto
       if (user && user.role !== Role.DOCTOR) {
         throw new ValidationException([
           {
@@ -62,7 +57,15 @@ export class CreateDoctorUseCase {
         ]);
       }
 
-      // Criar o médico com o usuário existente
+
+
+      const doctorExisting = await this.doctorRepository.findByCrm(createDoctorDTO.crm)
+      if (doctorExisting) {
+        throw new DoctorAlreadyExistsException(createDoctorDTO.crm)
+
+      }
+
+
       const doctorData = {
         ...createDoctorDTO,
         user: user,
@@ -71,9 +74,7 @@ export class CreateDoctorUseCase {
       const doctor = await this.doctorRepository.create(doctorData);
       return doctor;
     } catch (error) {
-      if (error instanceof ValidationException) {
-        throw error;
-      }
+
       throw new DatabaseException('criar médico', error);
     }
   }

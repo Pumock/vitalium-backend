@@ -38,11 +38,6 @@ export const ApiDoctorOperations = {
               example: true,
               description: 'Indica se o CRM do médico está ativo',
             },
-            consultationPrice: {
-              type: 'number',
-              example: 150.0,
-              description: 'Preço da consulta médica em reais (opcional)',
-            },
             isActive: {
               type: 'boolean',
               example: true,
@@ -59,7 +54,7 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789abcdef',
+              example: 'cmjhja6fv0009n0pwqk73fd82',
               description: 'ID único do médico',
             },
             crm: {
@@ -72,25 +67,69 @@ export const ApiDoctorOperations = {
               example: true,
               description: 'Status do CRM',
             },
-            consultationPrice: {
-              type: 'number',
-              example: 150.0,
-              description: 'Preço da consulta',
-            },
             isActive: {
               type: 'boolean',
               example: true,
-              description: 'Status do perfil',
+              description: 'Status do médico',
             },
             createdAt: {
               type: 'string',
               format: 'date-time',
+              example: '2025-12-22T19:13:07.093Z',
               description: 'Data de criação',
             },
             updatedAt: {
               type: 'string',
               format: 'date-time',
+              example: '2025-12-22T19:13:07.093Z',
               description: 'Data de atualização',
+            },
+            user: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: 'cmjhja1is0008n0pwovrcf408',
+                },
+                firstName: {
+                  type: 'string',
+                  example: 'João',
+                },
+                lastName: {
+                  type: 'string',
+                  example: 'Silva',
+                },
+                email: {
+                  type: 'string',
+                  example: 'joaodoctor@exemplo.com',
+                },
+                phone: {
+                  type: 'string',
+                  example: '11999939999',
+                },
+                avatar: {
+                  type: 'string',
+                  example: 'https://exemplo.com/avatar.jpg',
+                },
+                role: {
+                  type: 'string',
+                  example: 'DOCTOR',
+                },
+                isActive: {
+                  type: 'boolean',
+                  example: true,
+                },
+                createdAt: {
+                  type: 'string',
+                  format: 'date-time',
+                  example: '2025-12-22T19:13:00.724Z',
+                },
+                updatedAt: {
+                  type: 'string',
+                  format: 'date-time',
+                  example: '2025-12-22T19:13:00.724Z',
+                },
+              },
             },
           },
         },

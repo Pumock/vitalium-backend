@@ -1,9 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
-import {
-  FieldError,
-  ValidationException,
-} from '../../../shared/execeptions/system/validation.exception';
+import { FieldError, ValidationException } from '../../../shared/execeptions/system/validation.exception';
 import { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
 import { Unit } from '../../../infrastructure/database/models/unit.models';
 import { UnitAlreadyExistsException } from '../../../shared/execeptions/units/unit-already-exists.exception';

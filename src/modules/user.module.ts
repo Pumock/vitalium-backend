@@ -9,13 +9,9 @@ import { PrismaModule } from '../infrastructure/database/prisma.module';
   imports: [PrismaModule],
   controllers: [UserController],
   providers: [
-    //repositories
     { provide: 'IUserRepository', useClass: UserDataRepository },
 
-    // Use Cases
     CreateUserUseCase,
-    // SearchUserUseCase,
-    // UpdateUserUseCase,
     DeleteUserUseCase,
   ],
 })

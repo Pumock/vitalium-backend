@@ -64,6 +64,27 @@ export class DoctorRepository implements IDoctorRepository {
     return plainToInstance(Doctor, doctor);
   }
 
+  async findByCrm(crm: string): Promise<Doctor | null> {
+    const doctor = await this.prisma.doctor.findFirst({
+      where: {
+        crm,
+      },
+      include: {
+        user: true,
+        units: {
+          where: { isActive: true },
+          include: {
+            unit: true,
+          },
+        },
+      },
+    });
+
+    if (!doctor) return null;
+
+    return plainToInstance(Doctor, doctor);
+  }
+
   async findAll(): Promise<Doctor[]> {
     const doctors = await this.prisma.doctor.findMany({
       where: { isActive: true },
