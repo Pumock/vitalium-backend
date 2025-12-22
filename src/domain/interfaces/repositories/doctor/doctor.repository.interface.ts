@@ -3,10 +3,9 @@ import { CreateDoctorDTO } from '../../../../presentation/dto/doctorDTO/create-d
 import { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-doctor.dto';
 
 export interface IDoctorRepository {
-  // Métodos básicos
-  create(createDoctorDTO: CreateDoctorDTO): Promise<Doctor>;
+  create(data: CreateDoctorDTO): Promise<Doctor>;
   findById(id: string): Promise<Doctor | null>;
   findAll(): Promise<Doctor[]>;
-  update(id: string, updateData: UpdateDoctorDTO): Promise<Doctor>;
+  update(id: string, data: UpdateDoctorDTO): Promise<Doctor>;
   delete(id: string): Promise<void>;
 }

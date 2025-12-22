@@ -1,11 +1,11 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { User } from '../../../infrastructure/database/models/core/user.models';
 import { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import {
   FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
+
 import { Role } from '../../../shared/enums';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 

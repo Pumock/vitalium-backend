@@ -1,4 +1,4 @@
-import { User } from '../../../../infrastructure/database/models/core/user.models';
+import { User } from '../../../../infrastructure/database/models/user.models';
 import { CreateUserDTO } from '../../../../presentation/dto/userDTO/create-user.dto';
 import { UpdateUserDTO } from '../../../../presentation/dto/userDTO/update-user.dtp';
 export interface IUserRepository {

@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IClinicRepository } from '../../../domain/interfaces/repositories/organizations/clinic.repository.interface';
+import { IClinicRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
 import { Clinic } from '../../../infrastructure/database/models/clinic.models';
 import { CreateClinicDTO } from '../../../presentation/dto/organizationDTO/create-organization.dto';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
@@ -13,7 +13,7 @@ export class CreateClinicUseCase {
   constructor(
     @Inject('IClinicRepository')
     private readonly clinicRepository: IClinicRepository,
-  ) {}
+  ) { }
   async execute(createClinicDTO: CreateClinicDTO): Promise<Clinic> {
     const errors: FieldError[] = [];
 

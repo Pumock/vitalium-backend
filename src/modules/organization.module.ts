@@ -18,10 +18,9 @@ import { CreateHospitalUseCase } from '../application/use-cases/organization/cre
 import { SearchHospitalUseCase } from '../application/use-cases/organization/search-hospital.use-case';
 import { UpdateHospitalUseCase } from '../application/use-cases/organization/update-hospital.use-case';
 import { DeleteHospitalUseCase } from '../application/use-cases/organization/delete-hospital.use-case';
+import { UnitRepository } from '../infrastructure/repositories/organizations/unit.repository';
 
 // Repositories
-import { HospitalRepository } from '../infrastructure/repositories/organizations/hospital.repository';
-import { ClinicRepository } from '../infrastructure/repositories/organizations/clinic.repository';
 
 @Module({
   imports: [PrismaModule],
@@ -44,13 +43,10 @@ import { ClinicRepository } from '../infrastructure/repositories/organizations/c
 
     // Repositories
     {
-      provide: 'IHospitalRepository',
-      useClass: HospitalRepository,
+      provide: 'IUnitRepository',
+      useClass: UnitRepository,
     },
-    {
-      provide: 'IClinicRepository',
-      useClass: ClinicRepository,
-    },
+
   ],
   exports: [
     CreateOrganizationUseCase,
@@ -64,4 +60,4 @@ import { ClinicRepository } from '../infrastructure/repositories/organizations/c
     DeleteHospitalUseCase,
   ],
 })
-export class OrganizationModule {}
+export class OrganizationModule { }

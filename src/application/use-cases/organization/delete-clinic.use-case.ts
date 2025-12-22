@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IClinicRepository } from '../../../domain/interfaces/repositories/organizations/clinic.repository.interface';
+import { IClinicRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
 import { ClinicNotFoundException } from '../../../shared/execeptions/organizations/clinic-not-found.exception';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import {
@@ -12,7 +12,7 @@ export class DeleteClinicUseCase {
   constructor(
     @Inject('IClinicRepository')
     private readonly clinicRepository: IClinicRepository,
-  ) {}
+  ) { }
   async execute(id: string): Promise<void> {
     const errors: FieldError[] = [];
 

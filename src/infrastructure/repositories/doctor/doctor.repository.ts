@@ -1,28 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+
 import { PrismaProvider } from '../../database/prisma.provider';
+import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+
 import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
 import { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
+
 import { Doctor } from '../../database/models/doctor.models';
 
 @Injectable()
 export class DoctorRepository implements IDoctorRepository {
   constructor(private readonly prisma: PrismaProvider) { }
 
-  /**
-   * Criar médico
-   */
-  async create(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {
-    const result = await this.prisma.doctor.create({
+  async create(dto: CreateDoctorDTO): Promise<Doctor> {
+    const doctor = await this.prisma.doctor.create({
       data: {
-        userId: createDoctorDTO.user?.id || '',
-        crm: createDoctorDTO.crm,
-        crmState: createDoctorDTO.crmState,
-        consultationPrice: createDoctorDTO.consultationPrice || null,
-        hospitalId: createDoctorDTO.hospital?.id,
-        clinicId: createDoctorDTO.clinic?.id,
-        isActive: createDoctorDTO.isActive,
+        userId: dto.userId,
+        crm: dto.crm,
+        crmState: dto.crmState,
+        isActive: dto.isActive,
       },
       include: {
         user: {
@@ -39,230 +36,87 @@ export class DoctorRepository implements IDoctorRepository {
             updatedAt: true,
           },
         },
-        hospital: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
-        },
-        clinic: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
-        },
       },
     });
 
-    // Transformar consultationPrice para number se necessário
-    const transformedResult = {
-      ...result,
-      consultationPrice: result.consultationPrice
-        ? Number(result.consultationPrice)
-        : null,
-    };
-
-    return plainToInstance(Doctor, transformedResult);
+    return plainToInstance(Doctor, doctor);
   }
 
-  /**
-   * Buscar médico por ID
-   */
   async findById(id: string): Promise<Doctor | null> {
-    const result = await this.prisma.doctor.findUnique({
+    const doctor = await this.prisma.doctor.findFirst({
       where: {
         id,
         isActive: true,
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            phone: true,
-            avatar: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        hospital: {
-          select: {
-            id: true,
-            name: true,
-            address: true,
-            city: true,
-            state: true,
-            phone: true,
-            email: true,
-          },
-        },
-        clinic: {
-          select: {
-            id: true,
-            name: true,
-            address: true,
-            city: true,
-            state: true,
-            phone: true,
-            email: true,
+        user: true,
+        units: {
+          where: { isActive: true },
+          include: {
+            unit: true,
           },
         },
       },
     });
 
-    if (!result) return null;
+    if (!doctor) return null;
 
-    // Transformar consultationPrice para number se necessário
-    const transformedResult = {
-      ...result,
-      consultationPrice: result.consultationPrice
-        ? Number(result.consultationPrice)
-        : null,
-    };
-
-    return plainToInstance(Doctor, transformedResult);
+    return plainToInstance(Doctor, doctor);
   }
 
-  /**
-   * Listar todos os médicos ativos
-   */
   async findAll(): Promise<Doctor[]> {
-    const results = await this.prisma.doctor.findMany({
+    const doctors = await this.prisma.doctor.findMany({
       where: { isActive: true },
       include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            phone: true,
-            avatar: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        hospital: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
-        },
-        clinic: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
+        user: true,
+        units: {
+          where: { isActive: true },
+          include: { unit: true },
         },
       },
-      orderBy: { user: { firstName: 'asc' } },
+      orderBy: {
+        user: { firstName: 'asc' },
+      },
     });
 
-    // Transformar consultationPrice para number em todos os resultados
-    const transformedResults = results.map((result) => ({
-      ...result,
-      consultationPrice: result.consultationPrice
-        ? Number(result.consultationPrice)
-        : null,
-    }));
-
-    return plainToInstance(Doctor, transformedResults);
+    return plainToInstance(Doctor, doctors);
   }
 
-  /**
-   * Atualizar médico por ID
-   */
-  async update(id: string, updateDoctorDTO: UpdateDoctorDTO): Promise<Doctor> {
-    // Verificar se o médico existe antes de atualizar
-    const existingDoctor = await this.prisma.doctor.findUnique({
+  async update(id: string, dto: UpdateDoctorDTO): Promise<Doctor> {
+    const existing = await this.prisma.doctor.findFirst({
       where: { id, isActive: true },
     });
 
-    if (!existingDoctor) {
+    if (!existing) {
       throw new Error(`Doctor with id ${id} not found`);
     }
 
-    const result = await this.prisma.doctor.update({
+    const doctor = await this.prisma.doctor.update({
       where: { id },
       data: {
-        ...(updateDoctorDTO.crm && { crm: updateDoctorDTO.crm }),
-        ...(updateDoctorDTO.crmState !== undefined && {
-          crmState: updateDoctorDTO.crmState,
-        }),
-        ...(updateDoctorDTO.consultationPrice && {
-          consultationPrice: updateDoctorDTO.consultationPrice,
-        }),
+        crm: dto.crm,
+        crmState: dto.crmState,
+        isActive: dto.isActive,
         updatedAt: new Date(),
       },
       include: {
-        user: {
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            email: true,
-            phone: true,
-            avatar: true,
-            role: true,
-            isActive: true,
-            createdAt: true,
-            updatedAt: true,
-          },
-        },
-        hospital: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
-        },
-        clinic: {
-          select: {
-            id: true,
-            name: true,
-            city: true,
-            state: true,
-          },
+        user: true,
+        units: {
+          where: { isActive: true },
+          include: { unit: true },
         },
       },
     });
 
-    // Transformar consultationPrice para number se necessário
-    const transformedResult = {
-      ...result,
-      consultationPrice: result.consultationPrice
-        ? Number(result.consultationPrice)
-        : null,
-    };
-
-    return plainToInstance(Doctor, transformedResult);
+    return plainToInstance(Doctor, doctor);
   }
 
-  /**
-   * Deletar médico (soft delete)
-   */
   async delete(id: string): Promise<void> {
-    // Verificar se o médico existe antes de deletar
-    const existingDoctor = await this.prisma.doctor.findUnique({
+    const existing = await this.prisma.doctor.findFirst({
       where: { id, isActive: true },
     });
 
-    if (!existingDoctor) {
+    if (!existing) {
       throw new Error(`Doctor with id ${id} not found`);
     }
 

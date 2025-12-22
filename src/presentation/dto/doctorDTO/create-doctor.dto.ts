@@ -1,56 +1,34 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
-import { User } from '../../../infrastructure/database/models/core/user.models';
-import { Hospital } from '../../../infrastructure/database/models/unit/unit.models';
-import { Clinic } from '../../../infrastructure/database/models/clinic.models';
+import { IsBoolean, IsString } from 'class-validator';
 
 export class CreateDoctorDTO {
   @ApiProperty({
-    description: 'Número do CRM do médico (único no sistema)',
+    description: 'Número do CRM do médico',
     example: '123456-SP',
-    required: true,
   })
   @IsString()
   crm: string;
 
   @ApiProperty({
-    description: 'Indica se o CRM do médico está ativo',
+    description: 'Indica se o CRM está ativo',
     example: true,
     default: true,
-    required: true,
   })
   @IsBoolean()
   crmState: boolean;
 
   @ApiProperty({
-    description: 'Preço da consulta médica em reais',
-    example: 150.0,
-    required: false,
-    type: Number,
-  })
-  @IsOptional()
-  @IsNumber()
-  consultationPrice?: number;
-
-  @ApiProperty({
-    description: 'Status do perfil do médico (ativo/inativo)',
+    description: 'Status do médico',
     example: true,
     default: true,
-    required: true,
   })
   @IsBoolean()
   isActive: boolean;
 
   @ApiProperty({
-    description: 'ID do usuário (com role DOCTOR) a ser associado ao médico',
+    description: 'ID do usuário associado (role DOCTOR)',
     example: 'clxyz123456789abcdef',
-    required: true,
   })
   @IsString()
   userId: string;
-
-  // Relacionamentos - devem ser fornecidos para criar o médico
-  user?: User;
-  hospital?: Hospital;
-  clinic?: Clinic;
 }
