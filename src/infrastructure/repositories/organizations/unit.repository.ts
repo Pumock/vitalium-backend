@@ -29,6 +29,17 @@ export class UnitRepository implements IUnitRepository {
     return plainToInstance(Unit, result);
   }
 
+  async findByCnpj(cnpj: string): Promise<Unit | null> {
+    const result = await this.prisma.unit.findUnique({
+      where: { cnpj },
+
+    });
+
+    if (!result) return null;
+
+    return plainToInstance(Unit, result);
+  }
+
   async update(id: string, updateUnitDTO: UpdateUnitDTO): Promise<Unit> {
     const result = await this.prisma.unit.update({
       where: { id },

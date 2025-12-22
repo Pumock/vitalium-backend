@@ -5,6 +5,7 @@ import { UpdateUnitDTO } from '../../../../presentation/dto/organizationDTO/upda
 export interface IUnitRepository {
   create(createUnitDTO: CreateUnitDTO): Promise<Unit>;
   findById(id: string): Promise<Unit | null>;
+  findByCnpj(cnpj: string): Promise<Unit | null>;
   update(id: string, updateUnitDTO: UpdateUnitDTO): Promise<Unit>;
   delete(id: string): Promise<void>;
 }

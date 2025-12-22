@@ -7,6 +7,7 @@ import {
 import { CreateUnitDTO } from '../../../presentation/dto/organizationDTO/create-unit.dto';
 import { IUnitRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
 import { Unit } from '../../../infrastructure/database/models/unit.models';
+import { UnitAlreadyExistsException } from '../../../shared/execeptions/organizations/unit-already-exists.exception';
 
 @Injectable()
 export class CreateUnitUseCase {
@@ -21,6 +22,12 @@ export class CreateUnitUseCase {
 
     if (errors.length > 0) {
       throw new ValidationException(errors);
+    }
+
+    const unitExisting = await this.unitRepository.findByCnpj(createUnitDTO.cnpj)
+
+    if (unitExisting) {
+      throw new UnitAlreadyExistsException(createUnitDTO.cnpj)
     }
 
 
