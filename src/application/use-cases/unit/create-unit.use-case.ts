@@ -4,10 +4,10 @@ import {
   FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
-import { CreateUnitDTO } from '../../../presentation/dto/organizationDTO/create-unit.dto';
-import { IUnitRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
+import { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
 import { Unit } from '../../../infrastructure/database/models/unit.models';
-import { UnitAlreadyExistsException } from '../../../shared/execeptions/organizations/unit-already-exists.exception';
+import { UnitAlreadyExistsException } from '../../../shared/execeptions/units/unit-already-exists.exception';
+import { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
 
 @Injectable()
 export class CreateUnitUseCase {

@@ -1,7 +1,7 @@
 ﻿import { Test, TestingModule } from '@nestjs/testing';
 import { CreateClinicUseCase } from '../create-clinic.use-case';
 import { IClinicRepository } from '../../../../domain/interfaces/repositories/organizations/unit.repository.interface';
-import { CreateClinicDTO } from '../../../../presentation/dto/organizationDTO/create-unit.dto';
+import { CreateClinicDTO } from '../../../../presentation/dto/unitDTO/create-unit.dto';
 import { ValidationException } from '../../../../shared/execeptions/system/validation.exception';
 import { DatabaseException } from '../../../../shared/execeptions/system/database.exception';
 

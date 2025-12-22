@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaProvider } from '../../database/prisma.provider';
+import { PrismaProvider } from '../database/prisma.provider';
 import { plainToInstance } from 'class-transformer';
-import { IUnitRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
-import { CreateUnitDTO } from '../../../presentation/dto/organizationDTO/create-unit.dto';
-import { Unit } from '../../database/models/unit.models';
-import { UpdateUnitDTO } from '../../../presentation/dto/organizationDTO/update-unit.dto';
+import { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
+import { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
+import { Unit } from '../database/models/unit.models';
+import { UpdateUnitDTO } from '../../../presentation/dto/unitDTO/update-unit.dto';
 
 @Injectable()
 export class UnitRepository implements IUnitRepository {

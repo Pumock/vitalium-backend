@@ -173,7 +173,7 @@ export const ApiUnitOperations = {
 
   findHospitalById: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Buscar hospital por ID',
         description: 'Retorna os dados de um hospital específico pelo seu ID',
@@ -273,7 +273,7 @@ export const ApiUnitOperations = {
 
   updateHospital: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Atualizar hospital',
         description: 'Atualiza os dados de um hospital existente',
@@ -439,7 +439,7 @@ export const ApiUnitOperations = {
 
   deleteHospital: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Excluir hospital',
         description: 'Remove um hospital do sistema',
@@ -475,7 +475,7 @@ export const ApiUnitOperations = {
   // Clinic Operations
   createClinic: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Criar nova clínica',
         description:
@@ -633,7 +633,7 @@ export const ApiUnitOperations = {
 
   findClinicById: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Buscar clínica por ID',
         description: 'Retorna os dados de uma clínica específica pelo seu ID',
@@ -733,7 +733,7 @@ export const ApiUnitOperations = {
 
   updateClinic: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Atualizar clínica',
         description: 'Atualiza os dados de uma clínica existente',
@@ -899,7 +899,7 @@ export const ApiUnitOperations = {
 
   deleteClinic: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Excluir clínica',
         description: 'Remove uma clínica do sistema',
@@ -935,7 +935,7 @@ export const ApiUnitOperations = {
   // Organization Operations (Hospital + Clinic)
   createOrganization: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
         summary: 'Criar organização completa',
         description:

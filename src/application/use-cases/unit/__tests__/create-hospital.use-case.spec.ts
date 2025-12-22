@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateHospitalUseCase } from '../create-hospital.use-case';
 import { IHospitalRepository } from '../../../../domain/interfaces/repositories/organizations/hospital.repository.interface';
-import { CreateHospitalDTO } from '../../../../presentation/dto/organizationDTO/create-unit.dto';
+import { CreateHospitalDTO } from '../../../../presentation/dto/unitDTO/create-unit.dto';
 import { ValidationException } from '../../../../shared/execeptions/system/validation.exception';
 import { DatabaseException } from '../../../../shared/execeptions/system/database.exception';
 

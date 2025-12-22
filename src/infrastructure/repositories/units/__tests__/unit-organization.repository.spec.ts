@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { HospitalRepository } from '../hospital.repository';
 
-import { PrismaProvider } from '../../../database/prisma.provider';
+import { PrismaProvider } from '../../database/prisma.provider';
 
 describe('Create Unit', () => {
   let repository: HospitalRepository;
