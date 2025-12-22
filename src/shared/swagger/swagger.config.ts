@@ -39,7 +39,6 @@ export class SwaggerConfig {
         tryItOutEnabled: true,
       },
       customSiteTitle: 'Vitalium API Docs',
-      customfavIcon: '/favicon.ico',
       customCss: `
         .swagger-ui .topbar { display: none; }
         .swagger-ui .info .title { color: #2d5aa0; }

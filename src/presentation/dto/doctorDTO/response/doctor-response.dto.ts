@@ -1,8 +1,7 @@
 import { Expose } from 'class-transformer';
-import { Clinic } from '../../../../infrastructure/database/models/clinic.models';
-import { Hospital } from '../../../../infrastructure/database/models/unit/unit.models';
-import { User } from '../../../../infrastructure/database/models/core/user.models';
 import { ApiProperty } from '@nestjs/swagger';
+import { User } from '../../../../infrastructure/database/models/user.models';
+import { DoctorUnit } from '../../../../infrastructure/database/models/doctor-unit.models';
 
 export class DoctorResponseDTO {
   @ApiProperty({
@@ -65,8 +64,7 @@ export class DoctorResponseDTO {
   user?: User;
 
   @Expose()
-  hospital?: Hospital;
+  units?: DoctorUnit[];
 
-  @Expose()
-  clinic?: Clinic;
+
 }

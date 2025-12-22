@@ -8,6 +8,9 @@ import {
 
 import { Role } from '../../../shared/enums';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
+import { User } from '../../../infrastructure/database/models/user.models';
+
+
 
 @Injectable()
 export class CreateUserUseCase {

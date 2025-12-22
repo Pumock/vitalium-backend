@@ -5,9 +5,16 @@ import { OrganizationModule } from './organization.module';
 import { MonitoringModule } from '../shared/monitoring/monitoring.module';
 import { HealthController } from '../presentation/controllers/health.controller';
 import { ExceptionsModule } from '../shared/execeptions/exceptions.module';
+import { ConfigModule } from '@nestjs/config';
+
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+
     UserModule,
     DoctorModule,
     OrganizationModule,
@@ -17,4 +24,4 @@ import { ExceptionsModule } from '../shared/execeptions/exceptions.module';
   controllers: [HealthController],
   providers: [],
 })
-export class AppModule {}
+export class AppModule { }
