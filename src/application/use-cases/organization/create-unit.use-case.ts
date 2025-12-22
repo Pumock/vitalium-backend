@@ -4,7 +4,7 @@ import {
   FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
-import { CreateUnitDTO } from '../../../presentation/dto/organizationDTO/create-organization.dto';
+import { CreateUnitDTO } from '../../../presentation/dto/organizationDTO/create-unit.dto';
 import { IUnitRepository } from '../../../domain/interfaces/repositories/organizations/unit.repository.interface';
 import { Unit } from '../../../infrastructure/database/models/unit.models';
 
@@ -22,6 +22,7 @@ export class CreateUnitUseCase {
     if (errors.length > 0) {
       throw new ValidationException(errors);
     }
+
 
     try {
       const unit = await this.unitRepository.create(

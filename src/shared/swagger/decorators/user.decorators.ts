@@ -42,7 +42,7 @@ export const ApiUserOperations = {
             },
             phone: {
               type: 'string',
-              example: '+55 11 99999-9999',
+              example: '11999999999',
               description: 'Telefone do usuário (opcional)',
             },
             avatar: {

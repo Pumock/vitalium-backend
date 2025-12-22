@@ -6,23 +6,25 @@ import {
   ApiBody,
   ApiParam,
 } from '@nestjs/swagger';
+import { UnitType } from '../../enums/unit.enum';
 
-export const ApiOrganizationOperations = {
+export const ApiUnitOperations = {
   // Hospital Operations
-  createHospital: () =>
+  createUnit: () =>
     applyDecorators(
-      ApiTags('organizations'),
+      ApiTags('units'),
       ApiOperation({
-        summary: 'Criar novo hospital',
+        summary: 'Criar uma nova unidade',
         description:
-          'Cria um novo hospital no sistema com as informações fornecidas',
+          'Cria uma nova unidade',
       }),
       ApiBody({
-        description: 'Dados para criação do hospital',
+        description: 'Dados para criação de unidade',
         schema: {
           type: 'object',
           required: [
             'name',
+            'type',
             'address',
             'city',
             'state',
@@ -36,6 +38,12 @@ export const ApiOrganizationOperations = {
               type: 'string',
               example: 'Hospital São José',
               description: 'Nome do hospital',
+            },
+            type: {
+              type: 'string',
+              enum: Object.values(UnitType),
+              example: UnitType.HOSPITAL,
+              description: 'Tipo da unidade',
             },
             address: {
               type: 'string',
@@ -54,12 +62,12 @@ export const ApiOrganizationOperations = {
             },
             zipCode: {
               type: 'string',
-              example: '01234-567',
+              example: '01234567',
               description: 'CEP do hospital',
             },
             phone: {
               type: 'string',
-              example: '+55 11 3333-4444',
+              example: '1133334444',
               description: 'Telefone do hospital',
             },
             email: {
@@ -70,20 +78,16 @@ export const ApiOrganizationOperations = {
             },
             cnpj: {
               type: 'string',
-              example: '12.345.678/0001-90',
+              example: '12345678000190',
               description: 'CNPJ do hospital',
-            },
-            description: {
-              type: 'string',
-              example: 'Hospital especializado em cardiologia e oncologia',
-              description: 'Descrição do hospital (opcional)',
-            },
+            }
+
           },
         },
       }),
       ApiResponse({
         status: 201,
-        description: 'Hospital criado com sucesso',
+        description: 'Unidade criado com sucesso',
         schema: {
           type: 'object',
           properties: {
@@ -114,12 +118,12 @@ export const ApiOrganizationOperations = {
             },
             zipCode: {
               type: 'string',
-              example: '01234-567',
+              example: '01234567',
               description: 'CEP do hospital',
             },
             phone: {
               type: 'string',
-              example: '+55 11 3333-4444',
+              example: '1133334444',
               description: 'Telefone do hospital',
             },
             email: {
@@ -129,7 +133,7 @@ export const ApiOrganizationOperations = {
             },
             cnpj: {
               type: 'string',
-              example: '12.345.678/0001-90',
+              example: '12345678000190',
               description: 'CNPJ do hospital',
             },
             description: {
@@ -228,7 +232,7 @@ export const ApiOrganizationOperations = {
             },
             cnpj: {
               type: 'string',
-              example: '12.345.678/0001-90',
+              example: '12345678000190',
               description: 'CNPJ do hospital',
             },
             description: {
@@ -312,7 +316,7 @@ export const ApiOrganizationOperations = {
             },
             phone: {
               type: 'string',
-              example: '+55 11 3333-5555',
+              example: '1133335555',
               description: 'Telefone do hospital (opcional)',
             },
             email: {
@@ -519,7 +523,7 @@ export const ApiOrganizationOperations = {
             },
             phone: {
               type: 'string',
-              example: '+55 11 2222-3333',
+              example: '1122223333',
               description: 'Telefone da clínica',
             },
             email: {
@@ -530,7 +534,7 @@ export const ApiOrganizationOperations = {
             },
             cnpj: {
               type: 'string',
-              example: '98.765.432/0001-10',
+              example: '98765432000110',
               description: 'CNPJ da clínica',
             },
             description: {
@@ -574,12 +578,12 @@ export const ApiOrganizationOperations = {
             },
             zipCode: {
               type: 'string',
-              example: '01310-100',
+              example: '01310100',
               description: 'CEP da clínica',
             },
             phone: {
               type: 'string',
-              example: '+55 11 2222-3333',
+              example: '1122223333',
               description: 'Telefone da clínica',
             },
             email: {
@@ -589,7 +593,7 @@ export const ApiOrganizationOperations = {
             },
             cnpj: {
               type: 'string',
-              example: '98.765.432/0001-10',
+              example: '987654320001-10',
               description: 'CNPJ da clínica',
             },
             description: {

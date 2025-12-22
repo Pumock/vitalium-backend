@@ -4,6 +4,9 @@ import {
   IsString,
   IsOptional,
   IsEnum,
+  length,
+  Length,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Admin } from '../../../infrastructure/database/models/admin.models';
@@ -50,7 +53,10 @@ export class CreateUserDTO {
 
   @ApiPropertyOptional({
     description: 'Telefone do usuário',
-    example: '+55 11 99999-9999',
+    example: '11999999999',
+  })
+  @Matches(/^(\+55)?\d{11}$/, {
+    message: 'Telefone deve conter 11 números (EX: 62999999999)',
   })
   @IsOptional()
   @IsString()

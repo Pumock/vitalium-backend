@@ -9,7 +9,7 @@ export class SwaggerConfig {
       .setVersion('1.0.0')
       .addTag('users', 'Operações relacionadas aos usuários')
       .addTag('doctors', 'Operações relacionadas aos médicos')
-      .addTag('organizations', 'Operações relacionadas aos médicos')
+      .addTag('units', 'Operações relacionadas as unidades')
       .addTag('Health', 'Status da aplicação')
       .addBearerAuth(
         {

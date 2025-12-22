@@ -1,19 +1,20 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { CreateUnitUseCase } from "../../../application/use-cases/organization/create-unit.use-case";
-import { ApiOrganizationOperations } from "../../../shared/swagger/decorators";
-import { CreateUnitDTO } from "../../dto/organizationDTO/create-organization.dto";
-import { ResponseUnitDTO } from "../../dto/organizationDTO/response/unit-response.dto";
+import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import { CreateUnitUseCase } from "../../../application/use-cases/organization/create-unit.use-case";
+import { CreateUnitDTO } from "../../dto/organizationDTO/create-unit.dto";
+import { ResponseUnitDTO } from "../../dto/organizationDTO/response/unit-response.dto";
+import { ApiUnitOperations } from "../../../shared/swagger/decorators";
 
-@Controller('organizations')
-export class OrganizationController {
+@Controller('units')
+export class UnitController {
   constructor(
     private readonly createUnitUseCase: CreateUnitUseCase,
 
   ) { }
 
-  @Post('organizations')
-  @ApiOrganizationOperations.createOrganization()
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiUnitOperations.createUnit()
   async createUnit(
     @Body() createUnitDTO: CreateUnitDTO,
   ): Promise<ResponseUnitDTO> {
