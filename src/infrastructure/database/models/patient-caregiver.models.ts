@@ -1,5 +1,5 @@
 import { Patient } from './patient.models';
-import { Caregiver } from './caregiver.models';
+import { Caregiver } from '../caregiver.models';
 
 export class PatientCaregiver {
   id: string;

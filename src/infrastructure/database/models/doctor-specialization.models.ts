@@ -7,7 +7,6 @@ export class DoctorSpecialization {
   specializationId: string;
   createdAt: string;
 
-  // Relacionamentos (carregados quando necessário)
   doctor?: Doctor;
   specialization?: Specialization;
 }

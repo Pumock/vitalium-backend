@@ -1,9 +1,10 @@
-import { Role } from '../../../shared/enums/role.enum';
-import { Caregiver } from './caregiver.models';
-import { Nurse } from './nurse.models';
-import { Doctor } from './doctor.models';
-import { Patient } from './patient.models';
-import { Admin } from './admin.models';
+import { Admin } from "@prisma/client";
+import { Role } from "../../../shared/enums";
+import { Caregiver } from "../caregiver.models";
+import { Doctor } from "./doctor.models";
+import { Nurse } from "./nurse.models";
+import { Patient } from "./patient.models";
+
 
 export class User {
   id: string;
@@ -15,8 +16,9 @@ export class User {
   avatar?: string;
   isActive: boolean;
   role: Role;
-  createdAt: string;
-  updatedAt: string;
+
+  createdAt: Date;
+  updatedAt: Date;
 
   patient?: Patient;
   doctor?: Doctor;

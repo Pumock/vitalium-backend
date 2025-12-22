@@ -1,21 +1,18 @@
 services:
-  # Vitalium Backend Application - Development Mode
   vitalium-backend-dev:
     build:
       context: .
       dockerfile: Dockerfile.dev
-      target: development
     container_name: vitalium-backend-dev
     ports:
       - '3000:3000'
-      - '9229:9229' # Debug port
+      - '9229:9229'
     environment:
       - NODE_ENV=development
       - DATABASE_URL=postgresql://vitalium:vitalium123@postgres:5432/vitalium?schema=public
-      - JWT_SECRET=your-super-secret-jwt-key-for-vitalium-backend-dev
+      - JWT_SECRET=dev-secret
       - LOG_LEVEL=debug
       - PORT=3000
-      - ENABLE_METRICS=true
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,38 +28,36 @@ services:
       - node_modules_cache:/app/node_modules
     networks:
       - vitalium-network
-    tty: true
-    stdin_open: true
-    command: sh -c "npx prisma generate && npx prisma migrate deploy && npm run start:dev"
+    command: >
+      sh -c "
+      npx prisma generate &&
+      npx prisma migrate dev &&
+      npm run start:dev
+      "
 
-  # PostgreSQL Database
   postgres:
     image: postgres:15-alpine
     container_name: vitalium-postgres-dev
-    restart: unless-stopped
     environment:
-      - POSTGRES_DB=vitalium
-      - POSTGRES_USER=vitalium
-      - POSTGRES_PASSWORD=vitalium123
+      POSTGRES_DB: vitalium
+      POSTGRES_USER: vitalium
+      POSTGRES_PASSWORD: vitalium123
     ports:
       - '5432:5432'
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
-      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - vitalium-network
     healthcheck:
       test: ['CMD-SHELL', 'pg_isready -U vitalium -d vitalium']
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - vitalium-network
 
-  # Prisma Studio (Database Admin UI)
   prisma-studio:
     build:
       context: .
       dockerfile: Dockerfile.dev
-      target: development
     container_name: vitalium-prisma-studio
     ports:
       - '5555:5555'
@@ -79,9 +74,7 @@ services:
 
 volumes:
   postgres_dev_data:
-    driver: local
   node_modules_cache:
-    driver: local
 
 networks:
   vitalium-network:

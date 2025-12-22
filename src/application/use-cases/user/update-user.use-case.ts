@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { User } from '../../../infrastructure/database/models/user.models';
+import { User } from '../../../infrastructure/database/models/core/user.models';
 import { UpdateUserDTO } from '../../../presentation/dto/userDTO/update-user.dtp';
 import { UserNotFoundException } from '../../../shared/execeptions/user/user-not-found.exception';
 
@@ -9,7 +9,7 @@ export class UpdateUserUseCase {
   constructor(
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(id: string, updateUserDTO: UpdateUserDTO): Promise<User> {
     const user = await this.userRepository.findById(id);

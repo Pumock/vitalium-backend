@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
-import { User } from '../../../infrastructure/database/models/user.models';
-import { Hospital } from '../../../infrastructure/database/models/hospital.models';
+import { User } from '../../../infrastructure/database/models/core/user.models';
+import { Hospital } from '../../../infrastructure/database/models/unit/unit.models';
 import { Clinic } from '../../../infrastructure/database/models/clinic.models';
 
 export class CreateDoctorDTO {

@@ -5,12 +5,10 @@ export class PatientDoctor {
   id: string;
   patientId: string;
   doctorId: string;
-  isActive: boolean;
-  startDate: string;
-  endDate?: string;
-  createdAt: string;
+  startDate: Date;
+  endDate?: Date;
+  createdAt: Date;
 
-  // Relacionamentos (carregados quando necessário)
   patient?: Patient;
   doctor?: Doctor;
 }

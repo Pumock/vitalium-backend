@@ -1,4 +1,4 @@
-import { Hospital } from '../../../../infrastructure/database/models/hospital.models';
+import { Hospital } from '../../../../infrastructure/database/models/unit/unit.models';
 import {
   CreateHospitalDTO,
   CreateHospitalWithClinicDTO,

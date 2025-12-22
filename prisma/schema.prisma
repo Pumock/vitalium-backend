@@ -125,7 +125,7 @@ enum UnitType {
 }
 
 //////////////////////////////////////
-// MODELS
+// CORE MODELS
 //////////////////////////////////////
 
 model User {
@@ -141,14 +141,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
   patient   Patient?
   caregiver Caregiver?
   doctor    Doctor?
   nurse     Nurse?
   admin     Admin?
 
-  // Logging Relations
   applicationLogs   ApplicationLog[]
   requestLogs       RequestLog[]
   securityLogs      SecurityLog[]
@@ -156,6 +154,8 @@ model User {
   businessEventLogs BusinessEventLog[]
   errorLogs         ErrorLog[]
 
+  @@index([email])
+  @@index([role])
   @@map("users")
 }
 
@@ -174,13 +174,57 @@ model Unit {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  doctors      Doctor[]
-  appointments Appointment[]
-  nurses       Nurse[]
-  wards        Ward[]
+  doctors       DoctorUnit[]
+  nurses        NurseUnit[]
+  patients      PatientUnit[]
+  appointments  Appointment[]
+  prescriptions Prescription[]
+  wards         Ward[]
 
   @@map("units")
+}
+
+//////////////////////////////////////
+// DOCTOR
+//////////////////////////////////////
+
+model Doctor {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  crm       String   @unique
+  crmState  Boolean
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  units           DoctorUnit[]
+  specializations DoctorSpecialization[]
+  medicalRecords  MedicalRecord[]
+  appointments    Appointment[]
+  prescriptions   Prescription[]
+  patientDoctors  PatientDoctor[]
+
+  @@index([crm])
+  @@map("doctors")
+}
+
+model DoctorUnit {
+  id                String   @id @default(cuid())
+  doctorId          String
+  unitId            String
+  consultationPrice Decimal?
+  isPrimary         Boolean  @default(false)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+
+  doctor Doctor @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  unit   Unit   @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([doctorId, unitId])
+  @@index([doctorId])
+  @@index([unitId])
+  @@map("doctor_units")
 }
 
 model Specialization {
@@ -189,35 +233,10 @@ model Specialization {
   description String?
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
 
-  // Relations
   doctors DoctorSpecialization[]
 
   @@map("specializations")
-}
-
-model Doctor {
-  id                String   @id @default(cuid())
-  userId            String   @unique
-  crm               String   @unique
-  crmState          Boolean
-  unitId            String?
-  consultationPrice Decimal?
-  isActive          Boolean  @default(true)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-
-  // Relations
-  user            User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  unit            Unit?                  @relation(fields: [unitId], references: [id])
-  specializations DoctorSpecialization[]
-  medicalRecords  MedicalRecord[]
-  appointments    Appointment[]
-  prescriptions   Prescription[]
-  patientDoctors  PatientDoctor[]
-
-  @@map("doctors")
 }
 
 model DoctorSpecialization {
@@ -226,7 +245,6 @@ model DoctorSpecialization {
   specializationId String
   createdAt        DateTime @default(now())
 
-  // Relations
   doctor         Doctor         @relation(fields: [doctorId], references: [id], onDelete: Cascade)
   specialization Specialization @relation(fields: [specializationId], references: [id], onDelete: Cascade)
 
@@ -234,24 +252,48 @@ model DoctorSpecialization {
   @@map("doctor_specializations")
 }
 
+//////////////////////////////////////
+// NURSE
+//////////////////////////////////////
+
 model Nurse {
   id         String   @id @default(cuid())
   userId     String   @unique
   coren      String   @unique
-  corenState String
-  unitId     String?
-  wardId     String?
+  corenState Boolean
   isActive   Boolean  @default(true)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
-  // Relations
-  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  unit Unit? @relation(fields: [unitId], references: [id])
-  ward Ward? @relation(fields: [wardId], references: [id])
+  user  User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  units NurseUnit[]
 
+  @@index([coren])
   @@map("nurses")
 }
+
+model NurseUnit {
+  id        String   @id @default(cuid())
+  nurseId   String
+  unitId    String
+  wardId    String?
+  isPrimary Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  nurse Nurse @relation(fields: [nurseId], references: [id], onDelete: Cascade)
+  unit  Unit  @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  ward  Ward? @relation(fields: [wardId], references: [id])
+
+  @@unique([nurseId, unitId])
+  @@index([nurseId])
+  @@index([unitId])
+  @@map("nurse_units")
+}
+
+//////////////////////////////////////
+// ADMIN
+//////////////////////////////////////
 
 model Admin {
   id          String    @id @default(cuid())
@@ -262,13 +304,15 @@ model Admin {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  // Relations
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("admins")
 }
 
-// Patients & Caregivers
+//////////////////////////////////////
+// PATIENT
+//////////////////////////////////////
+
 model Patient {
   id               String     @id @default(cuid())
   userId           String     @unique
@@ -288,16 +332,38 @@ model Patient {
   createdAt        DateTime   @default(now())
   updatedAt        DateTime   @updatedAt
 
-  // Relations
-  user           User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  units          PatientUnit[]
   caregivers     PatientCaregiver[]
+  patientDoctors PatientDoctor[]
+
+  // eventos
   medicalRecords MedicalRecord[]
   appointments   Appointment[]
   prescriptions  Prescription[]
-  patientDoctors PatientDoctor[]
   wardAdmissions WardAdmission[]
 
+  @@index([cpf])
   @@map("patients")
+}
+
+model PatientUnit {
+  id        String @id @default(cuid())
+  patientId String
+  unitId    String
+
+  isPrimary Boolean  @default(false)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  unit    Unit    @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([patientId, unitId])
+  @@index([patientId])
+  @@index([unitId])
+  @@map("patient_units")
 }
 
 model Caregiver {
@@ -307,9 +373,7 @@ model Caregiver {
   relationship CaregiverRelationship
   isActive     Boolean               @default(true)
   createdAt    DateTime              @default(now())
-  updatedAt    DateTime              @updatedAt
 
-  // Relations
   user     User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   patients PatientCaregiver[]
 
@@ -323,7 +387,6 @@ model PatientCaregiver {
   isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
 
-  // Relations
   patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
   caregiver Caregiver @relation(fields: [caregiverId], references: [id], onDelete: Cascade)
 
@@ -335,12 +398,10 @@ model PatientDoctor {
   id        String    @id @default(cuid())
   patientId String
   doctorId  String
-  isActive  Boolean   @default(true)
   startDate DateTime  @default(now())
   endDate   DateTime?
   createdAt DateTime  @default(now())
 
-  // Relations
   patient Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
   doctor  Doctor  @relation(fields: [doctorId], references: [id], onDelete: Cascade)
 
@@ -348,7 +409,10 @@ model PatientDoctor {
   @@map("patient_doctors")
 }
 
-// Medical Records & Healthcare Data
+//////////////////////////////////////
+// MEDICAL RECORDS
+//////////////////////////////////////
+
 model MedicalRecord {
   id           String     @id @default(cuid())
   patientId    String
@@ -361,15 +425,15 @@ model MedicalRecord {
   observations String?
   recordDate   DateTime   @default(now())
   recordType   RecordType
-  isActive     Boolean    @default(true)
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
-  // Relations
   patient     Patient             @relation(fields: [patientId], references: [id])
   doctor      Doctor              @relation(fields: [doctorId], references: [id])
   attachments MedicalAttachment[]
 
+  @@index([patientId])
+  @@index([doctorId])
   @@map("medical_records")
 }
 
@@ -382,13 +446,15 @@ model MedicalAttachment {
   fileSize        Int
   uploadedAt      DateTime @default(now())
 
-  // Relations
   medicalRecord MedicalRecord @relation(fields: [medicalRecordId], references: [id], onDelete: Cascade)
 
   @@map("medical_attachments")
 }
 
-// Appointments
+//////////////////////////////////////
+// APPOINTMENTS
+//////////////////////////////////////
+
 model Appointment {
   id          String            @id @default(cuid())
   patientId   String
@@ -397,7 +463,7 @@ model Appointment {
   title       String
   description String?
   scheduledAt DateTime
-  duration    Int // minutes
+  duration    Int               @default(30)
   status      AppointmentStatus @default(SCHEDULED)
   type        AppointmentType
   price       Decimal?
@@ -405,50 +471,62 @@ model Appointment {
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  // Relations
   patient Patient @relation(fields: [patientId], references: [id])
   doctor  Doctor  @relation(fields: [doctorId], references: [id])
-  unit    Unit?   @relation(fields: [unitId], references: [id])
+  unit    Unit    @relation(fields: [unitId], references: [id])
 
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([scheduledAt])
   @@map("appointments")
 }
 
-// Prescriptions
+//////////////////////////////////////
+// PRESCRIPTIONS
+//////////////////////////////////////
+
 model Prescription {
-  id           String    @id @default(cuid())
+  id           String   @id @default(cuid())
   patientId    String
   doctorId     String
-  medications  Json // Array of medications with dosage, frequency, etc.
+  unitId       String
+  medication   String
+  dosage       String
+  frequency    String
+  duration     String
   instructions String?
-  validUntil   DateTime?
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  prescribedAt DateTime @default(now())
+  createdAt    DateTime @default(now())
 
-  // Relations
   patient Patient @relation(fields: [patientId], references: [id])
   doctor  Doctor  @relation(fields: [doctorId], references: [id])
+  unit    Unit    @relation(fields: [unitId], references: [id])
 
+  @@index([patientId])
+  @@index([doctorId])
   @@map("prescriptions")
 }
 
-// Hospital Wards & Admissions
-model Ward {
-  id               String   @id @default(cuid())
-  unitId           String
-  name             String
-  wardType         WardType
-  capacity         Int
-  currentOccupancy Int      @default(0)
-  isActive         Boolean  @default(true)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+//////////////////////////////////////
+// WARDS
+//////////////////////////////////////
 
-  // Relations
+model Ward {
+  id          String   @id @default(cuid())
+  unitId      String
+  name        String
+  type        WardType
+  capacity    Int
+  currentLoad Int      @default(0)
+  floor       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
   unit       Unit            @relation(fields: [unitId], references: [id])
-  nurses     Nurse[]
+  nurses     NurseUnit[]
   admissions WardAdmission[]
 
+  @@index([unitId])
   @@map("wards")
 }
 
@@ -462,12 +540,12 @@ model WardAdmission {
   status        AdmissionStatus @default(ACTIVE)
   notes         String?
   createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
 
-  // Relations
   patient Patient @relation(fields: [patientId], references: [id])
   ward    Ward    @relation(fields: [wardId], references: [id])
 
+  @@index([patientId])
+  @@index([wardId])
   @@map("ward_admissions")
 }
 

@@ -10,6 +10,5 @@ export class Admin {
   createdAt: string;
   updatedAt: string;
 
-  // Relacionamentos (carregados quando necessário)
   user?: User;
 }

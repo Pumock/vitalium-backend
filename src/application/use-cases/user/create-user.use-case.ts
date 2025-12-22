@@ -1,6 +1,6 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { User } from '../../../infrastructure/database/models/user.models';
+import { User } from '../../../infrastructure/database/models/core/user.models';
 import { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import {
   FieldError,
@@ -13,7 +13,7 @@ import { DatabaseException } from '../../../shared/execeptions/system/database.e
 export class CreateUserUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(createUserDTO: CreateUserDTO): Promise<User> {
     const errors: FieldError[] = [];

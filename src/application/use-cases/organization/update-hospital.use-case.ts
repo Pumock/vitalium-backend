@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IHospitalRepository } from '../../../domain/interfaces/repositories/organizations/hospital.repository.interface';
-import { Hospital } from '../../../infrastructure/database/models/hospital.models';
+import { Hospital } from '../../../infrastructure/database/models/unit/unit.models';
 import { UpdateHospitalDTO } from '../../../presentation/dto/organizationDTO/update-organization.dto';
 import { HospitalNotFoundException } from '../../../shared/execeptions/organizations/hospital-not-found.exception';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
@@ -14,7 +14,7 @@ export class UpdateHospitalUseCase {
   constructor(
     @Inject('IHospitalRepository')
     private readonly hospitalRepository: IHospitalRepository,
-  ) {}
+  ) { }
   async execute(
     id: string,
     updateHospitalDTO: UpdateHospitalDTO,

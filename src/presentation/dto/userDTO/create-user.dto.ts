@@ -7,7 +7,7 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Admin } from '../../../infrastructure/database/models/admin.models';
-import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+import { Caregiver } from '../../../infrastructure/database/caregiver.models';
 import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { Nurse } from '../../../infrastructure/database/models/nurse.models';
 import { Patient } from '../../../infrastructure/database/models/patient.models';
@@ -23,7 +23,7 @@ export class CreateUserDTO {
   email: string;
 
   @ApiProperty({
-    description: 'Senha do usuário (será hasheada)',
+    description: 'Senha do usuário',
     example: 'MinhaSenh@123',
     minLength: 8,
   })

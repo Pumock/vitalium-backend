@@ -14,7 +14,7 @@ export class UpdateDoctorUseCase {
   constructor(
     @Inject('IDoctorRepository')
     private readonly doctorRepository: IDoctorRepository,
-  ) {}
+  ) { }
 
   async execute(id: string, updateDoctorDTO: UpdateDoctorDTO): Promise<Doctor> {
     const errors: FieldError[] = [];

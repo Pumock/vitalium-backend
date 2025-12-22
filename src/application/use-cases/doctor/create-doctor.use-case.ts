@@ -17,7 +17,7 @@ export class CreateDoctorUseCase {
     private readonly doctorRepository: IDoctorRepository,
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   async execute(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {
     const errors: FieldError[] = [];

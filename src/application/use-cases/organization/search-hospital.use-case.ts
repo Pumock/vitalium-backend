@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IHospitalRepository } from '../../../domain/interfaces/repositories/organizations/hospital.repository.interface';
-import { Hospital } from '../../../infrastructure/database/models/hospital.models';
+import { Hospital } from '../../../infrastructure/database/models/unit/unit.models';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import {
   FieldError,
@@ -13,7 +13,7 @@ export class SearchHospitalUseCase {
   constructor(
     @Inject('IHospitalRepository')
     private readonly hospitalRepository: IHospitalRepository,
-  ) {}
+  ) { }
   async execute(id: string): Promise<Hospital> {
     const errors: FieldError[] = [];
 

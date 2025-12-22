@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for Vitalium Backend
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Set working directory
 WORKDIR /app
@@ -23,7 +23,7 @@ RUN npx prisma generate
 RUN npm run build
 
 # Stage 2: Production
-FROM node:18-alpine AS production
+FROM node:22-alpine AS production
 
 # Install dumb-init for proper signal handling and curl for healthchecks
 RUN apk add --no-cache dumb-init curl

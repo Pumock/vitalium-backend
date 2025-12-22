@@ -1,21 +1,15 @@
-import { Gender } from '../../../shared/enums/gender.enum';
-import { BloodType } from '../../../shared/enums/blood-type.enum';
-import { User } from './user.models';
-import { PatientCaregiver } from './patient-caregiver.models';
-import { MedicalRecord } from './medical-record.models';
-import { Appointment } from './appointment.models';
-import { Prescription } from './prescription.models';
+import { PatientUnit } from './patient-unit.models';
 import { PatientDoctor } from './patient-doctor.models';
-import { WardAdmission } from './ward-admission.models';
+import { User } from '@prisma/client';
 
 export class Patient {
   id: string;
   userId: string;
   cpf: string;
   rg?: string;
-  birthDate: string;
-  gender: Gender;
-  bloodType?: BloodType;
+  birthDate: Date;
+  gender: string;
+  bloodType?: string;
   allergies?: string;
   emergencyContact?: string;
   emergencyPhone?: string;
@@ -24,15 +18,10 @@ export class Patient {
   state?: string;
   zipCode?: string;
   isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 
-  // Relacionamentos (carregados quando necessário)
   user?: User;
-  caregivers?: PatientCaregiver[];
-  medicalRecords?: MedicalRecord[];
-  appointments?: Appointment[];
-  prescriptions?: Prescription[];
+  units?: PatientUnit[];
   patientDoctors?: PatientDoctor[];
-  wardAdmissions?: WardAdmission[];
 }

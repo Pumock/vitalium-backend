@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { Clinic } from '../../../../infrastructure/database/models/clinic.models';
-import { Hospital } from '../../../../infrastructure/database/models/hospital.models';
-import { User } from '../../../../infrastructure/database/models/user.models';
+import { Hospital } from '../../../../infrastructure/database/models/unit/unit.models';
+import { User } from '../../../../infrastructure/database/models/core/user.models';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class DoctorResponseDTO {

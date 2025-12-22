@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { User } from '../../../infrastructure/database/models/user.models';
+import { User } from '../../../infrastructure/database/models/core/user.models';
 import { ValidationException } from '../../../shared/execeptions/system/validation.exception';
 import { UserNotFoundException } from '../../../shared/execeptions/user/user-not-found.exception';
 
@@ -8,7 +8,7 @@ import { UserNotFoundException } from '../../../shared/execeptions/user/user-not
 export class SearchUserUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-  ) {}
+  ) { }
 
   // Buscar usuário por ID
   async findById(id: string): Promise<User> {

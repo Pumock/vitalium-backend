@@ -9,7 +9,7 @@ export class SearchDoctorUseCase {
   constructor(
     @Inject('IDoctorRepository')
     private readonly DoctorRepository: IDoctorRepository,
-  ) {}
+  ) { }
 
   // Buscar usuário por ID
   async findById(id: string): Promise<Doctor> {

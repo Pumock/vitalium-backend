@@ -8,7 +8,7 @@ import { Doctor } from '../../database/models/doctor.models';
 
 @Injectable()
 export class DoctorRepository implements IDoctorRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   /**
    * Criar médico

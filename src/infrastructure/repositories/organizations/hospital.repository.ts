@@ -6,12 +6,12 @@ import {
   CreateHospitalDTO,
   CreateHospitalWithClinicDTO,
 } from '../../../presentation/dto/organizationDTO/create-organization.dto';
-import { Hospital } from '../../database/models/hospital.models';
+import { Hospital } from '../../database/models/unit/unit.models';
 import { UpdateHospitalDTO } from '../../../presentation/dto/organizationDTO/update-organization.dto';
 
 @Injectable()
 export class HospitalRepository implements IHospitalRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
   /**
    * Criar hospital com clínicas vinculadas usando transação
    */
@@ -20,7 +20,7 @@ export class HospitalRepository implements IHospitalRepository {
   ): Promise<Hospital> {
     const result = await this.prisma.$transaction(async (tx) => {
       // Criar o hospital primeiro
-      const hospital = await tx.hospital.create({
+      const hospital = await this.prisma.hospital.create({
         data: {
           name: createHospitalWithClinicDTO.hospital.name,
           address: createHospitalWithClinicDTO.hospital.address,
@@ -229,6 +229,7 @@ export class HospitalRepository implements IHospitalRepository {
       orderBy: { name: 'asc' },
     });
 
-    return plainToInstance(Hospital, results);
+    // return plainToInstance(Hospital, results);
+    return [];
   }
 }

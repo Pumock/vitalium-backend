@@ -5,7 +5,7 @@ export class Prescription {
   id: string;
   patientId: string;
   doctorId: string;
-  medications: any; // JSON com array de medicamentos
+  medications: any;
   instructions?: string;
   validUntil?: string;
   isActive: boolean;

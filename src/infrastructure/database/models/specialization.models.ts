@@ -8,6 +8,5 @@ export class Specialization {
   createdAt: string;
   updatedAt: string;
 
-  // Relacionamentos (carregados quando necessário)
   doctors?: DoctorSpecialization[];
 }

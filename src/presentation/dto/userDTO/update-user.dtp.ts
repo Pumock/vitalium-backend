@@ -11,7 +11,9 @@ import { Admin } from '../../../infrastructure/database/models/admin.models';
 import { Patient } from '../../../infrastructure/database/models/patient.models';
 import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { Nurse } from '../../../infrastructure/database/models/nurse.models';
-import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+import { Caregiver } from '../../../infrastructure/database/caregiver.models';
+
+
 export class UpdateUserDTO {
   @ApiPropertyOptional({
     description: 'Email único do usuário',
