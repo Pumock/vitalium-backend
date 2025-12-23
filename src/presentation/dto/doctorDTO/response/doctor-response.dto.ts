@@ -26,13 +26,6 @@ export class DoctorResponseDTO {
   @Expose()
   crmState: boolean;
 
-  @ApiProperty({
-    description: 'Preço da consulta médica em reais',
-    example: 150.0,
-    type: Number,
-  })
-  @Expose()
-  consultationPrice?: number;
 
   @ApiProperty({
     description: 'Status do perfil do médico (ativo/inativo)',

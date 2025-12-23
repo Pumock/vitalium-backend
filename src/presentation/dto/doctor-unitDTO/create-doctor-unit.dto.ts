@@ -11,7 +11,7 @@ export class CreateDoctorUnitDTO {
     doctorId: string;
 
     @ApiProperty({
-        description: 'ID da unidade (hospital ou clínica)',
+        description: 'ID da unidade',
         example: 'clabc987654321fedcba',
     })
     @IsString()

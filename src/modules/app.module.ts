@@ -6,6 +6,7 @@ import { HealthController } from '../presentation/controllers/health.controller'
 import { ExceptionsModule } from '../shared/execeptions/exceptions.module';
 import { ConfigModule } from '@nestjs/config';
 import { UnitModule } from './units.module';
+import { DoctorUnitModule } from './doctor-unit.module';
 
 
 @Module({
@@ -17,6 +18,7 @@ import { UnitModule } from './units.module';
 
     UserModule,
     DoctorModule,
+    DoctorUnitModule,
     UnitModule,
     ExceptionsModule,
     MonitoringModule,
