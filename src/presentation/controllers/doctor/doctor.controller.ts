@@ -26,7 +26,7 @@ export class DoctorController {
     private readonly searchDoctorUseCase: SearchDoctorUseCase,
     private readonly updateDoctorUseCase: UpdateDoctorUseCase,
     private readonly deleteDoctorUseCase: DeleteDoctorUseCase,
-  ) {}
+  ) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -41,16 +41,16 @@ export class DoctorController {
     });
   }
 
-  @Get()
-  @HttpCode(HttpStatus.OK)
-  @ApiDoctorOperations.findAllDoctors()
-  async findAll(): Promise<DoctorResponseDTO[]> {
-    const doctors = await this.searchDoctorUseCase.findAll();
+  // @Get()
+  // @HttpCode(HttpStatus.OK)
+  // @ApiDoctorOperations.findAllDoctors()
+  // async findAll(): Promise<DoctorResponseDTO[]> {
+  //   const doctors = await this.searchDoctorUseCase.findAll();
 
-    return plainToInstance(DoctorResponseDTO, doctors, {
-      excludeExtraneousValues: true,
-    });
-  }
+  //   return plainToInstance(DoctorResponseDTO, doctors, {
+  //     excludeExtraneousValues: true,
+  //   });
+  // }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
@@ -63,24 +63,24 @@ export class DoctorController {
     });
   }
 
-  @Patch('/:id')
-  @HttpCode(HttpStatus.OK)
-  @ApiDoctorOperations.updateDoctor()
-  async update(
-    @Param('id') id: string,
-    @Body() updateDoctorDTO: UpdateDoctorDTO,
-  ): Promise<DoctorResponseDTO> {
-    const doctor = await this.updateDoctorUseCase.execute(id, updateDoctorDTO);
+  // @Patch('/:id')
+  // @HttpCode(HttpStatus.OK)
+  // @ApiDoctorOperations.updateDoctor()
+  // async update(
+  //   @Param('id') id: string,
+  //   @Body() updateDoctorDTO: UpdateDoctorDTO,
+  // ): Promise<DoctorResponseDTO> {
+  //   const doctor = await this.updateDoctorUseCase.execute(id, updateDoctorDTO);
 
-    return plainToInstance(DoctorResponseDTO, doctor, {
-      excludeExtraneousValues: true,
-    });
-  }
+  //   return plainToInstance(DoctorResponseDTO, doctor, {
+  //     excludeExtraneousValues: true,
+  //   });
+  // }
 
-  @Delete('/:id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiDoctorOperations.deleteDoctor()
-  async delete(@Param('id') id: string): Promise<void> {
-    return this.deleteDoctorUseCase.execute(id);
-  }
+  // @Delete('/:id')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // @ApiDoctorOperations.deleteDoctor()
+  // async delete(@Param('id') id: string): Promise<void> {
+  //   return this.deleteDoctorUseCase.execute(id);
+  // }
 }

@@ -61,7 +61,15 @@ export class DoctorRepository implements IDoctorRepository {
 
     if (!doctor) return null;
 
-    return plainToInstance(Doctor, doctor);
+    return plainToInstance(Doctor, {
+      ...doctor,
+      units: doctor.units.map(unit => ({
+        ...unit,
+        consultationPrice: unit.consultationPrice
+          ? Number(unit.consultationPrice)
+          : null,
+      })),
+    });
   }
 
   async findByCrm(crm: string): Promise<Doctor | null> {
