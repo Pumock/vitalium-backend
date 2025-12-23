@@ -8,12 +8,11 @@ import { UpdateUnitDTO } from '../../../presentation/dto/unitDTO/update-unit.dto
 
 @Injectable()
 export class UnitRepository implements IUnitRepository {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async create(createUnitDTO: CreateUnitDTO): Promise<Unit> {
     const result = await this.prisma.unit.create({
       data: createUnitDTO,
-
     });
     return plainToInstance(Unit, result);
   }
@@ -21,7 +20,6 @@ export class UnitRepository implements IUnitRepository {
   async findById(id: string): Promise<Unit | null> {
     const result = await this.prisma.unit.findUnique({
       where: { id },
-
     });
 
     if (!result) return null;
@@ -32,7 +30,6 @@ export class UnitRepository implements IUnitRepository {
   async findByCnpj(cnpj: string): Promise<Unit | null> {
     const result = await this.prisma.unit.findUnique({
       where: { cnpj },
-
     });
 
     if (!result) return null;
@@ -44,7 +41,6 @@ export class UnitRepository implements IUnitRepository {
     const result = await this.prisma.unit.update({
       where: { id },
       data: updateUnitDTO,
-
     });
 
     return plainToInstance(Unit, result);

@@ -30,4 +30,4 @@ import { UserDataRepository } from '../infrastructure/repositories/user/user-dat
     },
   ],
 })
-export class DoctorModule { }
+export class DoctorModule {}

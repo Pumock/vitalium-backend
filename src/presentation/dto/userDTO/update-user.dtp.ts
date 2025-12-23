@@ -14,7 +14,6 @@ import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { Nurse } from '../../../infrastructure/database/models/nurse.models';
 import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
 
-
 export class UpdateUserDTO {
   @ApiPropertyOptional({
     description: 'Email único do usuário',

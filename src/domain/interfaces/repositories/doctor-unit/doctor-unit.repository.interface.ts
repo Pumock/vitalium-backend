@@ -3,9 +3,9 @@ import { CreateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO
 import { UpdateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO/update-doctor-unit.dto';
 
 export interface IDoctorUnitRepository {
-    create(data: CreateDoctorUnitDTO): Promise<DoctorUnit>;
-    findById(id: string): Promise<DoctorUnit | null>;
-    findByDoctorId(doctorId: string): Promise<DoctorUnit[]>;
-    update(id: string, data: UpdateDoctorUnitDTO): Promise<DoctorUnit>;
-    delete(id: string): Promise<void>;
+  create(data: CreateDoctorUnitDTO): Promise<DoctorUnit>;
+  findById(id: string): Promise<DoctorUnit | null>;
+  findByDoctorId(doctorId: string): Promise<DoctorUnit[]>;
+  update(id: string, data: UpdateDoctorUnitDTO): Promise<DoctorUnit>;
+  delete(id: string): Promise<void>;
 }

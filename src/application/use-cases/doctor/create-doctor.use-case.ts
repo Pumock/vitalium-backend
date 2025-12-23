@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ValidationException, FieldError } from '../../../shared/execeptions/system/validation.exception';
+import {
+  ValidationException,
+  FieldError,
+} from '../../../shared/execeptions/system/validation.exception';
 import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
 import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
@@ -15,7 +18,7 @@ export class CreateDoctorUseCase {
     private readonly doctorRepository: IDoctorRepository,
     @Inject('IUserRepository')
     private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {
     const errors: FieldError[] = [];
@@ -57,14 +60,12 @@ export class CreateDoctorUseCase {
         ]);
       }
 
-
-
-      const doctorExisting = await this.doctorRepository.findByCrm(createDoctorDTO.crm)
+      const doctorExisting = await this.doctorRepository.findByCrm(
+        createDoctorDTO.crm,
+      );
       if (doctorExisting) {
-        throw new DoctorAlreadyExistsException(createDoctorDTO.crm)
-
+        throw new DoctorAlreadyExistsException(createDoctorDTO.crm);
       }
-
 
       const doctorData = {
         ...createDoctorDTO,
@@ -74,7 +75,6 @@ export class CreateDoctorUseCase {
       const doctor = await this.doctorRepository.create(doctorData);
       return doctor;
     } catch (error) {
-
       throw new DatabaseException('criar médico', error);
     }
   }

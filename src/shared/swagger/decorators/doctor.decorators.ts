@@ -351,8 +351,7 @@ export const ApiDoctorOperations = {
                       },
                       email: {
                         type: 'string',
-                        example:
-                          'contato@hospitalsaojose.com.br',
+                        example: 'contato@hospitalsaojose.com.br',
                       },
                       address: {
                         type: 'string',

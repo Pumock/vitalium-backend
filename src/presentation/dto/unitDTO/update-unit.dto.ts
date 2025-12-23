@@ -23,8 +23,6 @@ export class UpdateUnitDTO {
   @IsString()
   state?: string;
 
-
-
   @ApiProperty({
     example: '01234567',
     required: false,
@@ -35,7 +33,6 @@ export class UpdateUnitDTO {
     message: 'CEP deve conter exatamente 8 números',
   })
   zipCode: string;
-
 
   @IsOptional()
   @Transform(({ value }) => value?.replace(/\D/g, ''))
@@ -49,7 +46,6 @@ export class UpdateUnitDTO {
   @IsOptional()
   @IsEmail()
   email?: string;
-
 
   @ApiProperty({
     example: '12345678000190',

@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly systemHealth: SystemHealthService,
     private readonly metricsCollector: MetricsCollectorService,
-  ) { }
+  ) {}
 
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const ctx = host.switchToHttp();

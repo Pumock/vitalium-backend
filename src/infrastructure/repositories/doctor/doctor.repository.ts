@@ -11,7 +11,7 @@ import { Doctor } from '../../database/models/doctor.models';
 
 @Injectable()
 export class DoctorRepository implements IDoctorRepository {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async create(dto: CreateDoctorDTO): Promise<Doctor> {
     const doctor = await this.prisma.doctor.create({
@@ -63,7 +63,7 @@ export class DoctorRepository implements IDoctorRepository {
 
     return plainToInstance(Doctor, {
       ...doctor,
-      units: doctor.units.map(unit => ({
+      units: doctor.units.map((unit) => ({
         ...unit,
         consultationPrice: unit.consultationPrice
           ? Number(unit.consultationPrice)

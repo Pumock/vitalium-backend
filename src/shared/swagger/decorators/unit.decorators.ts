@@ -15,8 +15,7 @@ export const ApiUnitOperations = {
       ApiTags('units'),
       ApiOperation({
         summary: 'Criar uma nova unidade',
-        description:
-          'Cria uma nova unidade',
+        description: 'Cria uma nova unidade',
       }),
       ApiBody({
         description: 'Dados para criação de unidade',
@@ -80,8 +79,7 @@ export const ApiUnitOperations = {
               type: 'string',
               example: '12345678000190',
               description: 'CNPJ do hospital',
-            }
-
+            },
           },
         },
       }),

@@ -10,13 +10,11 @@ import { Role } from '../../../shared/enums';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { User } from '../../../infrastructure/database/models/user.models';
 
-
-
 @Injectable()
 export class CreateUserUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(createUserDTO: CreateUserDTO): Promise<User> {
     const errors: FieldError[] = [];

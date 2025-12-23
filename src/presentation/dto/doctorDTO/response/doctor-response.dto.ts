@@ -26,7 +26,6 @@ export class DoctorResponseDTO {
   @Expose()
   crmState: boolean;
 
-
   @ApiProperty({
     description: 'Status do perfil do médico (ativo/inativo)',
     example: true,
@@ -58,6 +57,4 @@ export class DoctorResponseDTO {
 
   @Expose()
   units?: DoctorUnit[];
-
-
 }

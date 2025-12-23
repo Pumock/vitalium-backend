@@ -8,7 +8,7 @@ import { User } from '../../database/models/user.models';
 
 @Injectable()
 export class UserDataRepository implements IUserRepository {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async create(createUserDto: CreateUserDTO): Promise<User> {
     const createdUser = await this.prisma.user.create({

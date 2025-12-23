@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ValidationException, FieldError } from '../../../shared/execeptions/system/validation.exception';
+import {
+  ValidationException,
+  FieldError,
+} from '../../../shared/execeptions/system/validation.exception';
 import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { CreateDoctorUnitDTO } from '../../../presentation/dto/doctor-unitDTO/create-doctor-unit.dto';
@@ -10,70 +13,68 @@ import { DoctorUnit } from '../../../infrastructure/database/models/doctor-unit.
 
 @Injectable()
 export class CreateDoctorUnitUseCase {
-    constructor(
-        @Inject('IDoctorUnitRepository')
-        private readonly doctorUnitRepository: IDoctorUnitRepository,
+  constructor(
+    @Inject('IDoctorUnitRepository')
+    private readonly doctorUnitRepository: IDoctorUnitRepository,
 
-        @Inject('IDoctorRepository')
-        private readonly doctorRepository: IDoctorRepository,
+    @Inject('IDoctorRepository')
+    private readonly doctorRepository: IDoctorRepository,
 
-        @Inject('IUnitRepository')
-        private readonly unitRepository: IUnitRepository,
-    ) { }
+    @Inject('IUnitRepository')
+    private readonly unitRepository: IUnitRepository,
+  ) {}
 
-    async execute(
-        createDoctorUnitDTO: CreateDoctorUnitDTO,
-    ): Promise<DoctorUnit> {
-        const errors: FieldError[] = [];
+  async execute(createDoctorUnitDTO: CreateDoctorUnitDTO): Promise<DoctorUnit> {
+    const errors: FieldError[] = [];
 
-        if (
-            createDoctorUnitDTO.consultationPrice === undefined ||
-            createDoctorUnitDTO.consultationPrice <= 0
-        ) {
-            errors.push({
-                field: 'consultationPrice',
-                value: createDoctorUnitDTO.consultationPrice,
-                constraints: ['Preço da consulta é obrigatório'],
-            });
-        }
-
-        if (errors.length > 0) {
-            throw new ValidationException(errors);
-        }
-
-        try {
-            const doctor = await this.doctorRepository.findById(
-                createDoctorUnitDTO.doctorId,
-            );
-
-            if (!doctor) {
-                throw new ValidationException([
-                    {
-                        field: 'doctorId',
-                        value: createDoctorUnitDTO.doctorId,
-                        constraints: ['Médico não encontrado'],
-                    },
-                ]);
-            }
-
-            const unit = await this.unitRepository.findById(
-                createDoctorUnitDTO.unitId,
-            );
-
-            if (!unit || unit.isActive === false) {
-                throw new UnitInvalidException(createDoctorUnitDTO.unitId);
-            }
-
-            return await this.doctorUnitRepository.create(createDoctorUnitDTO);
-        } catch (error) {
-            if (
-                error instanceof ValidationException ||
-                error instanceof UnitInvalidException
-            ) {
-                throw error;
-            }
-
-            throw new DatabaseException('criar associação médico-unidade', error);
-        }
+    if (
+      createDoctorUnitDTO.consultationPrice === undefined ||
+      createDoctorUnitDTO.consultationPrice <= 0
+    ) {
+      errors.push({
+        field: 'consultationPrice',
+        value: createDoctorUnitDTO.consultationPrice,
+        constraints: ['Preço da consulta é obrigatório'],
+      });
     }
+
+    if (errors.length > 0) {
+      throw new ValidationException(errors);
+    }
+
+    try {
+      const doctor = await this.doctorRepository.findById(
+        createDoctorUnitDTO.doctorId,
+      );
+
+      if (!doctor) {
+        throw new ValidationException([
+          {
+            field: 'doctorId',
+            value: createDoctorUnitDTO.doctorId,
+            constraints: ['Médico não encontrado'],
+          },
+        ]);
+      }
+
+      const unit = await this.unitRepository.findById(
+        createDoctorUnitDTO.unitId,
+      );
+
+      if (!unit || unit.isActive === false) {
+        throw new UnitInvalidException(createDoctorUnitDTO.unitId);
+      }
+
+      return await this.doctorUnitRepository.create(createDoctorUnitDTO);
+    } catch (error) {
+      if (
+        error instanceof ValidationException ||
+        error instanceof UnitInvalidException
+      ) {
+        throw error;
+      }
+
+      throw new DatabaseException('criar associação médico-unidade', error);
+    }
+  }
 }

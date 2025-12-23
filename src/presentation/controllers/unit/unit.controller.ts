@@ -1,16 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from "@nestjs/common";
-import { plainToInstance } from "class-transformer";
-import { CreateUnitUseCase } from "../../../application/use-cases/unit/create-unit.use-case";
-import { CreateUnitDTO } from "../../dto/unitDTO/create-unit.dto";
-import { ResponseUnitDTO } from "../../dto/unitDTO/response/unit-response.dto";
-import { ApiUnitOperations } from "../../../shared/swagger/decorators";
+import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { CreateUnitUseCase } from '../../../application/use-cases/unit/create-unit.use-case';
+import { CreateUnitDTO } from '../../dto/unitDTO/create-unit.dto';
+import { ResponseUnitDTO } from '../../dto/unitDTO/response/unit-response.dto';
+import { ApiUnitOperations } from '../../../shared/swagger/decorators';
 
 @Controller('units')
 export class UnitController {
-  constructor(
-    private readonly createUnitUseCase: CreateUnitUseCase,
-
-  ) { }
+  constructor(private readonly createUnitUseCase: CreateUnitUseCase) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -18,13 +15,10 @@ export class UnitController {
   async createUnit(
     @Body() createUnitDTO: CreateUnitDTO,
   ): Promise<ResponseUnitDTO> {
-    const unit = await this.createUnitUseCase.execute(
-      createUnitDTO
-    );
+    const unit = await this.createUnitUseCase.execute(createUnitDTO);
 
     return plainToInstance(ResponseUnitDTO, unit, {
       excludeExtraneousValues: true,
     });
   }
-
 }

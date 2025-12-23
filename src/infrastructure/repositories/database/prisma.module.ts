@@ -7,4 +7,4 @@ import { PrismaProvider } from './prisma.provider';
   providers: [PrismaProvider],
   exports: [PrismaProvider],
 })
-export class PrismaModule { }
+export class PrismaModule {}

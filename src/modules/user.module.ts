@@ -15,4 +15,4 @@ import { PrismaModule } from '../infrastructure/database/prisma.module';
     DeleteUserUseCase,
   ],
 })
-export class UserModule { }
+export class UserModule {}

@@ -1,5 +1,11 @@
-import { IsString, IsEmail, IsEnum, IsOptional, Matches } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsString,
+  IsEmail,
+  IsEnum,
+  IsOptional,
+  Matches,
+} from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
 import { UnitType } from '../../../shared/enums/unit.enum';
 import { Transform } from 'class-transformer';
 
@@ -24,7 +30,6 @@ export class CreateUnitDTO {
   @IsString()
   state: string;
 
-
   @ApiProperty({
     example: '01234567',
     description: 'CEP da unidade (apenas números, 8 dígitos)',
@@ -42,11 +47,9 @@ export class CreateUnitDTO {
   })
   phone?: string;
 
-
   @ApiProperty({ example: 'contato@hospital.com' })
   @IsEmail()
   email: string;
-
 
   @ApiProperty({
     example: '12345678000190',

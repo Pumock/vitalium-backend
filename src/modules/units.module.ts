@@ -1,8 +1,8 @@
-import { Module } from "@nestjs/common";
-import { PrismaModule } from "../infrastructure/repositories/database/prisma.module";
-import { CreateUnitUseCase } from "../application/use-cases/unit/create-unit.use-case";
-import { UnitRepository } from "../infrastructure/repositories/units/unit.repository";
-import { UnitController } from "../presentation/controllers/unit/unit.controller";
+import { Module } from '@nestjs/common';
+import { PrismaModule } from '../infrastructure/repositories/database/prisma.module';
+import { CreateUnitUseCase } from '../application/use-cases/unit/create-unit.use-case';
+import { UnitRepository } from '../infrastructure/repositories/units/unit.repository';
+import { UnitController } from '../presentation/controllers/unit/unit.controller';
 
 @Module({
   imports: [PrismaModule],
@@ -14,8 +14,6 @@ import { UnitController } from "../presentation/controllers/unit/unit.controller
       useClass: UnitRepository,
     },
   ],
-  exports: [
-    CreateUnitUseCase,
-  ],
+  exports: [CreateUnitUseCase],
 })
-export class UnitModule { }
+export class UnitModule {}
