@@ -10,7 +10,7 @@ export class SwaggerConfig {
       .addTag('users', 'Operações relacionadas aos usuários')
       .addTag('doctors', 'Operações relacionadas aos médicos')
       .addTag('units', 'Operações relacionadas as unidades')
-      .addTag('Health', 'Status da aplicação')
+      .addTag('health', 'Status da aplicação')
       .addBearerAuth(
         {
           type: 'http',
@@ -25,7 +25,7 @@ export class SwaggerConfig {
       .addServer('http://localhost:3000', 'Servidor de Desenvolvimento')
       .addServer('https://api.vitalium.com', 'Servidor de Produção')
       .setContact('Equipe Vitalium', 'https://vitalium.com', 'dev@vitalium.com')
-      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .setLicense('Private / Proprietary', '')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
