@@ -63,12 +63,7 @@ export class DoctorRepository implements IDoctorRepository {
 
     return plainToInstance(Doctor, {
       ...doctor,
-      units: doctor.units.map((unit) => ({
-        ...unit,
-        consultationPrice: unit.consultationPrice
-          ? Number(unit.consultationPrice)
-          : null,
-      })),
+      units: doctor.units.map((doctorUnit) => doctorUnit.unit),
     });
   }
 
@@ -90,7 +85,10 @@ export class DoctorRepository implements IDoctorRepository {
 
     if (!doctor) return null;
 
-    return plainToInstance(Doctor, doctor);
+    return plainToInstance(Doctor, {
+      ...doctor,
+      units: doctor.units.map((doctorUnit) => doctorUnit.unit),
+    });
   }
 
   async findAll(): Promise<Doctor[]> {
@@ -108,7 +106,12 @@ export class DoctorRepository implements IDoctorRepository {
       },
     });
 
-    return plainToInstance(Doctor, doctors);
+    return doctors.map((doctor) =>
+      plainToInstance(Doctor, {
+        ...doctor,
+        units: doctor.units.map((doctorUnit) => doctorUnit.unit),
+      }),
+    );
   }
 
   async update(id: string, dto: UpdateDoctorDTO): Promise<Doctor> {
@@ -137,7 +140,10 @@ export class DoctorRepository implements IDoctorRepository {
       },
     });
 
-    return plainToInstance(Doctor, doctor);
+    return plainToInstance(Doctor, {
+      ...doctor,
+      units: doctor.units.map((doctorUnit) => doctorUnit.unit),
+    });
   }
 
   async delete(id: string): Promise<void> {

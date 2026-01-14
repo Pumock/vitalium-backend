@@ -1,7 +1,7 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from '../../../../infrastructure/database/models/user.models';
-import { DoctorUnit } from '../../../../infrastructure/database/models/doctor-unit.models';
+import { UserResponseDTO } from '../../userDTO/response/user-response.dto';
+import { ResponseUnitDTO } from '../../unitDTO/response/unit-response.dto';
 
 export class DoctorResponseDTO {
   @ApiProperty({
@@ -51,10 +51,18 @@ export class DoctorResponseDTO {
   // Relacionamentos
   @ApiProperty({
     description: 'Usuário associado ao médico',
+    type: () => UserResponseDTO,
   })
   @Expose()
-  user?: User;
+  @Type(() => UserResponseDTO)
+  user?: UserResponseDTO;
 
+  @ApiProperty({
+    description: 'Unidades associadas ao médico',
+    type: () => [ResponseUnitDTO],
+    isArray: true,
+  })
   @Expose()
-  units?: DoctorUnit[];
+  @Type(() => ResponseUnitDTO)
+  units?: ResponseUnitDTO[];
 }
