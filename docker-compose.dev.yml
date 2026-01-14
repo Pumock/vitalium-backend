@@ -68,9 +68,10 @@ services:
         condition: service_healthy
     volumes:
       - ./prisma:/app/prisma
+      - node_modules_cache:/app/node_modules
     networks:
       - vitalium-network
-    command: npx prisma studio --hostname 0.0.0.0
+    command: sh -c "npm install --legacy-peer-deps && npx prisma studio --port 5555 --browser none"
 
 volumes:
   postgres_dev_data:
