@@ -1,4 +1,4 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Admin } from '../../../../infrastructure/database/models/admin.models';
 import { Caregiver } from '../../../../infrastructure/database/models/caregiver.models';
@@ -44,6 +44,7 @@ export class UserResponseDTO {
     example: '+55 11 99999-9999',
   })
   @Expose()
+  @Transform(({ value }) => value ?? undefined)
   phone?: string;
 
   @ApiPropertyOptional({
@@ -51,6 +52,7 @@ export class UserResponseDTO {
     example: 'https://exemplo.com/avatar.jpg',
   })
   @Expose()
+  @Transform(({ value }) => value ?? undefined)
   avatar?: string;
 
   @ApiProperty({

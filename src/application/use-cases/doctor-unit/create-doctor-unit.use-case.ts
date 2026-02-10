@@ -10,6 +10,7 @@ import { IDoctorUnitRepository } from '../../../domain/interfaces/repositories/d
 import { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
 import { UnitInvalidException } from '../../../shared/execeptions/units/unit-invalid.exception';
 import { DoctorUnit } from '../../../infrastructure/database/models/doctor-unit.models';
+import { ConflictException } from '../../../shared/execeptions/system/conflict.exception';
 
 @Injectable()
 export class CreateDoctorUnitUseCase {
@@ -27,14 +28,15 @@ export class CreateDoctorUnitUseCase {
   async execute(createDoctorUnitDTO: CreateDoctorUnitDTO): Promise<DoctorUnit> {
     const errors: FieldError[] = [];
 
+    // Validate consultationPrice only if it's provided
     if (
-      createDoctorUnitDTO.consultationPrice === undefined ||
+      createDoctorUnitDTO.consultationPrice !== undefined &&
       createDoctorUnitDTO.consultationPrice <= 0
     ) {
       errors.push({
         field: 'consultationPrice',
         value: createDoctorUnitDTO.consultationPrice,
-        constraints: ['Preço da consulta é obrigatório'],
+        constraints: ['Preço da consulta deve ser maior que zero'],
       });
     }
 
@@ -65,11 +67,27 @@ export class CreateDoctorUnitUseCase {
         throw new UnitInvalidException(createDoctorUnitDTO.unitId);
       }
 
+      // Check if relationship already exists
+      const existingRelationship =
+        await this.doctorUnitRepository.findByDoctorIdAndUnitId(
+          createDoctorUnitDTO.doctorId,
+          createDoctorUnitDTO.unitId,
+        );
+
+      if (existingRelationship) {
+        throw new ConflictException(
+          'Relação médico-unidade já existe',
+          'doctorId_unitId',
+          `${createDoctorUnitDTO.doctorId}_${createDoctorUnitDTO.unitId}`,
+        );
+      }
+
       return await this.doctorUnitRepository.create(createDoctorUnitDTO);
     } catch (error) {
       if (
         error instanceof ValidationException ||
-        error instanceof UnitInvalidException
+        error instanceof UnitInvalidException ||
+        error instanceof ConflictException
       ) {
         throw error;
       }

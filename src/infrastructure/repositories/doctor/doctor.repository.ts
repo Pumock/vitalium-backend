@@ -91,6 +91,30 @@ export class DoctorRepository implements IDoctorRepository {
     });
   }
 
+  async findByUserId(userId: string): Promise<Doctor | null> {
+    const doctor = await this.prisma.doctor.findFirst({
+      where: {
+        userId,
+      },
+      include: {
+        user: true,
+        units: {
+          where: { isActive: true },
+          include: {
+            unit: true,
+          },
+        },
+      },
+    });
+
+    if (!doctor) return null;
+
+    return plainToInstance(Doctor, {
+      ...doctor,
+      units: doctor.units.map((doctorUnit) => doctorUnit.unit),
+    });
+  }
+
   async findAll(): Promise<Doctor[]> {
     const doctors = await this.prisma.doctor.findMany({
       where: { isActive: true },

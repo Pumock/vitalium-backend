@@ -10,6 +10,7 @@ import { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { Role } from '../../../shared/enums/role.enum';
 import { DoctorAlreadyExistsException } from '../../../shared/execeptions/doctor/doctor-already-exists.exception';
+import { UserNotFoundException } from '../../../shared/execeptions/user/user-not-found.exception';
 
 @Injectable()
 export class CreateDoctorUseCase {
@@ -40,13 +41,7 @@ export class CreateDoctorUseCase {
       if (createDoctorDTO.userId) {
         user = await this.userRepository.findById(createDoctorDTO.userId);
         if (!user) {
-          throw new ValidationException([
-            {
-              field: 'userId',
-              value: createDoctorDTO.userId,
-              constraints: ['Usuário não encontrado'],
-            },
-          ]);
+          throw new UserNotFoundException(`userId: ${createDoctorDTO.userId}`);
         }
       }
 
@@ -67,6 +62,18 @@ export class CreateDoctorUseCase {
         throw new DoctorAlreadyExistsException(createDoctorDTO.crm);
       }
 
+      // Check if userId is already associated with another doctor
+      if (createDoctorDTO.userId) {
+        const doctorByUserId = await this.doctorRepository.findByUserId(
+          createDoctorDTO.userId,
+        );
+        if (doctorByUserId) {
+          throw new DoctorAlreadyExistsException(
+            `userId ${createDoctorDTO.userId}`,
+          );
+        }
+      }
+
       const doctorData = {
         ...createDoctorDTO,
         user: user,
@@ -75,6 +82,13 @@ export class CreateDoctorUseCase {
       const doctor = await this.doctorRepository.create(doctorData);
       return doctor;
     } catch (error) {
+      if (
+        error instanceof ValidationException ||
+        error instanceof DoctorAlreadyExistsException ||
+        error instanceof UserNotFoundException
+      ) {
+        throw error;
+      }
       throw new DatabaseException('criar médico', error);
     }
   }

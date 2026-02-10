@@ -86,6 +86,32 @@ export class DoctorUnitRepository implements IDoctorUnitRepository {
     );
   }
 
+  async findByDoctorIdAndUnitId(
+    doctorId: string,
+    unitId: string,
+  ): Promise<DoctorUnit | null> {
+    const doctorUnit = await this.prisma.doctorUnit.findUnique({
+      where: {
+        doctorId_unitId: {
+          doctorId,
+          unitId,
+        },
+      },
+      include: {
+        unit: true,
+      },
+    });
+
+    if (!doctorUnit) return null;
+
+    return plainToInstance(DoctorUnit, {
+      ...doctorUnit,
+      consultationPrice: doctorUnit.consultationPrice
+        ? Number(doctorUnit.consultationPrice)
+        : null,
+    });
+  }
+
   async update(id: string, dto: UpdateDoctorUnitDTO): Promise<DoctorUnit> {
     const doctorUnit = await this.prisma.doctorUnit.update({
       where: { id },

@@ -13,6 +13,9 @@ services:
       - JWT_SECRET=dev-secret
       - LOG_LEVEL=debug
       - PORT=3000
+      - POSTGRES_USER=vitalium
+      - POSTGRES_PASSWORD=vitalium123
+      - POSTGRES_DB=vitalium
     depends_on:
       postgres:
         condition: service_healthy
@@ -31,7 +34,7 @@ services:
     command: >
       sh -c "
       npx prisma generate &&
-      npx prisma migrate dev &&
+      npx prisma migrate deploy &&
       npm run start:dev
       "
 

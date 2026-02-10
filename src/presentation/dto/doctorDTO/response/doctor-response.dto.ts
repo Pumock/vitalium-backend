@@ -12,6 +12,13 @@ export class DoctorResponseDTO {
   id: string;
 
   @ApiProperty({
+    description: 'ID do usuário associado ao médico',
+    example: 'clxyz123456789abcdef',
+  })
+  @Expose()
+  userId: string;
+
+  @ApiProperty({
     description: 'Número do CRM do médico (único no sistema)',
     example: '123456-SP',
   })
