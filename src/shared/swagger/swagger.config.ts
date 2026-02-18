@@ -6,7 +6,7 @@ export class SwaggerConfig {
     const config = new DocumentBuilder()
       .setTitle('Vitalium Backend API')
       .setDescription('API para sistema de gestão médica Vitalium')
-      .setVersion('1.0.0')
+      .setVersion('0.0.1')
       .addTag('users', 'Operações relacionadas aos usuários')
       .addTag('doctors', 'Operações relacionadas aos médicos')
       .addTag('units', 'Operações relacionadas as unidades')
