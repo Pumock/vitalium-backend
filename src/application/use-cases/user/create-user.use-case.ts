@@ -14,7 +14,7 @@ import { User } from '../../../infrastructure/database/models/user.models';
 export class CreateUserUseCase {
   constructor(
     @Inject('IUserRepository') private readonly userRepository: IUserRepository,
-  ) { }
+  ) {}
 
   async execute(createUserDTO: CreateUserDTO): Promise<User> {
     const errors: FieldError[] = [];
@@ -66,10 +66,7 @@ export class CreateUserUseCase {
       });
     }
 
-    if (
-      createUserDTO.phone &&
-      !/^\+?[\d\s\-()]+$/.test(createUserDTO.phone)
-    ) {
+    if (createUserDTO.phone && !/^\+?[\d\s\-()]+$/.test(createUserDTO.phone)) {
       errors.push({
         field: 'phone',
         value: createUserDTO.phone,

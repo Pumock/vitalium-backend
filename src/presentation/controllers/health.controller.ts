@@ -5,7 +5,7 @@ import { SystemHealthService } from '../../shared/monitoring/system-health.servi
 @ApiTags('health')
 @Controller('health')
 export class HealthController {
-  constructor(private readonly systemHealthService: SystemHealthService) { }
+  constructor(private readonly systemHealthService: SystemHealthService) {}
 
   @Get()
   @ApiOperation({ summary: 'Get application health status' })
