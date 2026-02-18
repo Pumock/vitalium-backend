@@ -7,30 +7,18 @@ services:
     ports:
       - '3000:3000'
       - '9229:9229'
-    environment:
-      - NODE_ENV=development
-      - DATABASE_URL=postgresql://vitalium:vitalium123@postgres:5432/vitalium?schema=public
-      - JWT_SECRET=dev-secret
-      - LOG_LEVEL=debug
-      - PORT=3000
-      - POSTGRES_USER=vitalium
-      - POSTGRES_PASSWORD=vitalium123
-      - POSTGRES_DB=vitalium
+    env_file:
+      - .env.development
     depends_on:
       postgres:
         condition: service_healthy
     volumes:
-      - ./src:/app/src:cached
-      - ./prisma:/app/prisma:cached
-      - ./test:/app/test:cached
+      - ./src:/app/src
+      - ./prisma:/app/prisma
+      - ./test:/app/test
       - ./logs:/app/logs
       - ./uploads:/app/uploads
-      - ./package.json:/app/package.json:ro
-      - ./tsconfig.json:/app/tsconfig.json:ro
-      - ./nest-cli.json:/app/nest-cli.json:ro
       - node_modules_cache:/app/node_modules
-    networks:
-      - vitalium-network
     command: >
       sh -c "
       npx prisma generate &&
@@ -41,45 +29,18 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: vitalium-postgres-dev
-    environment:
-      POSTGRES_DB: vitalium
-      POSTGRES_USER: vitalium
-      POSTGRES_PASSWORD: vitalium123
+    env_file:
+      - .env.development
     ports:
       - '5432:5432'
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U vitalium -d vitalium']
+      test: ['CMD-SHELL', 'pg_isready -U $POSTGRES_USER -d $POSTGRES_DB']
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - vitalium-network
-
-  prisma-studio:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-    container_name: vitalium-prisma-studio
-    ports:
-      - '5555:5555'
-    environment:
-      - DATABASE_URL=postgresql://vitalium:vitalium123@postgres:5432/vitalium?schema=public
-    depends_on:
-      postgres:
-        condition: service_healthy
-    volumes:
-      - ./prisma:/app/prisma
-      - node_modules_cache:/app/node_modules
-    networks:
-      - vitalium-network
-    command: sh -c "npm install --legacy-peer-deps && npx prisma studio --port 5555 --browser none"
 
 volumes:
   postgres_dev_data:
   node_modules_cache:
-
-networks:
-  vitalium-network:
-    driver: bridge
