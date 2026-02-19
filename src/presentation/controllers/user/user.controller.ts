@@ -12,7 +12,7 @@ export class UserController {
     // private readonly searchUserUseCase: SearchUserUseCase,
     // private readonly updateUserUseCase: UpdateUserUseCase,
     // private readonly deleteUserUseCase: DeleteUserUseCase,
-  ) { }
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

@@ -19,7 +19,7 @@ export class DoctorController {
   constructor(
     private readonly createDoctorUseCase: CreateDoctorUseCase,
     private readonly searchDoctorUseCase: SearchDoctorUseCase,
-  ) { }
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

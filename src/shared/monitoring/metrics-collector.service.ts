@@ -4,7 +4,7 @@ import { LogLevel, SecurityLevel } from '@prisma/client';
 
 @Injectable()
 export class MetricsCollectorService {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   // Log API request metrics
   async logApiRequest(data: {

@@ -9,7 +9,7 @@ import { plainToInstance } from 'class-transformer';
 export class DoctorUnitController {
   constructor(
     private readonly createDoctorUnitUseCase: CreateDoctorUnitUseCase,
-  ) { }
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

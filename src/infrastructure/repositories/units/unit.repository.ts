@@ -8,7 +8,7 @@ import type { UpdateUnitDTO } from '../../../presentation/dto/unitDTO/update-uni
 
 @Injectable()
 export class UnitRepository implements IUnitRepository {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async create(createUnitDTO: CreateUnitDTO): Promise<Unit> {
     const result = await this.prisma.unit.create({

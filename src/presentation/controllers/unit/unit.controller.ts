@@ -7,7 +7,7 @@ import { ApiUnitOperations } from '../../../shared/swagger/decorators';
 
 @Controller('units')
 export class UnitController {
-  constructor(private readonly createUnitUseCase: CreateUnitUseCase) { }
+  constructor(private readonly createUnitUseCase: CreateUnitUseCase) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

@@ -9,7 +9,7 @@ import type { UpdateDoctorUnitDTO } from '../../../presentation/dto/doctor-unitD
 
 @Injectable()
 export class DoctorUnitRepository implements IDoctorUnitRepository {
-  constructor(private readonly prisma: PrismaProvider) { }
+  constructor(private readonly prisma: PrismaProvider) {}
 
   async create(data: {
     doctorId: string;
