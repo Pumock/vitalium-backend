@@ -40,6 +40,51 @@ npm run dev:logs
 
 ---
 
+## Rodar Sem Docker (Recomendado para desenvolvimento local)
+
+Esse fluxo sobe apenas o banco via Docker e roda a aplicação localmente,
+com hot-reload mais rápido e debug facilitado.
+
+### 1. Instalar dependências
+
+```bash
+npm install
+```
+
+### 2. Criar ambiente local
+
+```bash
+cp .env.example .env.development
+```
+
+Preencha as variáveis obrigatórias antes de iniciar.
+
+### 3. Subir apenas o banco
+
+```bash
+npm run infra
+```
+
+### 4. Rodar as migrations
+
+```bash
+npm run migrate
+```
+
+### 5. Rodar a aplicação
+
+```bash
+npm run start:dev
+```
+
+### Parar o banco
+
+```bash
+npm run infra:stop
+```
+
+---
+
 ## Produção
 
 ### Build e iniciar
@@ -80,24 +125,6 @@ Preencha as variáveis obrigatórias antes de iniciar a aplicação.
 - Swagger: http://localhost:3000/api/docs  
 - Health Check: http://localhost:3000/health  
 - Prisma Studio: http://localhost:5555  
-
----
-
-## Rodar Sem Docker (Opcional)
-
-Instalar dependências:
-
-```bash
-npm install
-```
-
-Rodar aplicação:
-
-```bash
-npm run start:dev
-```
-
-É necessário um PostgreSQL rodando localmente.
 
 ---
 
