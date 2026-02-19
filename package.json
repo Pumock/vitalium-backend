@@ -73,7 +73,9 @@
     "diff": "^8.0.3",
     "fast-xml-parser": "^5.4.0",
     "lodash": "^4.17.21",
-    "schema-utils": "^4.2.0"
+    "schema-utils": "^4.2.0",
+    "ajv": "^8.18.0",
+    "minimatch": "^10.2.1"
   },
   "jest": {
     "moduleFileExtensions": [
