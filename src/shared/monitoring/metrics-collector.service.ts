@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaProvider } from '../../infrastructure/database/prisma.provider';
-import { LogLevel, SecurityLevel } from '@prisma/client';
+import type { PrismaProvider } from '../../infrastructure/database/prisma.provider';
+import { type LogLevel, SecurityLevel } from '@prisma/client';
 
 @Injectable()
 export class MetricsCollectorService {

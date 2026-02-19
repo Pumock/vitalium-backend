@@ -1,4 +1,4 @@
-import { MedicalRecord } from './medical-record.models';
+import type { MedicalRecord } from './medical-record.models';
 
 export class MedicalAttachment {
   id: string;

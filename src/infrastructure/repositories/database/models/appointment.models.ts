@@ -1,8 +1,8 @@
-import { AppointmentStatus } from '../../../../shared/enums/appointment-status.enum';
-import { AppointmentType } from '../../../../shared/enums/appointment-type.enum';
-import { Patient } from './patient.models';
-import { Doctor } from './doctor.models';
-import { Unit } from './unit.models';
+import type { AppointmentStatus } from '../../../../shared/enums/appointment-status.enum';
+import type { AppointmentType } from '../../../../shared/enums/appointment-type.enum';
+import type { Patient } from './patient.models';
+import type { Doctor } from './doctor.models';
+import type { Unit } from './unit.models';
 
 export class Appointment {
   id: string;

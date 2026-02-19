@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { MetricsCollectorService } from './metrics-collector.service';
-import * as process from 'process';
+import type { MetricsCollectorService } from './metrics-collector.service';
+import * as process from 'node:process';
 
 @Injectable()
 export class SystemHealthService {
-  constructor(private readonly metricsCollector: MetricsCollectorService) {}
+  constructor(private readonly metricsCollector: MetricsCollectorService) { }
 
   // Log critical application error
   async logCriticalError(error: {

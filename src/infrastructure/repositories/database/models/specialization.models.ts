@@ -1,4 +1,4 @@
-import { DoctorSpecialization } from './doctor-specialization.models';
+import type { DoctorSpecialization } from './doctor-specialization.models';
 
 export class Specialization {
   id: string;

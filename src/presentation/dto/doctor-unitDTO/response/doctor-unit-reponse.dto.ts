@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { Doctor } from '../../../../infrastructure/database/models/doctor.models';
-import { Unit } from '../../../../infrastructure/database/models/unit.models';
+import type { Doctor } from '../../../../infrastructure/database/models/doctor.models';
+import type { Unit } from '../../../../infrastructure/database/models/unit.models';
 
 export class DoctorUnitResponseDTO {
   @ApiProperty({

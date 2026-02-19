@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import {
-  FieldError,
+  type FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
-import { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
-import { Unit } from '../../../infrastructure/database/models/unit.models';
+import type { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
+import type { Unit } from '../../../infrastructure/database/models/unit.models';
 import { UnitAlreadyExistsException } from '../../../shared/execeptions/units/unit-already-exists.exception';
-import { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
+import type { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
 
 @Injectable()
 export class CreateUnitUseCase {

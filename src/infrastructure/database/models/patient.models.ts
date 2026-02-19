@@ -1,6 +1,6 @@
-import { PatientUnit } from './patient-unit.models';
-import { PatientDoctor } from './patient-doctor.models';
-import { User } from '@prisma/client';
+import type { PatientUnit } from './patient-unit.models';
+import type { PatientDoctor } from './patient-doctor.models';
+import type { User } from '@prisma/client';
 
 export class Patient {
   id: string;

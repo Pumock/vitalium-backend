@@ -1,7 +1,7 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { CreateUnitUseCase } from '../../../application/use-cases/unit/create-unit.use-case';
-import { CreateUnitDTO } from '../../dto/unitDTO/create-unit.dto';
+import type { CreateUnitUseCase } from '../../../application/use-cases/unit/create-unit.use-case';
+import type { CreateUnitDTO } from '../../dto/unitDTO/create-unit.dto';
 import { ResponseUnitDTO } from '../../dto/unitDTO/response/unit-response.dto';
 import { ApiUnitOperations } from '../../../shared/swagger/decorators';
 

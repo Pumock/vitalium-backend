@@ -1,5 +1,5 @@
-import { Doctor } from './doctor.models';
-import { Unit } from './unit.models';
+import type { Doctor } from './doctor.models';
+import type { Unit } from './unit.models';
 
 export class DoctorUnit {
   id: string;

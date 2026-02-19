@@ -1,5 +1,5 @@
-import { Nurse } from './nurse.models';
-import { Unit } from './unit.models';
+import type { Nurse } from './nurse.models';
+import type { Unit } from './unit.models';
 
 export class NurseUnit {
   id: string;

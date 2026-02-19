@@ -1,14 +1,14 @@
 import { ConflictException, Inject, Injectable } from '@nestjs/common';
-import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
+import type { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
+import type { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import {
-  FieldError,
+  type FieldError,
   ValidationException,
 } from '../../../shared/execeptions/system/validation.exception';
 
 import { Role } from '../../../shared/enums';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
-import { User } from '../../../infrastructure/database/models/user.models';
+import type { User } from '../../../infrastructure/database/models/user.models';
 
 @Injectable()
 export class CreateUserUseCase {

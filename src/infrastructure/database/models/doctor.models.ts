@@ -1,6 +1,6 @@
-import { DoctorUnit } from './doctor-unit.models';
-import { DoctorSpecialization } from './doctor-specialization.models';
-import { User } from './user.models';
+import type { DoctorUnit } from './doctor-unit.models';
+import type { DoctorSpecialization } from './doctor-specialization.models';
+import type { User } from './user.models';
 
 export class Doctor {
   id: string;

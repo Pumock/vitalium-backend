@@ -7,11 +7,11 @@ import {
   Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Admin } from '../../../infrastructure/database/models/admin.models';
-import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
-import { Nurse } from '../../../infrastructure/database/models/nurse.models';
-import { Patient } from '../../../infrastructure/database/models/patient.models';
+import type { Admin } from '../../../infrastructure/database/models/admin.models';
+import type { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { Nurse } from '../../../infrastructure/database/models/nurse.models';
+import type { Patient } from '../../../infrastructure/database/models/patient.models';
 import { Role } from '../../../shared/enums';
 
 export class CreateUserDTO {

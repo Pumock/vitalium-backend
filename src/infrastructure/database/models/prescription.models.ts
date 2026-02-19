@@ -1,5 +1,5 @@
-import { Patient } from './patient.models';
-import { Doctor } from './doctor.models';
+import type { Patient } from './patient.models';
+import type { Doctor } from './doctor.models';
 
 export class Prescription {
   id: string;

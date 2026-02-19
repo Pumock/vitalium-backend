@@ -1,9 +1,9 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
+import type { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
 import { UserResponseDTO } from '../../dto/userDTO/response/user-response.dto';
 import { ApiUserOperations } from '../../../shared/swagger/decorators';
-import { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
+import type { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
 
 @Controller('users')
 export class UserController {

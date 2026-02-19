@@ -1,6 +1,6 @@
-import { CaregiverRelationship } from '../../../../shared/enums';
-import { PatientCaregiver } from './patient-caregiver.models';
-import { User } from './user.models';
+import type { CaregiverRelationship } from '../../../../shared/enums';
+import type { PatientCaregiver } from './patient-caregiver.models';
+import type { User } from './user.models';
 
 export class Caregiver {
   id: string;

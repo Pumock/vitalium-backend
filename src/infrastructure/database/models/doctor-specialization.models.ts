@@ -1,5 +1,5 @@
-import { Doctor } from './doctor.models';
-import { Specialization } from './specialization.models';
+import type { Doctor } from './doctor.models';
+import type { Specialization } from './specialization.models';
 
 export class DoctorSpecialization {
   id: string;

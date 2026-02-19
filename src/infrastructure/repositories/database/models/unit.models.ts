@@ -1,7 +1,7 @@
-import { UnitType } from '../../../../shared/enums/unit.enum';
-import { DoctorUnit } from './doctor-unit.models';
-import { NurseUnit } from './nouse-unit.models';
-import { PatientUnit } from './patient-unit.models';
+import type { UnitType } from '../../../../shared/enums/unit.enum';
+import type { DoctorUnit } from './doctor-unit.models';
+import type { NurseUnit } from './nouse-unit.models';
+import type { PatientUnit } from './patient-unit.models';
 
 export class Unit {
   id: string;

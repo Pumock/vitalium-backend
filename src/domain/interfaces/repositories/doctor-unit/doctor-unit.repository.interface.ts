@@ -1,6 +1,6 @@
-import { DoctorUnit } from '../../../../infrastructure/database/models/doctor-unit.models';
-import { CreateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO/create-doctor-unit.dto';
-import { UpdateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO/update-doctor-unit.dto';
+import type { DoctorUnit } from '../../../../infrastructure/database/models/doctor-unit.models';
+import type { CreateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO/create-doctor-unit.dto';
+import type { UpdateDoctorUnitDTO } from '../../../../presentation/dto/doctor-unitDTO/update-doctor-unit.dto';
 
 export interface IDoctorUnitRepository {
   create(data: CreateDoctorUnitDTO): Promise<DoctorUnit>;

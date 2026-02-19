@@ -1,6 +1,6 @@
-import { Doctor } from '../../../../infrastructure/database/models/doctor.models';
-import { CreateDoctorDTO } from '../../../../presentation/dto/doctorDTO/create-doctor.dto';
-import { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-doctor.dto';
+import type { Doctor } from '../../../../infrastructure/database/models/doctor.models';
+import type { CreateDoctorDTO } from '../../../../presentation/dto/doctorDTO/create-doctor.dto';
+import type { UpdateDoctorDTO } from '../../../../presentation/dto/doctorDTO/update-doctor.dto';
 
 export interface IDoctorRepository {
   create(data: CreateDoctorDTO): Promise<Doctor>;

@@ -1,9 +1,9 @@
-import { Admin } from '@prisma/client';
-import { Role } from '../../../../shared/enums';
-import { Caregiver } from './caregiver.models';
-import { Doctor } from './doctor.models';
-import { Nurse } from './nurse.models';
-import { Patient } from './patient.models';
+import type { Admin } from '@prisma/client';
+import type { Role } from '../../../../shared/enums';
+import type { Caregiver } from './caregiver.models';
+import type { Doctor } from './doctor.models';
+import type { Nurse } from './nurse.models';
+import type { Patient } from './patient.models';
 
 export class User {
   id: string;

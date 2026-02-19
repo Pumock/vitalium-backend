@@ -1,7 +1,7 @@
-import { WardType } from '../../../../shared/enums/ward-type.enum';
-import { Nurse } from './nurse.models';
-import { Unit } from './unit.models';
-import { WardAdmission } from './ward-admission.models';
+import type { WardType } from '../../../../shared/enums/ward-type.enum';
+import type { Nurse } from './nurse.models';
+import type { Unit } from './unit.models';
+import type { WardAdmission } from './ward-admission.models';
 
 export class Ward {
   id: string;

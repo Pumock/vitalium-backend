@@ -1,6 +1,6 @@
-import { Unit } from '../../../../infrastructure/repositories/database/models/unit.models';
-import { CreateUnitDTO } from '../../../../presentation/dto/unitDTO/create-unit.dto';
-import { UpdateUnitDTO } from '../../../../presentation/dto/unitDTO/update-unit.dto';
+import type { Unit } from '../../../../infrastructure/repositories/database/models/unit.models';
+import type { CreateUnitDTO } from '../../../../presentation/dto/unitDTO/create-unit.dto';
+import type { UpdateUnitDTO } from '../../../../presentation/dto/unitDTO/update-unit.dto';
 
 export interface IUnitRepository {
   create(createUnitDTO: CreateUnitDTO): Promise<Unit>;

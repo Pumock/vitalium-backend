@@ -1,6 +1,6 @@
-import { AdmissionStatus } from '../../../../shared/enums';
-import { Patient } from './patient.models';
-import { Ward } from './ward.models';
+import type { AdmissionStatus } from '../../../../shared/enums';
+import type { Patient } from './patient.models';
+import type { Ward } from './ward.models';
 
 export class WardAdmission {
   id: string;
