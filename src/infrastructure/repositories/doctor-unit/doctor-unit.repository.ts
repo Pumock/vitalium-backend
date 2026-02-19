@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-import type { PrismaProvider } from '../../database/prisma.provider';
+import { PrismaProvider } from '../../database/prisma.provider';
 import type { IDoctorUnitRepository } from '../../../domain/interfaces/repositories/doctor-unit/doctor-unit.repository.interface';
 
 import { DoctorUnit } from '../../database/models/doctor-unit.models';
@@ -9,7 +9,7 @@ import type { UpdateDoctorUnitDTO } from '../../../presentation/dto/doctor-unitD
 
 @Injectable()
 export class DoctorUnitRepository implements IDoctorUnitRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   async create(data: {
     doctorId: string;

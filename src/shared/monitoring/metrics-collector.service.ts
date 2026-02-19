@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaProvider } from '../../infrastructure/database/prisma.provider';
-import { type LogLevel, SecurityLevel } from '@prisma/client';
+import { PrismaProvider } from '../../infrastructure/database/prisma.provider';
+import { LogLevel, SecurityLevel } from '@prisma/client';
 
 @Injectable()
 export class MetricsCollectorService {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   // Log API request metrics
   async logApiRequest(data: {

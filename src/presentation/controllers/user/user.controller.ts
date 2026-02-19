@@ -1,9 +1,9 @@
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import type { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
+import { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
 import { UserResponseDTO } from '../../dto/userDTO/response/user-response.dto';
 import { ApiUserOperations } from '../../../shared/swagger/decorators';
-import type { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
+import { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
 
 @Controller('users')
 export class UserController {
@@ -12,7 +12,7 @@ export class UserController {
     // private readonly searchUserUseCase: SearchUserUseCase,
     // private readonly updateUserUseCase: UpdateUserUseCase,
     // private readonly deleteUserUseCase: DeleteUserUseCase,
-  ) {}
+  ) { }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

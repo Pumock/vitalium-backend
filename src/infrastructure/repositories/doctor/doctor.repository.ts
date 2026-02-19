@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 
-import type { PrismaProvider } from '../../database/prisma.provider';
-import type { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import { PrismaProvider } from '../../database/prisma.provider'; // ← faltando
+import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
-import type { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
-import type { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
+import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
+import { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
 
 import { Doctor } from '../../database/models/doctor.models';
 
 @Injectable()
 export class DoctorRepository implements IDoctorRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   async create(dto: CreateDoctorDTO): Promise<Doctor> {
     const doctor = await this.prisma.doctor.create({

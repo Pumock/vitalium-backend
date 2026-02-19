@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaProvider } from '../../database/prisma.provider';
 import type { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
 import type { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import { plainToInstance } from 'class-transformer';
 import type { UpdateUserDTO } from '../../../presentation/dto/userDTO/update-user.dtp';
 import { User } from '../../database/models/user.models';
+import { PrismaProvider } from '../../database/prisma.provider'; // ← faltando
+
 
 @Injectable()
 export class UserDataRepository implements IUserRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   async create(createUserDto: CreateUserDTO): Promise<User> {
     const createdUser = await this.prisma.user.create({

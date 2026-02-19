@@ -1,16 +1,16 @@
 import {
-  type ExceptionFilter,
+  ExceptionFilter,
   Catch,
-  type ArgumentsHost,
+  ArgumentsHost,
   HttpException,
   HttpStatus,
   Logger,
   Injectable,
 } from '@nestjs/common';
-import type { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { BaseException } from '../base/base.exception';
-import type { SystemHealthService } from '../../monitoring/system-health.service';
-import type { MetricsCollectorService } from '../../monitoring/metrics-collector.service';
+import { SystemHealthService } from '../../monitoring/system-health.service';
+import { MetricsCollectorService } from '../../monitoring/metrics-collector.service';
 
 @Catch()
 @Injectable()
@@ -20,7 +20,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   constructor(
     private readonly systemHealth: SystemHealthService,
     private readonly metricsCollector: MetricsCollectorService,
-  ) {}
+  ) { }
 
   async catch(exception: unknown, host: ArgumentsHost): Promise<void> {
     const ctx = host.switchToHttp();

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import type { PrismaProvider } from '../database/prisma.provider';
+import { PrismaProvider } from '../database/prisma.provider';
 import { plainToInstance } from 'class-transformer';
 import type { IUnitRepository } from '../../../domain/interfaces/repositories/units/unit.repository.interface';
 import type { CreateUnitDTO } from '../../../presentation/dto/unitDTO/create-unit.dto';
@@ -8,7 +8,7 @@ import type { UpdateUnitDTO } from '../../../presentation/dto/unitDTO/update-uni
 
 @Injectable()
 export class UnitRepository implements IUnitRepository {
-  constructor(private readonly prisma: PrismaProvider) {}
+  constructor(private readonly prisma: PrismaProvider) { }
 
   async create(createUnitDTO: CreateUnitDTO): Promise<Unit> {
     const result = await this.prisma.unit.create({
