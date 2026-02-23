@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ValidationException } from '../../../shared/execeptions/system/validation.exception';
 import { DoctorNotFoundException } from '../../../shared/execeptions/doctor/doctor-not-found.exception';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
-import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
 @Injectable()
 export class SearchDoctorUseCase {

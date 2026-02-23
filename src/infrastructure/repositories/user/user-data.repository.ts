@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaProvider } from '../../database/prisma.provider';
-import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { User } from '../../database/models/user.models';
-import { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
+import type { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
+import type { CreateUserDTO } from '../../../presentation/dto/userDTO/create-user.dto';
 import { plainToInstance } from 'class-transformer';
-import { UpdateUserDTO } from '../../../presentation/dto/userDTO/update-user.dtp';
+import type { UpdateUserDTO } from '../../../presentation/dto/userDTO/update-user.dtp';
+import { User } from '../../database/models/user.models';
+import { PrismaProvider } from '../../database/prisma.provider'; // ← faltando
 
 @Injectable()
 export class UserDataRepository implements IUserRepository {

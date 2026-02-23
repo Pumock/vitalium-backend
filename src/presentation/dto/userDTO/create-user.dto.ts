@@ -4,13 +4,14 @@ import {
   IsString,
   IsOptional,
   IsEnum,
+  Matches,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Admin } from '../../../infrastructure/database/models/admin.models';
-import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
-import { Nurse } from '../../../infrastructure/database/models/nurse.models';
-import { Patient } from '../../../infrastructure/database/models/patient.models';
+import type { Admin } from '../../../infrastructure/database/models/admin.models';
+import type { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { Nurse } from '../../../infrastructure/database/models/nurse.models';
+import type { Patient } from '../../../infrastructure/database/models/patient.models';
 import { Role } from '../../../shared/enums';
 
 export class CreateUserDTO {
@@ -23,7 +24,7 @@ export class CreateUserDTO {
   email: string;
 
   @ApiProperty({
-    description: 'Senha do usuário (será hasheada)',
+    description: 'Senha do usuário',
     example: 'MinhaSenh@123',
     minLength: 8,
   })
@@ -50,7 +51,10 @@ export class CreateUserDTO {
 
   @ApiPropertyOptional({
     description: 'Telefone do usuário',
-    example: '+55 11 99999-9999',
+    example: '11999999999',
+  })
+  @Matches(/^(\+55)?\d{11}$/, {
+    message: 'Telefone deve conter 11 números (EX: 62999999999)',
   })
   @IsOptional()
   @IsString()

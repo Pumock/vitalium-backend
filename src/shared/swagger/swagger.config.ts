@@ -1,4 +1,4 @@
-import { INestApplication } from '@nestjs/common';
+import type { INestApplication } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 export class SwaggerConfig {
@@ -6,11 +6,11 @@ export class SwaggerConfig {
     const config = new DocumentBuilder()
       .setTitle('Vitalium Backend API')
       .setDescription('API para sistema de gestão médica Vitalium')
-      .setVersion('1.0.0')
+      .setVersion('0.0.1')
       .addTag('users', 'Operações relacionadas aos usuários')
       .addTag('doctors', 'Operações relacionadas aos médicos')
-      .addTag('organizations', 'Operações relacionadas aos médicos')
-      .addTag('Health', 'Status da aplicação')
+      .addTag('units', 'Operações relacionadas as unidades')
+      .addTag('health', 'Status da aplicação')
       .addBearerAuth(
         {
           type: 'http',
@@ -25,7 +25,7 @@ export class SwaggerConfig {
       .addServer('http://localhost:3000', 'Servidor de Desenvolvimento')
       .addServer('https://api.vitalium.com', 'Servidor de Produção')
       .setContact('Equipe Vitalium', 'https://vitalium.com', 'dev@vitalium.com')
-      .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+      .setLicense('Private / Proprietary', '')
       .build();
 
     const document = SwaggerModule.createDocument(app, config);
@@ -39,7 +39,6 @@ export class SwaggerConfig {
         tryItOutEnabled: true,
       },
       customSiteTitle: 'Vitalium API Docs',
-      customfavIcon: '/favicon.ico',
       customCss: `
         .swagger-ui .topbar { display: none; }
         .swagger-ui .info .title { color: #2d5aa0; }

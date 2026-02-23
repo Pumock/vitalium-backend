@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { DoctorNotFoundException } from '../../../shared/execeptions/doctor/doctor-not-found.exception';
-import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import type { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
 
 @Injectable()
 export class DeleteDoctorUseCase {

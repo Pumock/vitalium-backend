@@ -1,5 +1,5 @@
-import { AdminRole } from '../../../shared/enums/admin-role.enum';
-import { User } from './user.models';
+import type { AdminRole } from '../../../shared/enums/admin-role.enum';
+import type { User } from './user.models';
 
 export class Admin {
   id: string;
@@ -10,6 +10,5 @@ export class Admin {
   createdAt: string;
   updatedAt: string;
 
-  // Relacionamentos (carregados quando necessário)
   user?: User;
 }

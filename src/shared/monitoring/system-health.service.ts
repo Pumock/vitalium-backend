@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { MetricsCollectorService } from './metrics-collector.service';
-import * as process from 'process';
+import * as process from 'node:process';
 
 @Injectable()
 export class SystemHealthService {
