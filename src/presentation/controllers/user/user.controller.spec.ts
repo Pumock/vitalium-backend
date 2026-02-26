@@ -1,0 +1,129 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { UserController } from './user.controller';
+import { CreateUserUseCase } from '../../../application/use-cases/user/create-user.use-case';
+import { CreateUserDTO } from '../../dto/userDTO/create-user.dto';
+import { Role } from '../../../shared/enums/role.enum';
+import { ConflictException } from '@nestjs/common';
+
+describe('UserController', () => {
+  let controller: UserController;
+  let createUserUseCase: jest.Mocked<CreateUserUseCase>;
+
+  const mockUser = {
+    id: 'user-id-1',
+    email: 'joao@example.com',
+    password: 'hashedPassword123',
+    firstName: 'João',
+    lastName: 'Silva',
+    phone: '11999999999',
+    avatar: 'https://example.com/avatar.jpg',
+    isActive: true,
+    role: Role.PATIENT,
+    createdAt: new Date('2025-01-01'),
+    updatedAt: new Date('2025-01-01'),
+  };
+
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [UserController],
+      providers: [
+        {
+          provide: CreateUserUseCase,
+          useValue: {
+            execute: jest.fn(),
+          },
+        },
+      ],
+    }).compile();
+
+    controller = module.get<UserController>(UserController);
+    createUserUseCase = module.get(CreateUserUseCase);
+  });
+
+  it('should be defined', () => {
+    expect(controller).toBeDefined();
+  });
+
+  describe('create', () => {
+    const createUserDTO: CreateUserDTO = {
+      email: 'joao@example.com',
+      password: 'TestPassword123!',
+      firstName: 'João',
+      lastName: 'Silva',
+      phone: '11999999999',
+      avatar: 'https://example.com/avatar.jpg',
+      isActive: true,
+      role: Role.PATIENT,
+    };
+
+    it('should create a user successfully', async () => {
+      createUserUseCase.execute.mockResolvedValue(mockUser);
+
+      const result = await controller.create(createUserDTO);
+
+      expect(createUserUseCase.execute).toHaveBeenCalledWith(createUserDTO);
+      expect(result).toBeDefined();
+      expect(result.email).toBe(mockUser.email);
+      expect(result.firstName).toBe(mockUser.firstName);
+      expect(result.lastName).toBe(mockUser.lastName);
+      expect(result.id).toBe(mockUser.id);
+    });
+
+    it('should not return password in response', async () => {
+      createUserUseCase.execute.mockResolvedValue(mockUser);
+
+      const result = await controller.create(createUserDTO);
+
+      expect(result.password).toBeUndefined();
+    });
+
+    it('should create a user without optional fields', async () => {
+      const minimalDTO: CreateUserDTO = {
+        email: 'maria@example.com',
+        password: 'TestPassword123!',
+        firstName: 'Maria',
+        lastName: 'Santos',
+        isActive: true,
+        role: Role.DOCTOR,
+      };
+
+      const minimalUser = {
+        ...mockUser,
+        id: 'user-id-2',
+        email: 'maria@example.com',
+        firstName: 'Maria',
+        lastName: 'Santos',
+        phone: undefined,
+        avatar: undefined,
+        role: Role.DOCTOR,
+      };
+
+      createUserUseCase.execute.mockResolvedValue(minimalUser);
+
+      const result = await controller.create(minimalDTO);
+
+      expect(result).toBeDefined();
+      expect(result.email).toBe('maria@example.com');
+    });
+
+    it('should propagate ConflictException for duplicate email', async () => {
+      createUserUseCase.execute.mockRejectedValue(
+        new ConflictException('Email já está em uso'),
+      );
+
+      await expect(controller.create(createUserDTO)).rejects.toThrow(
+        ConflictException,
+      );
+    });
+
+    it('should propagate errors from use case', async () => {
+      createUserUseCase.execute.mockRejectedValue(
+        new Error('Unexpected error'),
+      );
+
+      await expect(controller.create(createUserDTO)).rejects.toThrow(
+        'Unexpected error',
+      );
+    });
+  });
+});

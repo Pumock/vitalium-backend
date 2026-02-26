@@ -1,6 +1,6 @@
 export * from './user.decorators';
 export * from './doctor.decorators';
-export * from './organization.decorators';
+export * from './unit.decorators';
 
 // Futuramente exportaremos outros decorators aqui:
 // export * from './patient.decorators';

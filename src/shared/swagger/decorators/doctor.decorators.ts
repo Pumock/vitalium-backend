@@ -38,11 +38,6 @@ export const ApiDoctorOperations = {
               example: true,
               description: 'Indica se o CRM do médico está ativo',
             },
-            consultationPrice: {
-              type: 'number',
-              example: 150.0,
-              description: 'Preço da consulta médica em reais (opcional)',
-            },
             isActive: {
               type: 'boolean',
               example: true,
@@ -59,7 +54,7 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789abcdef',
+              example: 'cmjhja6fv0009n0pwqk73fd82',
               description: 'ID único do médico',
             },
             crm: {
@@ -72,25 +67,69 @@ export const ApiDoctorOperations = {
               example: true,
               description: 'Status do CRM',
             },
-            consultationPrice: {
-              type: 'number',
-              example: 150.0,
-              description: 'Preço da consulta',
-            },
             isActive: {
               type: 'boolean',
               example: true,
-              description: 'Status do perfil',
+              description: 'Status do médico',
             },
             createdAt: {
               type: 'string',
               format: 'date-time',
+              example: '2025-12-22T19:13:07.093Z',
               description: 'Data de criação',
             },
             updatedAt: {
               type: 'string',
               format: 'date-time',
+              example: '2025-12-22T19:13:07.093Z',
               description: 'Data de atualização',
+            },
+            user: {
+              type: 'object',
+              properties: {
+                id: {
+                  type: 'string',
+                  example: 'cmjhja1is0008n0pwovrcf408',
+                },
+                firstName: {
+                  type: 'string',
+                  example: 'João',
+                },
+                lastName: {
+                  type: 'string',
+                  example: 'Silva',
+                },
+                email: {
+                  type: 'string',
+                  example: 'joaodoctor@exemplo.com',
+                },
+                phone: {
+                  type: 'string',
+                  example: '11999939999',
+                },
+                avatar: {
+                  type: 'string',
+                  example: 'https://exemplo.com/avatar.jpg',
+                },
+                role: {
+                  type: 'string',
+                  example: 'DOCTOR',
+                },
+                isActive: {
+                  type: 'boolean',
+                  example: true,
+                },
+                createdAt: {
+                  type: 'string',
+                  format: 'date-time',
+                  example: '2025-12-22T19:13:00.724Z',
+                },
+                updatedAt: {
+                  type: 'string',
+                  format: 'date-time',
+                  example: '2025-12-22T19:13:00.724Z',
+                },
+              },
             },
           },
         },
@@ -186,12 +225,13 @@ export const ApiDoctorOperations = {
       ApiTags('doctors'),
       ApiOperation({
         summary: 'Buscar médico por ID',
-        description: 'Retorna os dados de um médico específico pelo seu ID',
+        description:
+          'Retorna os dados do médico, usuário associado e unidades vinculadas',
       }),
       ApiParam({
         name: 'id',
         description: 'ID único do médico',
-        example: 'clxyz123456789abcdef',
+        example: 'cmjhja6fv0009n0pwqk73fd82',
         type: 'string',
       }),
       ApiResponse({
@@ -202,38 +242,149 @@ export const ApiDoctorOperations = {
           properties: {
             id: {
               type: 'string',
-              example: 'clxyz123456789abcdef',
-              description: 'ID único do médico',
+              example: 'cmjhja6fv0009n0pwqk73fd82',
             },
             crm: {
               type: 'string',
               example: '123456-SP',
-              description: 'Número do CRM',
             },
             crmState: {
               type: 'boolean',
               example: true,
-              description: 'Status do CRM',
-            },
-            consultationPrice: {
-              type: 'number',
-              example: 150.0,
-              description: 'Preço da consulta',
             },
             isActive: {
               type: 'boolean',
               example: true,
-              description: 'Status do perfil',
             },
             createdAt: {
               type: 'string',
               format: 'date-time',
-              description: 'Data de criação',
             },
             updatedAt: {
               type: 'string',
               format: 'date-time',
-              description: 'Data de atualização',
+            },
+
+            user: {
+              type: 'object',
+              properties: {
+                id: { type: 'string', example: 'cmjhja1is0008n0pwovrcf408' },
+                email: {
+                  type: 'string',
+                  example: 'joaodoctor@exemplo.com',
+                },
+                firstName: { type: 'string', example: 'João Docs' },
+                lastName: { type: 'string', example: 'Silva' },
+                phone: { type: 'string', example: '11999939999' },
+                avatar: {
+                  type: 'string',
+                  example: 'https://exemplo.com/avatar.jpg',
+                },
+                role: { type: 'string', example: 'DOCTOR' },
+                isActive: { type: 'boolean', example: true },
+                createdAt: {
+                  type: 'string',
+                  format: 'date-time',
+                },
+                updatedAt: {
+                  type: 'string',
+                  format: 'date-time',
+                },
+              },
+            },
+
+            units: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  id: {
+                    type: 'string',
+                    example: 'cmjiobll4000a34pwwa6xkybe',
+                  },
+                  doctorId: {
+                    type: 'string',
+                    example: 'cmjhja6fv0009n0pwqk73fd82',
+                  },
+                  unitId: {
+                    type: 'string',
+                    example: 'cmjhiz9ng0005i4pwx634gkuh',
+                  },
+                  consultationPrice: {
+                    type: 'number',
+                    example: 150,
+                  },
+                  isPrimary: {
+                    type: 'boolean',
+                    example: true,
+                  },
+                  isActive: {
+                    type: 'boolean',
+                    example: true,
+                  },
+                  createdAt: {
+                    type: 'string',
+                    format: 'date-time',
+                  },
+                  unit: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'string',
+                        example: 'cmjhiz9ng0005i4pwx634gkuh',
+                      },
+                      name: {
+                        type: 'string',
+                        example: 'Hospital São José',
+                      },
+                      type: {
+                        type: 'string',
+                        example: 'HOSPITAL',
+                      },
+                      cnpj: {
+                        type: 'string',
+                        example: '12345678000190',
+                      },
+                      phone: {
+                        type: 'string',
+                        example: '1133334444',
+                      },
+                      email: {
+                        type: 'string',
+                        example: 'contato@hospitalsaojose.com.br',
+                      },
+                      address: {
+                        type: 'string',
+                        example: 'Rua das Flores, 123',
+                      },
+                      city: {
+                        type: 'string',
+                        example: 'São Paulo',
+                      },
+                      state: {
+                        type: 'string',
+                        example: 'SP',
+                      },
+                      zipCode: {
+                        type: 'string',
+                        example: '01234567',
+                      },
+                      isActive: {
+                        type: 'boolean',
+                        example: true,
+                      },
+                      createdAt: {
+                        type: 'string',
+                        format: 'date-time',
+                      },
+                      updatedAt: {
+                        type: 'string',
+                        format: 'date-time',
+                      },
+                    },
+                  },
+                },
+              },
             },
           },
         },
@@ -248,9 +399,12 @@ export const ApiDoctorOperations = {
             message: {
               type: 'string',
               example:
-                'Nenhum médico foi encontrado com os critérios: ID: clxyz123456789abcdef',
+                'Nenhum médico foi encontrado com os critérios: ID cmjhja6fv0009n0pwqk73fd82',
             },
-            errorCode: { type: 'string', example: 'DOCTOR_NOT_FOUND' },
+            errorCode: {
+              type: 'string',
+              example: 'DOCTOR_NOT_FOUND',
+            },
           },
         },
       }),

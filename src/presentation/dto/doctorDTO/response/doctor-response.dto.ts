@@ -1,8 +1,7 @@
-import { Expose } from 'class-transformer';
-import { Clinic } from '../../../../infrastructure/database/models/clinic.models';
-import { Hospital } from '../../../../infrastructure/database/models/hospital.models';
-import { User } from '../../../../infrastructure/database/models/user.models';
+import { Expose, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserResponseDTO } from '../../userDTO/response/user-response.dto';
+import { ResponseUnitDTO } from '../../unitDTO/response/unit-response.dto';
 
 export class DoctorResponseDTO {
   @ApiProperty({
@@ -11,6 +10,13 @@ export class DoctorResponseDTO {
   })
   @Expose()
   id: string;
+
+  @ApiProperty({
+    description: 'ID do usuário associado ao médico',
+    example: 'clxyz123456789abcdef',
+  })
+  @Expose()
+  userId: string;
 
   @ApiProperty({
     description: 'Número do CRM do médico (único no sistema)',
@@ -26,14 +32,6 @@ export class DoctorResponseDTO {
   })
   @Expose()
   crmState: boolean;
-
-  @ApiProperty({
-    description: 'Preço da consulta médica em reais',
-    example: 150.0,
-    type: Number,
-  })
-  @Expose()
-  consultationPrice?: number;
 
   @ApiProperty({
     description: 'Status do perfil do médico (ativo/inativo)',
@@ -60,13 +58,18 @@ export class DoctorResponseDTO {
   // Relacionamentos
   @ApiProperty({
     description: 'Usuário associado ao médico',
+    type: () => UserResponseDTO,
   })
   @Expose()
-  user?: User;
+  @Type(() => UserResponseDTO)
+  user?: UserResponseDTO;
 
+  @ApiProperty({
+    description: 'Unidades associadas ao médico',
+    type: () => [ResponseUnitDTO],
+    isArray: true,
+  })
   @Expose()
-  hospital?: Hospital;
-
-  @Expose()
-  clinic?: Clinic;
+  @Type(() => ResponseUnitDTO)
+  units?: ResponseUnitDTO[];
 }

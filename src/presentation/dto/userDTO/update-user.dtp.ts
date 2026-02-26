@@ -4,14 +4,16 @@ import {
   IsEnum,
   IsString,
   IsOptional,
+  Matches,
 } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Role } from '../../../shared/enums';
-import { Admin } from '../../../infrastructure/database/models/admin.models';
-import { Patient } from '../../../infrastructure/database/models/patient.models';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
-import { Nurse } from '../../../infrastructure/database/models/nurse.models';
-import { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+import type { Admin } from '../../../infrastructure/database/models/admin.models';
+import type { Patient } from '../../../infrastructure/database/models/patient.models';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { Nurse } from '../../../infrastructure/database/models/nurse.models';
+import type { Caregiver } from '../../../infrastructure/database/models/caregiver.models';
+
 export class UpdateUserDTO {
   @ApiPropertyOptional({
     description: 'Email único do usuário',
@@ -40,12 +42,14 @@ export class UpdateUserDTO {
 
   @ApiPropertyOptional({
     description: 'Telefone do usuário',
-    example: '+55 11 98765-4321',
+    example: '11999999999',
+  })
+  @Matches(/^(\+55)?\d{11}$/, {
+    message: 'Telefone deve conter 11 números (EX: 62999999999)',
   })
   @IsOptional()
   @IsString()
   phone?: string;
-
   @ApiPropertyOptional({
     description: 'URL do avatar do usuário',
     example: 'https://exemplo.com/novo-avatar.jpg',

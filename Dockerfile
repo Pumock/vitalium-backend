@@ -1,7 +1,7 @@
 # Multi-stage Dockerfile for Vitalium Backend
 
 # Stage 1: Build
-FROM node:18-alpine AS builder
+FROM node:22-slim AS builder
 
 # Set working directory
 WORKDIR /app

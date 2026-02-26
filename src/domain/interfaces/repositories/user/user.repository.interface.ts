@@ -1,6 +1,6 @@
-import { User } from '../../../../infrastructure/database/models/user.models';
-import { CreateUserDTO } from '../../../../presentation/dto/userDTO/create-user.dto';
-import { UpdateUserDTO } from '../../../../presentation/dto/userDTO/update-user.dtp';
+import type { User } from '../../../../infrastructure/database/models/user.models';
+import type { CreateUserDTO } from '../../../../presentation/dto/userDTO/create-user.dto';
+import type { UpdateUserDTO } from '../../../../presentation/dto/userDTO/update-user.dtp';
 export interface IUserRepository {
   // Métodos básicos
   create(createUserDTO: CreateUserDTO): Promise<User>;

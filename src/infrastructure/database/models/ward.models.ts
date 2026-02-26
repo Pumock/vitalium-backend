@@ -1,11 +1,11 @@
-import { WardType } from '../../../shared/enums/ward-type.enum';
-import { Hospital } from './hospital.models';
-import { Nurse } from './nurse.models';
-import { WardAdmission } from './ward-admission.models';
+import type { WardType } from '../../../shared/enums/ward-type.enum';
+import type { Nurse } from './nurse.models';
+import type { Unit } from './unit.models';
+import type { WardAdmission } from './ward-admission.models';
 
 export class Ward {
   id: string;
-  hospitalId: string;
+  unitId: string;
   name: string;
   wardType: WardType;
   capacity: number;
@@ -15,7 +15,7 @@ export class Ward {
   updatedAt: string;
 
   // Relacionamentos (carregados quando necessário)
-  hospital?: Hospital;
+  unit?: Unit;
   nurses?: Nurse[];
   admissions?: WardAdmission[];
 }

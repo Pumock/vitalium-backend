@@ -1,18 +1,18 @@
-import { AppointmentStatus } from '../../../shared/enums/appointment-status.enum';
-import { AppointmentType } from '../../../shared/enums/appointment-type.enum';
-import { Patient } from './patient.models';
-import { Doctor } from './doctor.models';
-import { Clinic } from './clinic.models';
+import type { AppointmentStatus } from '../../../shared/enums/appointment-status.enum';
+import type { AppointmentType } from '../../../shared/enums/appointment-type.enum';
+import type { Patient } from './patient.models';
+import type { Doctor } from './doctor.models';
+import type { Unit } from './unit.models';
 
 export class Appointment {
   id: string;
   patientId: string;
   doctorId: string;
-  clinicId?: string;
+  unitId?: string;
   title: string;
   description?: string;
   scheduledAt: string;
-  duration: number; // minutos
+  duration: number;
   status: AppointmentStatus;
   type: AppointmentType;
   price?: number;
@@ -20,8 +20,7 @@ export class Appointment {
   createdAt: string;
   updatedAt: string;
 
-  // Relacionamentos (carregados quando necessário)
   patient?: Patient;
   doctor?: Doctor;
-  clinic?: Clinic;
+  unit?: Unit;
 }

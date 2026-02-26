@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   ValidationException,
-  FieldError,
+  type FieldError,
 } from '../../../shared/execeptions/system/validation.exception';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { DoctorNotFoundException } from '../../../shared/execeptions/doctor/doctor-not-found.exception';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
-import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
-import { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import type { UpdateDoctorDTO } from '../../../presentation/dto/doctorDTO/update-doctor.dto';
 
 @Injectable()
 export class UpdateDoctorUseCase {
@@ -38,7 +38,7 @@ export class UpdateDoctorUseCase {
       );
       return updatedDoctor;
     } catch (error) {
-      if (error.message && error.message.includes('not found')) {
+      if (error.message?.includes('not·found')) {
         throw new DoctorNotFoundException(`ID: ${id}`);
       }
       throw new DatabaseException('atualizar médico', error);

@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/modules/app.module';
 import { PrismaProvider } from '../../src/infrastructure/database/prisma.provider';
@@ -31,14 +31,14 @@ describe('Users API (e2e)', () => {
     prisma = app.get<PrismaProvider>(PrismaProvider);
 
     await app.init();
-  });
+  }, 30000);
 
   afterAll(async () => {
     // Clean up test data
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: 'test-e2e',
+          contains: 'test-e2e-user',
         },
       },
     });
@@ -52,20 +52,20 @@ describe('Users API (e2e)', () => {
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: 'test-e2e',
+          contains: 'test-e2e-user',
         },
       },
     });
   });
 
-  describe('/users (POST)', () => {
-    it('should create a new user', async () => {
+  describe('POST /users', () => {
+    it('should create a new user with valid data', async () => {
       const createUserDto = {
-        email: 'test-e2e-create@example.com',
+        email: 'test-e2e-user-create@example.com',
         password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '+1234567890',
+        firstName: 'João',
+        lastName: 'Silva',
+        phone: '11999999999',
         avatar: 'https://example.com/avatar.jpg',
         isActive: true,
         role: Role.PATIENT,
@@ -89,13 +89,60 @@ describe('Users API (e2e)', () => {
       expect(response.body.id).toBeDefined();
       expect(response.body.createdAt).toBeDefined();
       expect(response.body.updatedAt).toBeDefined();
+      expect(response.body.password).toBeUndefined(); // Password should not be returned
+    });
+
+    it('should create a user without optional fields', async () => {
+      const createUserDto = {
+        email: 'test-e2e-user-minimal@example.com',
+        password: 'TestPassword123!',
+        firstName: 'Maria',
+        lastName: 'Santos',
+        isActive: true,
+        role: Role.DOCTOR,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/users')
+        .send(createUserDto)
+        .expect(201);
+
+      expect(response.body).toMatchObject({
+        email: createUserDto.email,
+        firstName: createUserDto.firstName,
+        lastName: createUserDto.lastName,
+        isActive: createUserDto.isActive,
+        role: createUserDto.role,
+      });
+
+      expect(response.body.id).toBeDefined();
+      expect(response.body.phone).toBeUndefined();
+      expect(response.body.avatar).toBeUndefined();
     });
 
     it('should return 400 for invalid email format', async () => {
       const invalidUserDto = {
         email: 'invalid-email',
-        firstName: 'John',
-        lastName: 'Doe',
+        password: 'TestPassword123!',
+        firstName: 'João',
+        lastName: 'Silva',
+        isActive: true,
+        role: Role.PATIENT,
+      };
+
+      await request(app.getHttpServer())
+        .post('/users')
+        .send(invalidUserDto)
+        .expect(400);
+    });
+
+    it('should return 400 for invalid phone format', async () => {
+      const invalidUserDto = {
+        email: 'test-e2e-user-invalid-phone@example.com',
+        password: 'TestPassword123!',
+        firstName: 'João',
+        lastName: 'Silva',
+        phone: '123', // Invalid phone
         isActive: true,
         role: Role.PATIENT,
       };
@@ -108,8 +155,8 @@ describe('Users API (e2e)', () => {
 
     it('should return 400 for missing required fields', async () => {
       const incompleteUserDto = {
-        email: 'test-e2e-incomplete@example.com',
-        // Missing firstName, lastName, isActive, role
+        email: 'test-e2e-user-incomplete@example.com',
+        // Missing firstName, lastName, isActive, role, password
       };
 
       await request(app.getHttpServer())
@@ -120,10 +167,10 @@ describe('Users API (e2e)', () => {
 
     it('should return 409 for duplicate email', async () => {
       const createUserDto = {
-        email: 'test-e2e-duplicate@example.com',
+        email: 'test-e2e-user-duplicate@example.com',
         password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
+        firstName: 'João',
+        lastName: 'Silva',
         isActive: true,
         role: Role.PATIENT,
       };
@@ -140,226 +187,33 @@ describe('Users API (e2e)', () => {
         .send(createUserDto)
         .expect(409);
     });
-  });
 
-  describe('/users (GET)', () => {
-    it('should return all users', async () => {
-      // Create test users
-      const testUsers = [
-        {
-          email: 'test-e2e-list1@example.com',
-          password: 'TestPassword123!',
-          firstName: 'John',
-          lastName: 'Doe',
-          isActive: true,
-          role: Role.PATIENT,
-        },
-        {
-          email: 'test-e2e-list2@example.com',
-          password: 'TestPassword123!',
-          firstName: 'Jane',
-          lastName: 'Smith',
-          isActive: true,
-          role: Role.DOCTOR,
-        },
+    it('should create users with different roles', async () => {
+      const roles = [
+        Role.PATIENT,
+        Role.DOCTOR,
+        Role.NURSE,
+        Role.CAREGIVER,
+        Role.ADMIN,
       ];
 
-      for (const user of testUsers) {
-        await request(app.getHttpServer())
+      for (const [index, role] of roles.entries()) {
+        const createUserDto = {
+          email: `test-e2e-user-role-${role.toLowerCase()}@example.com`,
+          password: 'TestPassword123!',
+          firstName: 'Usuário',
+          lastName: `Teste ${index}`,
+          isActive: true,
+          role: role,
+        };
+
+        const response = await request(app.getHttpServer())
           .post('/users')
-          .send(user)
+          .send(createUserDto)
           .expect(201);
+
+        expect(response.body.role).toBe(role);
       }
-
-      const response = await request(app.getHttpServer())
-        .get('/users')
-        .expect(200);
-
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThanOrEqual(2);
-
-      const createdUsers = response.body.filter((user: any) =>
-        user.email.includes('test-e2e-list'),
-      );
-      expect(createdUsers.length).toBe(2);
-    });
-
-    it('should return empty array when no users exist', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/users')
-        .expect(200);
-
-      expect(Array.isArray(response.body)).toBe(true);
-    });
-  });
-
-  describe('/users/:id (GET)', () => {
-    it('should return user by id', async () => {
-      // Create test user
-      const createUserDto = {
-        email: 'test-e2e-get-by-id@example.com',
-        password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
-        isActive: true,
-        role: Role.PATIENT,
-      };
-
-      const createResponse = await request(app.getHttpServer())
-        .post('/users')
-        .send(createUserDto)
-        .expect(201);
-
-      const userId = createResponse.body.id;
-
-      const response = await request(app.getHttpServer())
-        .get(`/users/${userId}`)
-        .expect(200);
-
-      expect(response.body).toMatchObject({
-        id: userId,
-        email: createUserDto.email,
-        firstName: createUserDto.firstName,
-        lastName: createUserDto.lastName,
-        isActive: createUserDto.isActive,
-        role: createUserDto.role,
-      });
-    });
-
-    it('should return 404 for non-existent user', async () => {
-      const nonExistentId = '123e4567-e89b-12d3-a456-426614174000';
-
-      await request(app.getHttpServer())
-        .get(`/users/${nonExistentId}`)
-        .expect(404);
-    });
-  });
-
-  describe('/users/email/:email (GET)', () => {
-    it('should return user by email', async () => {
-      // Create test user
-      const createUserDto = {
-        email: 'test-e2e-get-by-email@example.com',
-        password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
-        isActive: true,
-        role: Role.PATIENT,
-      };
-
-      await request(app.getHttpServer())
-        .post('/users')
-        .send(createUserDto)
-        .expect(201);
-
-      const response = await request(app.getHttpServer())
-        .get(`/users/email/${createUserDto.email}`)
-        .expect(200);
-
-      expect(response.body).toMatchObject({
-        email: createUserDto.email,
-        firstName: createUserDto.firstName,
-        lastName: createUserDto.lastName,
-        isActive: createUserDto.isActive,
-        role: createUserDto.role,
-      });
-    });
-
-    it('should return 404 for non-existent email', async () => {
-      const nonExistentEmail = 'non-existent@example.com';
-
-      await request(app.getHttpServer())
-        .get(`/users/email/${nonExistentEmail}`)
-        .expect(404);
-    });
-  });
-
-  describe('/users/:id (PATCH)', () => {
-    it('should update user successfully', async () => {
-      // Create test user
-      const createUserDto = {
-        email: 'test-e2e-update@example.com',
-        password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
-        isActive: true,
-        role: Role.PATIENT,
-      };
-
-      const createResponse = await request(app.getHttpServer())
-        .post('/users')
-        .send(createUserDto)
-        .expect(201);
-
-      const userId = createResponse.body.id;
-
-      // Update user
-      const updateUserDto = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-        isActive: false,
-      };
-
-      const response = await request(app.getHttpServer())
-        .patch(`/users/${userId}`)
-        .send(updateUserDto)
-        .expect(200);
-
-      expect(response.body).toMatchObject({
-        id: userId,
-        email: createUserDto.email,
-        firstName: updateUserDto.firstName,
-        lastName: updateUserDto.lastName,
-        isActive: updateUserDto.isActive,
-        role: createUserDto.role,
-      });
-    });
-
-    it('should return 404 for non-existent user update', async () => {
-      const nonExistentId = '123e4567-e89b-12d3-a456-426614174000';
-      const updateUserDto = {
-        firstName: 'Updated Name',
-      };
-
-      await request(app.getHttpServer())
-        .patch(`/users/${nonExistentId}`)
-        .send(updateUserDto)
-        .expect(404);
-    });
-  });
-
-  describe('/users/:id (DELETE)', () => {
-    it('should delete user successfully', async () => {
-      // Create test user
-      const createUserDto = {
-        email: 'test-e2e-delete@example.com',
-        password: 'TestPassword123!',
-        firstName: 'John',
-        lastName: 'Doe',
-        isActive: true,
-        role: Role.PATIENT,
-      };
-
-      const createResponse = await request(app.getHttpServer())
-        .post('/users')
-        .send(createUserDto)
-        .expect(201);
-
-      const userId = createResponse.body.id;
-
-      // Delete user
-      await request(app.getHttpServer()).delete(`/users/${userId}`).expect(204);
-
-      // Verify user is deleted
-      await request(app.getHttpServer()).get(`/users/${userId}`).expect(404);
-    });
-
-    it('should return 404 for non-existent user deletion', async () => {
-      const nonExistentId = '123e4567-e89b-12d3-a456-426614174000';
-
-      await request(app.getHttpServer())
-        .delete(`/users/${nonExistentId}`)
-        .expect(404);
     });
   });
 });

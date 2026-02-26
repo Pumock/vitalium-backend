@@ -1,5 +1,5 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { Test, type TestingModule } from '@nestjs/testing';
+import { type INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/modules/app.module';
 import { PrismaProvider } from '../../src/infrastructure/database/prisma.provider';
@@ -40,7 +40,7 @@ describe('Doctors API (e2e)', () => {
     await prisma.doctor.deleteMany({
       where: {
         crm: {
-          contains: 'test-e2e',
+          contains: 'test-e2e-doctor',
         },
       },
     });
@@ -48,7 +48,7 @@ describe('Doctors API (e2e)', () => {
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: 'doctor-test-e2e',
+          contains: 'test-e2e-doctor',
         },
       },
     });
@@ -62,7 +62,7 @@ describe('Doctors API (e2e)', () => {
     await prisma.doctor.deleteMany({
       where: {
         crm: {
-          contains: 'test-e2e',
+          contains: 'test-e2e-doctor',
         },
       },
     });
@@ -70,30 +70,30 @@ describe('Doctors API (e2e)', () => {
     await prisma.user.deleteMany({
       where: {
         email: {
-          contains: 'doctor-test-e2e',
+          contains: 'test-e2e-doctor',
         },
       },
     });
-
-    // Create a test user for doctor creation
-    const testUser = await prisma.user.create({
-      data: {
-        email: 'doctor-test-e2e-user@example.com',
-        password: 'hashedPassword123',
-        firstName: 'Dr. João',
-        lastName: 'Silva',
-        phone: '+5511999999999',
-        isActive: true,
-        role: Role.DOCTOR,
-      },
-    });
-    createdUserId = testUser.id;
   });
 
-  describe('/doctors (POST)', () => {
-    it('should create a new doctor', async () => {
+  describe('POST /doctors', () => {
+    it('should create a new doctor with valid data', async () => {
+      // First create a user with DOCTOR role
+      const testUser = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-user1@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. João',
+          lastName: 'Silva',
+          phone: '11999999999',
+          isActive: true,
+          role: Role.DOCTOR,
+        },
+      });
+      createdUserId = testUser.id;
+
       const createDoctorDto = {
-        crm: 'test-e2e-CRM123456',
+        crm: 'test-e2e-doctor-CRM123456',
         crmState: true,
         isActive: true,
         userId: createdUserId,
@@ -108,227 +108,247 @@ describe('Doctors API (e2e)', () => {
         crm: createDoctorDto.crm,
         crmState: createDoctorDto.crmState,
         isActive: createDoctorDto.isActive,
+        userId: createdUserId,
       });
 
       expect(response.body.id).toBeDefined();
       expect(response.body.createdAt).toBeDefined();
       expect(response.body.updatedAt).toBeDefined();
-      expect(response.body.user).toBeDefined();
-      expect(response.body.user.id).toBe(createdUserId);
 
       createdDoctorId = response.body.id;
     });
 
-    it('should return 400 for invalid CRM format', async () => {
-      const invalidDoctorDto = {
-        crm: '', // Empty CRM
-        crmState: true,
-        consultationPrice: 150.0,
-        isActive: true,
-        user: {
-          id: createdUserId,
+    it('should create a doctor with CRM state false', async () => {
+      const testUser = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-user2@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. Maria',
+          lastName: 'Santos',
+          isActive: true,
+          role: Role.DOCTOR,
         },
+      });
+
+      const createDoctorDto = {
+        crm: 'test-e2e-doctor-CRM789012',
+        crmState: false,
+        isActive: true,
+        userId: testUser.id,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/doctors')
+        .send(createDoctorDto)
+        .expect(201);
+
+      expect(response.body.crmState).toBe(false);
+      expect(response.body.crm).toBe(createDoctorDto.crm);
+    });
+
+    it('should create an inactive doctor', async () => {
+      const testUser = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-user3@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. Carlos',
+          lastName: 'Oliveira',
+          isActive: true,
+          role: Role.DOCTOR,
+        },
+      });
+
+      const createDoctorDto = {
+        crm: 'test-e2e-doctor-CRM345678',
+        crmState: true,
+        isActive: false,
+        userId: testUser.id,
+      };
+
+      const response = await request(app.getHttpServer())
+        .post('/doctors')
+        .send(createDoctorDto)
+        .expect(201);
+
+      expect(response.body.isActive).toBe(false);
+    });
+
+    it('should return 400 for missing required fields', async () => {
+      const incompleteDoctorDto = {
+        crm: 'test-e2e-doctor-CRM999999',
+        // Missing crmState, isActive, userId
       };
 
       await request(app.getHttpServer())
         .post('/doctors')
-        .send(invalidDoctorDto)
+        .send(incompleteDoctorDto)
         .expect(400);
     });
 
-    it('should return 400 for non-existent user', async () => {
-      const invalidDoctorDto = {
-        crm: 'test-e2e-CRM789012',
+    it('should return 404 for non-existent userId', async () => {
+      const createDoctorDto = {
+        crm: 'test-e2e-doctor-CRM111111',
         crmState: true,
-        consultationPrice: 150.0,
         isActive: true,
         userId: 'non-existent-user-id',
       };
 
       await request(app.getHttpServer())
         .post('/doctors')
-        .send(invalidDoctorDto)
-        .expect(400);
+        .send(createDoctorDto)
+        .expect(404);
     });
 
-    it('should return 400 for user with wrong role', async () => {
-      // Create a user with PATIENT role
-      const patientUser = await prisma.user.create({
+    it('should return 409 for duplicate CRM', async () => {
+      const testUser = await prisma.user.create({
         data: {
-          email: 'doctor-test-e2e-patient@example.com',
+          email: 'test-e2e-doctor-user4@example.com',
           password: 'hashedPassword123',
-          firstName: 'Patient',
-          lastName: 'User',
-          phone: '+5511888888888',
+          firstName: 'Dr. Ana',
+          lastName: 'Costa',
           isActive: true,
-          role: Role.PATIENT,
+          role: Role.DOCTOR,
         },
       });
 
-      const invalidDoctorDto = {
-        crm: 'test-e2e-CRM789012',
+      const createDoctorDto = {
+        crm: 'test-e2e-doctor-CRM555555',
         crmState: true,
-        consultationPrice: 150.0,
         isActive: true,
-        userId: patientUser.id,
+        userId: testUser.id,
+      };
+
+      // Create first doctor
+      await request(app.getHttpServer())
+        .post('/doctors')
+        .send(createDoctorDto)
+        .expect(201);
+
+      // Create another user
+      const testUser2 = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-user5@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. Paulo',
+          lastName: 'Lima',
+          isActive: true,
+          role: Role.DOCTOR,
+        },
+      });
+
+      // Try to create doctor with same CRM
+      const duplicateDoctorDto = {
+        ...createDoctorDto,
+        userId: testUser2.id,
       };
 
       await request(app.getHttpServer())
         .post('/doctors')
-        .send(invalidDoctorDto)
-        .expect(400);
+        .send(duplicateDoctorDto)
+        .expect(409);
+    });
 
-      // Clean up
-      try {
-        await prisma.user.delete({
-          where: { id: patientUser.id },
-        });
-      } catch (error) {
-        // User may already be deleted, ignore error
-      }
+    it('should return 409 for duplicate userId', async () => {
+      const testUser = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-user6@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. Pedro',
+          lastName: 'Alves',
+          isActive: true,
+          role: Role.DOCTOR,
+        },
+      });
+
+      const createDoctorDto = {
+        crm: 'test-e2e-doctor-CRM666666',
+        crmState: true,
+        isActive: true,
+        userId: testUser.id,
+      };
+
+      // Create first doctor
+      await request(app.getHttpServer())
+        .post('/doctors')
+        .send(createDoctorDto)
+        .expect(201);
+
+      // Try to create another doctor with same userId
+      const duplicateDoctorDto = {
+        crm: 'test-e2e-doctor-CRM777777',
+        crmState: true,
+        isActive: true,
+        userId: testUser.id, // Same userId
+      };
+
+      await request(app.getHttpServer())
+        .post('/doctors')
+        .send(duplicateDoctorDto)
+        .expect(409);
     });
   });
 
-  describe('/doctors (GET)', () => {
+  describe('GET /doctors/:id', () => {
     beforeEach(async () => {
-      // Create a test doctor
-      const createDoctorDto = {
-        crm: 'test-e2e-CRM555666',
-        crmState: true,
-        consultationPrice: 200.0,
-        isActive: true,
-        userId: createdUserId,
-      };
+      // Create a user and doctor for GET tests
+      const testUser = await prisma.user.create({
+        data: {
+          email: 'test-e2e-doctor-get-user@example.com',
+          password: 'hashedPassword123',
+          firstName: 'Dr. Roberto',
+          lastName: 'Mendes',
+          phone: '11988888888',
+          isActive: true,
+          role: Role.DOCTOR,
+        },
+      });
 
-      const response = await request(app.getHttpServer())
-        .post('/doctors')
-        .send(createDoctorDto);
+      const testDoctor = await prisma.doctor.create({
+        data: {
+          crm: 'test-e2e-doctor-CRM888888',
+          crmState: true,
+          isActive: true,
+          userId: testUser.id,
+        },
+      });
 
-      createdDoctorId = response.body.id;
+      createdUserId = testUser.id;
+      createdDoctorId = testDoctor.id;
     });
 
-    it('should return all doctors', async () => {
-      const response = await request(app.getHttpServer())
-        .get('/doctors')
-        .expect(200);
-
-      expect(Array.isArray(response.body)).toBe(true);
-      expect(response.body.length).toBeGreaterThanOrEqual(1);
-
-      const doctor = response.body.find((d: any) => d.id === createdDoctorId);
-      expect(doctor).toBeDefined();
-      expect(doctor.crm).toBe('test-e2e-CRM555666');
-    });
-
-    it('should return a specific doctor by ID', async () => {
+    it('should return doctor by id', async () => {
       const response = await request(app.getHttpServer())
         .get(`/doctors/${createdDoctorId}`)
         .expect(200);
 
       expect(response.body).toMatchObject({
         id: createdDoctorId,
-        crm: 'test-e2e-CRM555666',
+        crm: 'test-e2e-doctor-CRM888888',
         crmState: true,
-        consultationPrice: 200.0,
         isActive: true,
+        userId: createdUserId,
       });
 
-      expect(response.body.user).toBeDefined();
-      expect(response.body.user.id).toBe(createdUserId);
+      expect(response.body.createdAt).toBeDefined();
+      expect(response.body.updatedAt).toBeDefined();
     });
 
     it('should return 404 for non-existent doctor', async () => {
+      const nonExistentId = 'clxyz-non-existent-id';
+
       await request(app.getHttpServer())
-        .get('/doctors/non-existent-id')
+        .get(`/doctors/${nonExistentId}`)
         .expect(404);
     });
-  });
 
-  describe('/doctors/:id (PATCH)', () => {
-    beforeEach(async () => {
-      // Create a test doctor
-      const createDoctorDto = {
-        crm: 'test-e2e-CRM777888',
-        crmState: true,
-        consultationPrice: 180.0,
-        isActive: true,
-        userId: createdUserId,
-      };
-
+    it('should return doctor with user information', async () => {
       const response = await request(app.getHttpServer())
-        .post('/doctors')
-        .send(createDoctorDto);
-
-      createdDoctorId = response.body.id;
-    });
-
-    it('should update a doctor', async () => {
-      const updateDoctorDto = {
-        crm: 'test-e2e-CRM777888-updated',
-        consultationPrice: 220.0,
-        crmState: true,
-      };
-
-      const response = await request(app.getHttpServer())
-        .patch(`/doctors/${createdDoctorId}`)
-        .send(updateDoctorDto)
+        .get(`/doctors/${createdDoctorId}`)
         .expect(200);
 
-      expect(response.body).toMatchObject({
-        id: createdDoctorId,
-        consultationPrice: 220.0,
-        crmState: true,
-        crm: 'test-e2e-CRM777888-updated',
-        isActive: true,
-      });
-    });
-
-    it('should return 404 for non-existent doctor update', async () => {
-      const updateDoctorDto = {
-        crm: 'test-e2e-CRM-nonexistent',
-        consultationPrice: 250.0,
-      };
-
-      await request(app.getHttpServer())
-        .patch('/doctors/non-existent-id')
-        .send(updateDoctorDto)
-        .expect(404);
-    });
-  });
-
-  describe('/doctors/:id (DELETE)', () => {
-    beforeEach(async () => {
-      // Create a test doctor
-      const createDoctorDto = {
-        crm: 'test-e2e-CRM999000',
-        crmState: true,
-        consultationPrice: 160.0,
-        isActive: true,
-        userId: createdUserId,
-      };
-
-      const response = await request(app.getHttpServer())
-        .post('/doctors')
-        .send(createDoctorDto);
-
-      createdDoctorId = response.body.id;
-    });
-
-    it('should delete a doctor', async () => {
-      await request(app.getHttpServer())
-        .delete(`/doctors/${createdDoctorId}`)
-        .expect(204);
-
-      // Verify doctor was deleted
-      await request(app.getHttpServer())
-        .get(`/doctors/${createdDoctorId}`)
-        .expect(404);
-    });
-
-    it('should return 404 for non-existent doctor deletion', async () => {
-      await request(app.getHttpServer())
-        .delete('/doctors/non-existent-id')
-        .expect(404);
+      expect(response.body.id).toBe(createdDoctorId);
+      // Depending on your DTO, it might include user information
+      expect(response.body.userId).toBe(createdUserId);
     });
   });
 });

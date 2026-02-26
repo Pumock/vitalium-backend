@@ -1,14 +1,16 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   ValidationException,
-  FieldError,
+  type FieldError,
 } from '../../../shared/execeptions/system/validation.exception';
-import { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
-import { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
-import { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
-import { Doctor } from '../../../infrastructure/database/models/doctor.models';
+import type { IDoctorRepository } from '../../../domain/interfaces/repositories/doctor/doctor.repository.interface';
+import type { IUserRepository } from '../../../domain/interfaces/repositories/user/user.repository.interface';
+import type { CreateDoctorDTO } from '../../../presentation/dto/doctorDTO/create-doctor.dto';
+import type { Doctor } from '../../../infrastructure/database/models/doctor.models';
 import { DatabaseException } from '../../../shared/execeptions/system/database.exception';
 import { Role } from '../../../shared/enums/role.enum';
+import { DoctorAlreadyExistsException } from '../../../shared/execeptions/doctor/doctor-already-exists.exception';
+import { UserNotFoundException } from '../../../shared/execeptions/user/user-not-found.exception';
 
 @Injectable()
 export class CreateDoctorUseCase {
@@ -22,7 +24,6 @@ export class CreateDoctorUseCase {
   async execute(createDoctorDTO: CreateDoctorDTO): Promise<Doctor> {
     const errors: FieldError[] = [];
 
-    // Validação básica
     if (!createDoctorDTO.crm) {
       errors.push({
         field: 'crm',
@@ -36,22 +37,14 @@ export class CreateDoctorUseCase {
     }
 
     try {
-      // Verificar se o usuário existe
       let user = null;
       if (createDoctorDTO.userId) {
         user = await this.userRepository.findById(createDoctorDTO.userId);
         if (!user) {
-          throw new ValidationException([
-            {
-              field: 'userId',
-              value: createDoctorDTO.userId,
-              constraints: ['Usuário não encontrado'],
-            },
-          ]);
+          throw new UserNotFoundException(`userId: ${createDoctorDTO.userId}`);
         }
       }
 
-      // Verificar se o usuário tem o role correto
       if (user && user.role !== Role.DOCTOR) {
         throw new ValidationException([
           {
@@ -62,7 +55,25 @@ export class CreateDoctorUseCase {
         ]);
       }
 
-      // Criar o médico com o usuário existente
+      const doctorExisting = await this.doctorRepository.findByCrm(
+        createDoctorDTO.crm,
+      );
+      if (doctorExisting) {
+        throw new DoctorAlreadyExistsException(createDoctorDTO.crm);
+      }
+
+      // Check if userId is already associated with another doctor
+      if (createDoctorDTO.userId) {
+        const doctorByUserId = await this.doctorRepository.findByUserId(
+          createDoctorDTO.userId,
+        );
+        if (doctorByUserId) {
+          throw new DoctorAlreadyExistsException(
+            `userId ${createDoctorDTO.userId}`,
+          );
+        }
+      }
+
       const doctorData = {
         ...createDoctorDTO,
         user: user,
@@ -71,7 +82,11 @@ export class CreateDoctorUseCase {
       const doctor = await this.doctorRepository.create(doctorData);
       return doctor;
     } catch (error) {
-      if (error instanceof ValidationException) {
+      if (
+        error instanceof ValidationException ||
+        error instanceof DoctorAlreadyExistsException ||
+        error instanceof UserNotFoundException
+      ) {
         throw error;
       }
       throw new DatabaseException('criar médico', error);

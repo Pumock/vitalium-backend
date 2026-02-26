@@ -75,7 +75,7 @@ services:
       - ./prisma:/app/prisma
     networks:
       - vitalium-network
-    command: npx prisma studio --hostname 0.0.0.0
+    command: npx prisma studio --port 5555 --browser none
 
 volumes:
   postgres_dev_data:
