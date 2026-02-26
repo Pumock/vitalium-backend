@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { UserModule } from './user.module';
 import { DoctorModule } from './doctor.module';
 import { MonitoringModule } from '../shared/monitoring/monitoring.module';
@@ -7,6 +8,7 @@ import { ExceptionsModule } from '../shared/execeptions/exceptions.module';
 import { ConfigModule } from '@nestjs/config';
 import { UnitModule } from './units.module';
 import { DoctorUnitModule } from './doctor-unit.module';
+import { LoggingInterceptor } from '../shared/interceptors/logging.interceptor';
 
 @Module({
   imports: [
@@ -23,6 +25,11 @@ import { DoctorUnitModule } from './doctor-unit.module';
     MonitoringModule,
   ],
   controllers: [HealthController],
-  providers: [],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },
+  ],
 })
 export class AppModule {}
