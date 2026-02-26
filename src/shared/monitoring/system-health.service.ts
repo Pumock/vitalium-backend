@@ -191,14 +191,14 @@ export class SystemHealthService {
       await this.logCriticalError({
         type: 'HEALTH_CHECK_FAILURE',
         message: 'Health check endpoint failed',
-        stackTrace: error.stack,
+        stackTrace: error instanceof Error ? error.stack : undefined,
         context: 'HEALTH_CHECK',
       });
 
       return {
         status: 'error',
         timestamp: new Date(),
-        error: error.message,
+        error: error instanceof Error ? error.stack : undefined,
       };
     }
   }

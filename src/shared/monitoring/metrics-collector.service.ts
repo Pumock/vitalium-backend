@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { PrismaProvider } from '../../infrastructure/database/prisma.provider';
 import { LogLevel, SecurityLevel } from '@prisma/client';
 
 @Injectable()
 export class MetricsCollectorService {
+  private readonly logger = new Logger('Metrics');
+
   constructor(private readonly prisma: PrismaProvider) {}
 
   // Log API request metrics
@@ -33,11 +35,8 @@ export class MetricsCollectorService {
       });
 
       await this.updateApiUsageStats(data.url, data.method, data.duration);
-      console.log(
-        `API Request logged: ${data.method} ${data.url} - ${data.statusCode} (${data.duration}ms)`,
-      );
     } catch (error) {
-      console.error('Failed to log API request:', error);
+      this.logger.error(`Failed to log API request: ${error}`);
     }
   }
 
@@ -78,7 +77,7 @@ export class MetricsCollectorService {
         },
       });
     } catch (error) {
-      console.error('Failed to update API usage stats:', error);
+      this.logger.error(`Failed to update API usage stats: ${error}`);
     }
   }
 
@@ -104,9 +103,8 @@ export class MetricsCollectorService {
           metadata: data.metadata,
         },
       });
-      console.log(`Security event logged: ${data.event} - ${data.severity}`);
     } catch (error) {
-      console.error('Failed to log security event:', error);
+      this.logger.error(`Failed to log security event: ${error}`);
     }
   }
 
@@ -128,11 +126,8 @@ export class MetricsCollectorService {
           metadata: data.metadata,
         },
       });
-      console.log(
-        `Business event logged: ${data.event} for ${data.entity}:${data.entityId}`,
-      );
     } catch (error) {
-      console.error('Failed to log business event:', error);
+      this.logger.error(`Failed to log business event: ${error}`);
     }
   }
 
@@ -156,9 +151,8 @@ export class MetricsCollectorService {
           metadata: data.metadata,
         },
       });
-      console.error(`Error logged: ${data.errorType} - ${data.errorMessage}`);
     } catch (error) {
-      console.error('Failed to log error:', error);
+      this.logger.error(`Failed to log error to DB: ${error}`);
     }
   }
 
@@ -186,9 +180,8 @@ export class MetricsCollectorService {
           requestId: data.requestId,
         },
       });
-      console.log(`Application log: [${data.level}] ${data.message}`);
     } catch (error) {
-      console.error('Failed to log application event:', error);
+      this.logger.error(`Failed to log application event: ${error}`);
     }
   }
 
@@ -212,11 +205,8 @@ export class MetricsCollectorService {
           metadata: data.metadata,
         },
       });
-      console.log(
-        `Database operation logged: ${data.operation} on ${data.table} - ${data.duration}ms`,
-      );
     } catch (error) {
-      console.error('Failed to log database operation:', error);
+      this.logger.error(`Failed to log database operation: ${error}`);
     }
   }
 }
