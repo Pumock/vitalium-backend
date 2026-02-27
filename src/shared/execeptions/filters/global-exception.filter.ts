@@ -68,12 +68,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     // Log do erro
     this.logger.error(
-      `HTTP ${status} Error: ${message}`,
-      JSON.stringify({
-        ...errorResponse,
-        userAgent: request.get('User-Agent'),
-        ip: request.ip,
-      }),
+      `HTTP ${status} | ${request.method} ${request.url} | ${errorCode}: ${message}`,
     );
 
     // Monitoramento automático de erros críticos
@@ -127,20 +122,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         });
       }
 
-      // Log falha de aplicação para erros 4xx que não são de autenticação
-      if (status >= 400 && status < 500 && !isAuthError) {
-        await this.systemHealth.logApplicationFailure({
-          operation: `${request.method} ${request.url}`,
-          error: message,
-          metadata: {
-            statusCode: status,
-            errorCode,
-            ip: request.ip,
-            userAgent: request.get('User-Agent'),
-          },
-        });
-      }
-
+      // Log falha de aplicação apenas para erros 5xx (não para 4xx comuns como 400, 404, 409)
+      // Erros 4xx são esperados e não precisam ir para o monitoring
       // Log falha de banco de dados
       if (isDatabaseError) {
         await this.systemHealth.logDatabaseFailure({
@@ -170,14 +153,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         });
       }
 
-      // Sempre log o erro geral
-      await this.metricsCollector.logError({
-        errorType: errorCode,
-        errorMessage: message,
-        stackTrace: exception instanceof Error ? exception.stack : undefined,
-        context: `${request.method} ${request.url}`,
-        userId: undefined, // Não definir userId se não temos um usuário real
-      });
+      // Logar erros gerais apenas para 5xx
+      if (status >= 500) {
+        await this.metricsCollector.logError({
+          errorType: errorCode,
+          errorMessage: message,
+          stackTrace: exception instanceof Error ? exception.stack : undefined,
+          context: `${request.method} ${request.url}`,
+          userId: undefined,
+        });
+      }
     } catch (monitoringError) {
       // Não falhar a requisição se o monitoramento falhar
       this.logger.error(

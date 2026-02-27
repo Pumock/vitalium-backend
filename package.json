@@ -16,6 +16,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json",
     "dev": "docker compose -f docker-compose.dev.yml --env-file .env.development up",
     "dev:build": "docker compose -f docker-compose.dev.yml --env-file .env.development up --build",
     "dev:stop": "docker compose -f docker-compose.dev.yml down",
